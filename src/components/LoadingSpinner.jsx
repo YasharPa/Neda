@@ -1,4 +1,4 @@
-import "./LoadingSpinner.css";
+import "..styles/LoadingSpinner.css";
 
 const LoadingSpinner = ({ message = "טוען...", size = "medium" }) => {
   return (

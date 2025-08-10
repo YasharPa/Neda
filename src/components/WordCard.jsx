@@ -1,5 +1,4 @@
-import React from "react";
-import "./WordCard.css";
+import "../styles/WordCard.css";
 
 const DIFFICULTY_COLORS = {
   easy: { bg: "#d4edda", border: "#28a745", text: "#155724", icon: "✅" },

@@ -28,7 +28,7 @@ export default function HomePage({ translate }) {
           <Link to="/practice/sentences" className="topic-card">
             ✏️ {translate.topics.sentences}
           </Link>
-          <Link to="/practice/words" className="topic-card">
+          <Link to="/practice/vocabulary" className="topic-card">
             📖 {translate.topics.words}
           </Link>
         </div>

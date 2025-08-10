@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useVocabulary } from "../hooks/useVocabulary";
 import ProgressBar from "../components/ProgressBar";
 import WordCard from "../components/WordCard";
 import AddWordForm from "../components/AddWordForm";
 import LoadingSpinner from "../components/LoadingSpinner";
-import "./VocabularyPage.css";
+import "../styles/VocabularyPage.css";
 
 const VocabularyPage = () => {
   const {
@@ -73,7 +73,6 @@ const VocabularyPage = () => {
 
   return (
     <div className="vocabulary-page">
-      {/* כותרת ופעולות */}
       <div className="page-header">
         <div className="header-content">
           <h1>🔤 לימוד מילים</h1>
@@ -89,7 +88,6 @@ const VocabularyPage = () => {
         </div>
       </div>
 
-      {/* טופס הוספת מילה */}
       {showAddForm && (
         <AddWordForm
           onAddWord={handleAddWord}
