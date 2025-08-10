@@ -2,6 +2,7 @@ import { Routes, Route, Link } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import PracticePage from "./pages/PracticePage";
 import StatsPage from "./pages/StatsPage";
+import VocabularyPage from "./pages/VocabularyPage";
 import { useState } from "react";
 import he from "./locales/hebrew.json";
 import fa from "./locales/persian.json";
@@ -39,6 +40,7 @@ export default function App() {
             element={<PracticePage translate={translate} />}
           />
           <Route path="/stats" element={<StatsPage translate={translate} />} />
+          <Route path="/practice/vocabulary" element={<VocabularyPage />} />
         </Routes>
       </main>
 

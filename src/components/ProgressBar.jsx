@@ -1,4 +1,4 @@
-import "..styles/ProgressBar.css";
+import "../styles/ProgressBar.css";
 
 const ProgressBar = ({ stats, percentage }) => {
   return (

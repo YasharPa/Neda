@@ -47,7 +47,6 @@ const WordCard = ({
         color: colors.text,
       }}
     >
-      {/* כפתור מחיקה */}
       {onDelete && (
         <button className="delete-btn" onClick={handleDelete} title="מחק מילה">
           ❌

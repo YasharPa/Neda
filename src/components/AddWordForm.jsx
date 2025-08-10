@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import "..styles/AddWordForm.css";
+import { useState } from "react";
+import "../styles/AddWordForm.css";
 
 const AddWordForm = ({ onAddWord, onClose }) => {
   const [formData, setFormData] = useState({

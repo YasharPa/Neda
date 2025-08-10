@@ -7,6 +7,13 @@ const supabaseAnonKey =
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+if (!supabaseUrl || supabaseUrl === "YOUR_SUPABASE_URL") {
+  throw new Error("Supabase URL is not set in environment variables");
+}
+if (!supabaseAnonKey || supabaseAnonKey === "YOUR_SUPABASE_ANON_KEY") {
+  throw new Error("Supabase anon key is not set in environment variables");
+}
+
 // פונקציות עזר לעבודה עם מילים
 export const vocabularyAPI = {
   // קבלת כל המילים

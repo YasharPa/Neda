@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { vocabularyAPI } from "../lib/supabase";
+import { vocabularyAPI } from "../lib/supabaseClient";
 
 export function useVocabulary() {
   const [words, setWords] = useState([]);
