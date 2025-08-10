@@ -1,0 +1,84 @@
+.home-container {
+  max-width: 900px;
+  margin: auto;
+  padding: 1rem;
+  text-align: center;
+}
+
+/* סטטיסטיקות */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.stat-card {
+  background: #f3f3f3;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2a7ae4;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.9rem;
+  margin-top: 0.3rem;
+}
+
+/* כפתור שינוי שפה */
+.language-switch {
+  margin: 2rem 0;
+}
+
+.lang-btn {
+  background-color: #2a7ae4;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.lang-btn:hover {
+  background-color: #1f5cb8;
+}
+
+/* נושאים ללמידה */
+.topics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.topic-card {
+  background: #fff;
+  padding: 1.2rem;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #333;
+  font-size: 1.1rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.topic-card:hover {
+  transform: scale(1.05);
+}
+
+/* רספונסיביות */
+@media (max-width: 600px) {
+  .stat-value {
+    font-size: 1.2rem;
+  }
+  .topic-card {
+    font-size: 1rem;
+  }
+}
