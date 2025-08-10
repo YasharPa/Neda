@@ -1,0 +1,18 @@
+{
+  "welcome": "خوش آمدید",
+  "home": "خانه",
+  "practice": "تمرین",
+  "stats": "آمار",
+  "chooseSubject": "موضوعی برای یادگیری انتخاب کنید",
+  "allRightsReserved": "کلیه حقوق محفوظ است",
+  "topics": {
+    "driving": "رانندگی",
+    "sentences": "تکمیل جملات",
+    "words": "یادگیری کلمات"
+  },
+  "statistics": {
+    "totalWordsLearned": "کلمات یادگرفته شده",
+    "totalPracticeSessions": "جلسات تمرین انجام شده",
+    "completedSentences": "جملات تکمیل شده"
+  }
+}

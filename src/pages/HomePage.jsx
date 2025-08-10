@@ -1,38 +1,35 @@
 import { Link } from "react-router-dom";
 import "../styles/HomePage.css";
+import StatsCard from "../components/StatCard";
 
-export default function HomePage() {
+export default function HomePage({ translate }) {
+  const stats = [
+    { title: translate.statistics.totalPracticeSessions, value: 12 },
+    { title: translate.statistics.totalWordsLearned, value: 34 },
+    { title: translate.statistics.completedSentences, value: 8 },
+  ];
+
   return (
     <div className="home-container">
       <section className="stats-section">
-        <h2>📊 הסטטיסטיקות שלי</h2>
-        <div className="stats-grid">
-          <div className="stat-card">
-            <span className="stat-value">85%</span>
-            <span className="stat-label">דיוק כללי</span>
-          </div>
-          <div className="stat-card">
-            <span className="stat-value">12</span>
-            <span className="stat-label">תרגולים הושלמו</span>
-          </div>
-          <div className="stat-card">
-            <span className="stat-value">3</span>
-            <span className="stat-label">ימים רצופים</span>
-          </div>
+        <div className="stats-row">
+          {stats.map((stat, i) => (
+            <StatsCard key={i} {...stat} />
+          ))}
         </div>
       </section>
 
       <section className="topics-section">
-        <h2>📚 בחר נושא ללמידה</h2>
+        <h2>📚 {translate.chooseSubject}</h2>
         <div className="topics-grid">
           <Link to="/practice/driving" className="topic-card">
-            🚗 נהיגה
+            🚗 {translate.topics.driving}
           </Link>
           <Link to="/practice/sentences" className="topic-card">
-            ✏️ השלמת משפטים
+            ✏️ {translate.topics.sentences}
           </Link>
           <Link to="/practice/words" className="topic-card">
-            📖 לימוד מילים
+            📖 {translate.topics.words}
           </Link>
         </div>
       </section>

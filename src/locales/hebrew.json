@@ -1,0 +1,18 @@
+{
+  "welcome": "ברוכים הבאים",
+  "home": "בית",
+  "practice": "תרגול",
+  "stats": "סטטיסטיקות",
+  "chooseSubject": "בחר נושא ללמידה",
+  "allRightsReserved": "כל הזכויות שמורות",
+  "topics": {
+    "driving": "נהיגה",
+    "sentences": "השלמת משפטים",
+    "words": "לימוד מילים"
+  },
+  "statistics": {
+    "totalWordsLearned": "מילים שנלמדו",
+    "totalPracticeSessions": "תרגילים שבוצעו",
+    "completedSentences": "משפטים שהושלמו"
+  }
+}

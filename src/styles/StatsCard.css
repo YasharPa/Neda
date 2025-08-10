@@ -1,0 +1,45 @@
+.stats-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.stats-card {
+  background: none;
+  box-shadow: none;
+  padding: 0 20px;
+  text-align: center;
+  min-width: 80px;
+  transition: transform 0.2s ease;
+  border-right: 1px solid #ddd;
+}
+
+.stats-card:first-child {
+  border-right: none;
+}
+
+.stats-card h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #0077cc;
+}
+
+.stats-card p {
+  margin: 5px 0 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+@media (max-width: 600px) {
+  .stats-card {
+    border-right: none; /* במסכים קטנים לא צריך קו */
+    padding: 10px;
+  }
+  .stats-card h3 {
+    font-size: 1.2rem;
+  }
+  .stats-card p {
+    font-size: 0.8rem;
+  }
+}

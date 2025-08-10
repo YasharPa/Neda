@@ -2,38 +2,48 @@ import { Routes, Route, Link } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import PracticePage from "./pages/PracticePage";
 import StatsPage from "./pages/StatsPage";
+import { useState } from "react";
+import he from "./locales/hebrew.json";
+import fa from "./locales/persian.json";
 import "./App.css";
 
 export default function App() {
+  const [lang, setLang] = useState("he");
+  const translate = lang === "he" ? he : fa;
+
   const handleLanguageChange = () => {
-    alert("שינוי שפה יגיע בהמשך 😉");
+    setLang(lang === "he" ? "fa" : "he");
   };
 
   return (
     <div className="app-container">
+      {/* כפתור שינוי שפה */}
       <button className="lang-button" onClick={handleLanguageChange}>
-        🌐 שפה
+        🌐 {lang === "he" ? "עברית" : "فارسی"}
       </button>
 
       <header className="app-header">
-        <h1>💙 ברוכים הבאים</h1>
+        <h1>💙 {translate.welcome}</h1>
         <nav className="app-nav">
-          <Link to="/">בית</Link>
-          <Link to="/practice">תרגול</Link>
-          <Link to="/stats">סטטיסטיקות</Link>
+          <Link to="/">{translate.home}</Link>
+          <Link to="/practice">{translate.practice}</Link>
+          <Link to="/stats">{translate.stats}</Link>
         </nav>
       </header>
 
       <main className="app-main">
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/practice" element={<PracticePage />} />
-          <Route path="/stats" element={<StatsPage />} />
+          <Route path="/" element={<HomePage translate={translate} />} />
+          <Route
+            path="/practice"
+            element={<PracticePage translate={translate} />}
+          />
+          <Route path="/stats" element={<StatsPage translate={translate} />} />
         </Routes>
       </main>
 
       <footer className="app-footer">
-        <p>© 2025 כל הזכויות שמורות</p>
+        <p>© 2025 {translate.allRightsReserved}</p>
       </footer>
     </div>
   );
