@@ -1,0 +1,47 @@
+.sentence-completion {
+  margin: 20px 0;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: #fafafa;
+}
+
+.sentence {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+}
+
+.options {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.option-btn {
+  padding: 8px 12px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: white;
+  transition: background-color 0.2s ease;
+}
+
+.option-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.option-btn.correct {
+  background-color: #c8f7c5;
+  border-color: #28a745;
+}
+
+.option-btn.incorrect {
+  background-color: #f8d7da;
+  border-color: #dc3545;
+}
+
+.feedback {
+  margin-top: 10px;
+  font-weight: bold;
+}
