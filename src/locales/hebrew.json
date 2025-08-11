@@ -14,5 +14,48 @@
     "totalWordsLearned": "מילים שנלמדו",
     "totalPracticeSessions": "תרגילים שבוצעו",
     "completedSentences": "משפטים שהושלמו"
+  },
+  "driving": {
+    "title": "בחינת תיאוריה לנהיגה",
+    "backToMenu": "חזור לתפריט",
+    "welcomeTitle": "לימוד נהיגה",
+    "welcomeSubtitle": "התכונן לבחינת התיאוריה עם שאלות מתקדמות ואלגוריתם חכם",
+    "startQuiz": "התחל בחינה",
+    "features": {
+      "targeted": "שאלות ממוקדות",
+      "targetedDesc": "האלגוריתם מזהה את הנושאים שאתה מתקשה בהם ומתמקד בהם",
+      "progress": "מעקב התקדמות",
+      "progressDesc": "סטטיסטיקות מפורטות לכל נושא וקטגוריה",
+      "explanations": "הסברים מפורטים",
+      "explanationsDesc": "כל שאלה מגיעה עם הסבר ברור למה התשובה נכונה",
+      "adaptive": "למידה אדפטיבית",
+      "adaptiveDesc": "המערכת מתאימה את הקושי לפי הביצועים שלך"
+    },
+    "quizTypes": {
+      "title": "סוגי בחינות",
+      "adaptive": "בחינה אדפטיבית",
+      "adaptiveDesc": "בחינה חכמה המתאימה את הקושי לפי הביצועים שלך",
+      "practice": "תרגול חופשי",
+      "practiceDesc": "תרגל ללא מגבלות וחזור על שאלות שטעית בהן"
+    },
+    "quiz": {
+      "question": "שאלה",
+      "of": "מתוך",
+      "correct": "נכון",
+      "incorrect": "שגוי",
+      "correctAnswer": "תשובה נכונה!",
+      "wrongAnswer": "תשובה שגויה",
+      "explanation": "הסבר:",
+      "nextQuestion": "שאלה הבאה",
+      "finishQuiz": "סיים בחינה",
+      "quizComplete": "סיימת את הבחינה!",
+      "finalScore": "הציון הסופי שלך:",
+      "categoryBreakdown": "פירוט לפי נושאים:",
+      "restartQuiz": "התחל שוב",
+      "loading": "טוען שאלות...",
+      "noQuestions": "לא נמצאו שאלות במאגר",
+      "loadingError": "שגיאה בטעינת השאלות",
+      "connectionError": "בעיית חיבור למסד הנתונים"
+    }
   }
 }

@@ -3,6 +3,7 @@ import HomePage from "./pages/HomePage";
 import PracticePage from "./pages/PracticePage";
 import StatsPage from "./pages/StatsPage";
 import VocabularyPage from "./pages/VocabularyPage";
+import DrivingPage from "./pages/DrivingPage";
 import { useState } from "react";
 import he from "./locales/hebrew.json";
 import fa from "./locales/persian.json";
@@ -18,7 +19,6 @@ export default function App() {
 
   return (
     <div className="app-container">
-      {/* כפתור שינוי שפה */}
       <button className="lang-button" onClick={handleLanguageChange}>
         🌐 {lang === "he" ? "עברית" : "فارسی"}
       </button>
@@ -34,13 +34,26 @@ export default function App() {
 
       <main className="app-main">
         <Routes>
-          <Route path="/" element={<HomePage translate={translate} />} />
+          <Route
+            path="/"
+            element={<HomePage translate={translate} language={lang} />}
+          />
           <Route
             path="/practice"
-            element={<PracticePage translate={translate} />}
+            element={<PracticePage translate={translate} language={lang} />}
           />
-          <Route path="/stats" element={<StatsPage translate={translate} />} />
-          <Route path="/practice/vocabulary" element={<VocabularyPage />} />
+          <Route
+            path="/stats"
+            element={<StatsPage translate={translate} language={lang} />}
+          />
+          <Route
+            path="/practice/vocabulary"
+            element={<VocabularyPage translate={translate} language={lang} />}
+          />
+          <Route
+            path="/practice/driving"
+            element={<DrivingPage translate={translate} language={lang} />}
+          />
         </Routes>
       </main>
 
