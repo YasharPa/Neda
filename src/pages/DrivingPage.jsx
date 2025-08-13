@@ -66,7 +66,7 @@ const DrivingPage = ({ translate, language = "he" }) => {
                 <h3>{translate.driving.quizTypes.adaptive}</h3>
                 <p>{translate.driving.quizTypes.adaptiveDesc}</p>
                 <button className="start-quiz-btn">
-                  {translate.driving.tartQuiz}
+                  {translate.driving.startQuiz}
                 </button>
               </div>
             </div>

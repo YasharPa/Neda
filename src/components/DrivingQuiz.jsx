@@ -191,7 +191,7 @@ const DrivingQuiz = ({ translate, language = "he" }) => {
   };
 
   if (loading) {
-    return <LoadingSpinner message={translate.loading} />;
+    return <LoadingSpinner translate={translate} message={translate.loading} />;
   }
 
   if (error) {

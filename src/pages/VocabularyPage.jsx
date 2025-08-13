@@ -147,7 +147,7 @@ const VocabularyPage = ({ translate }) => {
             <span className="stat-icon">⏳</span>
             <span className="stat-value">{stats.unclassified}</span>
             <span className="stat-label">
-              {translate.vocabulary.remainedClassification}
+              {translate.vocabulary.reminedClassification}
             </span>
           </div>
         </div>
