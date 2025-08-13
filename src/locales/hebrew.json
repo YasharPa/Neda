@@ -7,9 +7,7 @@
   "allRightsReserved": "כל הזכויות שמורות",
   "spinner": {
     "loading": "טוען...",
-    "loadingsubtitle": "אנא המתן בזמן שהנתונים נטענים",
-    "loadingError": "שגיאה בטעינה",
-    "connectionError": "שגיאת חיבור"
+    "loadingsubtitle": "אנא המתן בזמן שהנתונים נטענים"
   },
   "statistics": {
     "totalWordsLearned": "מילים שנלמדו",
@@ -112,5 +110,13 @@
       "title": "למידת מילים",
       "description": "למד מילים חדשות והרחב את אוצר המילים שלך"
     }
+  },
+  "infoSection": {
+    "title": "מידע נוסף",
+    "description": "הבחינה מתבססת על חוקי התעבורה הישראליים העדכניים",
+    "features": "כל התוצאות נשמרות למעקב התקדמות",
+    "adaptiveLearning": "האלגוריתם לומד מהתשובות שלך ומתמקד בנושאים הקשים",
+    "website": "בקר באתר שלנו",
+    "contactSupport": "צור קשר עם התמיכה"
   }
 }

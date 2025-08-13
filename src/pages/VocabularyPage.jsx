@@ -38,7 +38,7 @@ const VocabularyPage = ({ translate }) => {
   };
 
   if (loading) {
-    return <LoadingSpinner message={translate.vocabulary.message} />;
+    return <LoadingSpinner translate={translate} />;
   }
 
   const WordSection = ({

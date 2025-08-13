@@ -7,9 +7,7 @@
   "allRightsReserved": "کلیه حقوق محفوظ است",
   "spinner": {
     "loading": "در حال بارگذاری...",
-    "loadingsubtitle": "لطفاً منتظر بمانید تا داده‌ها بارگذاری شوند",
-    "loadingError": "خطا در بارگذاری",
-    "connectionError": "خطای اتصال"
+    "loadingsubtitle": "لطفاً منتظر بمانید تا داده‌ها بارگذاری شوند"
   },
   "statistics": {
     "totalWordsLearned": "کلمات یادگرفته شده",

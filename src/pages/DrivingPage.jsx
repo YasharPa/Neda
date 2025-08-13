@@ -86,23 +86,11 @@ const DrivingPage = ({ translate, language = "he" }) => {
 
         <div className="info-section">
           <div className="info-card">
-            <h3>ℹ️ {language === "he" ? "מידע חשוב" : "اطلاعات مهم"}</h3>
+            <h3>ℹ️ {translate.infoSection.title}</h3>
             <ul>
-              <li>
-                {language === "he"
-                  ? "הבחינה מתבססת על חוקי התעבורה הישראליים העדכניים"
-                  : "آزمون بر اساس قوانین ترافیک به‌روز اسرائیل است"}
-              </li>
-              <li>
-                {language === "he"
-                  ? "האלגוריתם לומד מהתשובות שלך ומתמקד בנושאים הקשים"
-                  : "الگوریتم از پاسخ‌های شما یاد می‌گیرد و روی موضوعات سخت متمرکز می‌شود"}
-              </li>
-              <li>
-                {language === "he"
-                  ? "כל התוצאות נשמרות למעקב התקדמות"
-                  : "تمام نتایج برای پیگیری پیشرفت ذخیره می‌شود"}
-              </li>
+              <li>{translate.infoSection.description}</li>
+              <li>{translate.infoSection.adaptiveLearning}</li>
+              <li>{translate.infoSection.features}</li>
             </ul>
           </div>
         </div>
