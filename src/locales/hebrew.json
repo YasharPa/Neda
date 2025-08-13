@@ -5,10 +5,11 @@
   "stats": "סטטיסטיקות",
   "chooseSubject": "בחר נושא ללמידה",
   "allRightsReserved": "כל הזכויות שמורות",
-  "topics": {
-    "driving": "נהיגה",
-    "sentences": "השלמת משפטים",
-    "words": "לימוד מילים"
+  "spinner": {
+    "loading": "טוען...",
+    "loadingsubtitle": "אנא המתן בזמן שהנתונים נטענים",
+    "loadingError": "שגיאה בטעינה",
+    "connectionError": "שגיאת חיבור"
   },
   "statistics": {
     "totalWordsLearned": "מילים שנלמדו",
@@ -90,5 +91,26 @@
     "deleteSuccess": "המילה נמחקה בהצלחה!",
     "updateError": "שגיאה בעדכון המילה",
     "deleteError": "שגיאה במחיקת המילה"
+  },
+  "topics": {
+    "driving": {
+      "title": "תיאוריה לנהיגה"
+    },
+    "byTopic": {
+      "title": "לימוד לפי נושא",
+      "description": "בחר נושא (נהיגה, בישול וכו')"
+    },
+    "sentenceCompletion": {
+      "title": "השלמת משפטים",
+      "description": "השלם את המילה החסרה במשפט"
+    },
+    "spelling": {
+      "title": "כתיבה נכונה",
+      "description": "תרגל כתיבה נכונה של מילים בעברית"
+    },
+    "vocabulary": {
+      "title": "למידת מילים",
+      "description": "למד מילים חדשות והרחב את אוצר המילים שלך"
+    }
   }
 }

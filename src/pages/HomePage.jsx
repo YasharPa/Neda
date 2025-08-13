@@ -4,9 +4,9 @@ import StatsCard from "../components/StatCard";
 
 export default function HomePage({ translate }) {
   const stats = [
-    { title: translate.statistics.totalPracticeSessions, value: 12 },
-    { title: translate.statistics.totalWordsLearned, value: 34 },
-    { title: translate.statistics.completedSentences, value: 8 },
+    { title: translate.statistics.totalPracticeSessions, value: 0 },
+    { title: translate.statistics.totalWordsLearned, value: 0 },
+    { title: translate.statistics.completedSentences, value: 0 },
   ];
 
   return (
@@ -23,13 +23,13 @@ export default function HomePage({ translate }) {
         <h2>📚 {translate.chooseSubject}</h2>
         <div className="topics-grid">
           <Link to="/practice/driving" className="topic-card">
-            🚗 {translate.topics.driving}
+            🚗 {translate.topics.driving.title}
           </Link>
           <Link to="/practice/sentences" className="topic-card">
-            ✏️ {translate.topics.sentences}
+            ✏️ {translate.topics.sentenceCompletion.title}
           </Link>
           <Link to="/practice/vocabulary" className="topic-card">
-            📖 {translate.topics.words}
+            📖 {translate.topics.vocabulary.title}
           </Link>
         </div>
       </section>

@@ -1,15 +1,13 @@
 import "../styles/LoadingSpinner.css";
 
-const LoadingSpinner = ({ message = "טוען...", size = "medium" }) => {
+const LoadingSpinner = ({ translate, size = "medium" }) => {
   return (
     <div className={`loading-container ${size}`}>
       <div className="loading-spinner">
         <div className="spinner"></div>
       </div>
-      <h2 className="loading-title">{message}</h2>
-      <p className="loading-subtitle">
-        {message.includes("Supabase") ? "מתחבר למסד הנתונים..." : "אנא המתן..."}
-      </p>
+      <h2 className="loading-title">{translate.spinner.loading}</h2>
+      <p className="loading-subtitle">{translate.spinner.loadingsubtitle}</p>
     </div>
   );
 };

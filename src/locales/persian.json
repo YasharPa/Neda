@@ -5,10 +5,11 @@
   "stats": "آمار",
   "chooseSubject": "موضوعی برای یادگیری انتخاب کنید",
   "allRightsReserved": "کلیه حقوق محفوظ است",
-  "topics": {
-    "driving": "رانندگی",
-    "sentences": "تکمیل جملات",
-    "words": "یادگیری کلمات"
+  "spinner": {
+    "loading": "در حال بارگذاری...",
+    "loadingsubtitle": "لطفاً منتظر بمانید تا داده‌ها بارگذاری شوند",
+    "loadingError": "خطا در بارگذاری",
+    "connectionError": "خطای اتصال"
   },
   "statistics": {
     "totalWordsLearned": "کلمات یادگرفته شده",
@@ -75,6 +76,27 @@
       "noQuestions": "هیچ سوالی در پایگاه داده یافت نشد",
       "loadingError": "خطا در بارگذاری سوالات",
       "connectionError": "مشکل اتصال به پایگاه داده"
+    }
+  },
+  "topics": {
+    "driving": {
+      "title": "آزمون تئوری رانندگی"
+    },
+    "byTopic": {
+      "title": "یادگیری بر اساس موضوع",
+      "description": "یک موضوع انتخاب کنید (رانندگی، آشپزی و غیره)"
+    },
+    "sentenceCompletion": {
+      "title": "کامل کردن جمله",
+      "description": "کلمهٔ جاافتاده در جمله رو کامل کن"
+    },
+    "spelling": {
+      "title": "املا نویسی درست",
+      "description": "تمرین املا و نوشتن درست کلمات به عبری"
+    },
+    "vocabulary": {
+      "title": "یادگیری لغات",
+      "description": "کلمات جدید یاد بگیر و دایرهٔ لغاتت رو گسترش بده"
     }
   }
 }

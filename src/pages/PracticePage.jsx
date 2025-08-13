@@ -1,26 +1,26 @@
 import TopicCard from "../components/TopicCard";
 import "../styles/PracticePage.css";
 
-export default function PracticePage() {
+export default function PracticePage({ translate }) {
   const topics = [
     {
-      title: "📄 למידה לפי נושא",
-      description: "בחר נושא (נהיגה, בישול וכו'..)",
+      title: `📄 ${translate.topics.byTopic.title}`,
+      description: `${translate.topics.byTopic.description}`,
       link: "/practice/driving",
     },
     {
-      title: "✏️ השלמת משפטים",
-      description: "השלם את המילה החסרה במשפט",
+      title: `✏️ ${translate.topics.sentenceCompletion.title}`,
+      description: `${translate.topics.sentenceCompletion.description}`,
       link: "/practice/sentence-completion",
     },
     {
-      title: "🖋 כתיבה נכונה",
-      description: "תרגל כתיבה נכונה של מילים בעברית",
+      title: `🖋 ${translate.topics.spelling.title}`,
+      description: `${translate.topics.spelling.description}`,
       link: "/practice/spelling",
     },
     {
-      title: "📚 למידת מילים",
-      description: "למד מילים חדשות והרחב את אוצר המילים שלך",
+      title: `📚 ${translate.topics.vocabulary.title}`,
+      description: `${translate.topics.vocabulary.description}`,
       link: "/practice/vocabulary",
     },
   ];
