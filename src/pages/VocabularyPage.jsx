@@ -3,12 +3,10 @@ import { useVocabulary } from "../hooks/useVocabulary";
 import ProgressBar from "../components/ProgressBar";
 import WordCard from "../components/WordCard";
 import AddWordForm from "../components/AddWordForm";
-import LoadingSpinner from "../components/LoadingSpinner";
 import "../styles/VocabularyPage.css";
 
 const VocabularyPage = ({ translate }) => {
   const {
-    loading,
     updating,
     stats,
     updateWordDifficulty,
@@ -36,10 +34,6 @@ const VocabularyPage = ({ translate }) => {
   const handleDeleteWord = async (wordId) => {
     return await deleteWord(wordId);
   };
-
-  if (loading) {
-    return <LoadingSpinner translate={translate} />;
-  }
 
   const WordSection = ({
     title,
@@ -76,7 +70,6 @@ const VocabularyPage = ({ translate }) => {
       <div className="page-header">
         <div className="header-content">
           <h1>🔤 {translate.vocabulary.learningWords}</h1>
-          <p>{}</p>
         </div>
         <div className="header-actions">
           <button

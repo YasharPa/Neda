@@ -375,4 +375,41 @@ export const drivingAPI = {
       return { data: [], error };
     }
   },
+  async update(id, wordData) {
+    try {
+      const { data, error } = await supabase
+        .from("vocabulary")
+        .update({
+          ...wordData,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", id)
+        .select();
+
+      if (error) throw error;
+      return { data, error: null };
+    } catch (error) {
+      console.error("Error updating word:", error);
+      return { data: null, error };
+    }
+  },
+
+  async updateDifficulty(id, difficulty) {
+    try {
+      const { data, error } = await supabase
+        .from("vocabulary")
+        .update({
+          difficulty,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", id)
+        .select();
+
+      if (error) throw error;
+      return { data, error: null };
+    } catch (error) {
+      console.error("Error updating difficulty:", error);
+      return { data: null, error };
+    }
+  },
 };

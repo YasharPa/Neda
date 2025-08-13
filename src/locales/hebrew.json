@@ -118,5 +118,15 @@
     "adaptiveLearning": "האלגוריתם לומד מהתשובות שלך ומתמקד בנושאים הקשים",
     "website": "בקר באתר שלנו",
     "contactSupport": "צור קשר עם התמיכה"
+  },
+  "editWordForm": {
+    "title": "עריכת מילה",
+    "word": "מילה",
+    "difficulty": "רמת קושי",
+    "save": "שמור שינויים",
+    "cancel": "ביטול",
+    "reset": "איפוס",
+    "updateSuccess": "המילה עודכנה בהצלחה!",
+    "updateError": "שגיאה בעדכון המילה"
   }
 }

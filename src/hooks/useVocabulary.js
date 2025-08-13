@@ -99,6 +99,29 @@ export function useVocabulary() {
       return false;
     }
   };
+  // עדכון מילה
+  const updateWord = async (wordId, wordData) => {
+    try {
+      const { error } = await vocabularyAPI.update(wordId, wordData);
+
+      if (error) {
+        console.error("Error updating word:", error);
+        return false;
+      }
+
+      // עדכון מקומי
+      setWords((prevWords) =>
+        prevWords.map((word) =>
+          word.id === wordId ? { ...word, ...wordData } : word
+        )
+      );
+
+      return true;
+    } catch (error) {
+      console.error("Error updating word:", error);
+      return false;
+    }
+  };
 
   // מחיקת מילה
   const deleteWord = async (wordId) => {
@@ -157,7 +180,7 @@ export function useVocabulary() {
     updateWordDifficulty,
     addWord,
     deleteWord,
-
+    updateWord,
     // Computed values
     getWordsByDifficulty,
     getUnclassifiedWords,

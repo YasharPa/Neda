@@ -19,10 +19,16 @@
   pointer-events: none;
 }
 
-.delete-btn {
+.card-actions {
   position: absolute;
   top: 10px;
   right: 10px;
+  display: flex;
+  gap: 6px;
+}
+
+.edit-btn,
+.delete-btn {
   background: #e74c3c;
   color: white;
   border: none;
@@ -38,10 +44,28 @@
   opacity: 0.7;
 }
 
-.delete-btn:hover {
+.edit-btn {
+  background: #3498db;
+}
+
+.edit-btn:hover:not(:disabled) {
+  background: #2980b9;
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.delete-btn:hover:not(:disabled) {
   background: #c0392b;
   opacity: 1;
   transform: scale(1.1);
+}
+
+.edit-btn:disabled,
+.delete-btn:disabled {
+  background: #95a5a6;
+  cursor: not-allowed;
+  transform: none;
+  opacity: 0.5;
 }
 
 .word-hebrew {
@@ -190,5 +214,18 @@
   .difficulty-buttons {
     grid-template-columns: 1fr;
     gap: 6px;
+  }
+
+  .card-actions {
+    top: 8px;
+    right: 8px;
+    gap: 4px;
+  }
+
+  .edit-btn,
+  .delete-btn {
+    width: 26px;
+    height: 26px;
+    font-size: 0.8em;
   }
 }

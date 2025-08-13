@@ -18,6 +18,7 @@ const WordCard = ({
   isUpdating = false,
   onUpdateDifficulty,
   onDelete,
+
   translate,
 }) => {
   const colors = word.difficulty
@@ -33,7 +34,12 @@ const WordCard = ({
   const handleDelete = () => {
     if (
       onDelete &&
-      window.confirm(`${translate.WordCard.confirmDelete} "${word.hebrew}"?`)
+      window.confirm(
+        `${
+          translate?.wordCard?.confirmDelete ||
+          "האם אתה בטוח שברצונך למחוק את המילה"
+        } "${word.hebrew}"?`
+      )
     ) {
       onDelete(word.id);
     }
@@ -48,11 +54,18 @@ const WordCard = ({
         color: colors.text,
       }}
     >
-      {onDelete && (
-        <button className="delete-btn" onClick={handleDelete} title="מחק מילה">
-          ❌
-        </button>
-      )}
+      <div className="card-actions">
+        {onDelete && (
+          <button
+            className="delete-btn"
+            onClick={handleDelete}
+            title="מחק מילה"
+            disabled={isUpdating}
+          >
+            ❌
+          </button>
+        )}
+      </div>
 
       <div className="word-hebrew">{word.hebrew}</div>
       <div className="word-persian">{word.persian}</div>
