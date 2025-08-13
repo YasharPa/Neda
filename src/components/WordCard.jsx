@@ -18,6 +18,7 @@ const WordCard = ({
   isUpdating = false,
   onUpdateDifficulty,
   onDelete,
+  translate,
 }) => {
   const colors = word.difficulty
     ? DIFFICULTY_COLORS[word.difficulty]
@@ -32,7 +33,7 @@ const WordCard = ({
   const handleDelete = () => {
     if (
       onDelete &&
-      window.confirm(`האם אתה בטוח שברצונך למחוק את המילה "${word.hebrew}"?`)
+      window.confirm(`${translate.WordCard.confirmDelete} "${word.hebrew}"?`)
     ) {
       onDelete(word.id);
     }

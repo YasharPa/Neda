@@ -15,6 +15,25 @@
     "totalPracticeSessions": "جلسات تمرین انجام شده",
     "completedSentences": "جملات تکمیل شده"
   },
+  "vocabulary": {
+    "message": "در حال بارگذاری کلمات از سرور...",
+    "learningWords": "یاد گرفتن کلمات",
+    "wordClassification": "کلمات رو بر اساس سختی که برات دارن مرتب کن",
+    "addWord": "اضافه کلمه جدید",
+    "close": "بستن",
+    "wordClassificationTitle": "کلمات برای طبقه‌بندی",
+    "emptyMessage": "عالی! همه کلمات را طبقه‌بندی کردی",
+    "easyWords": "کلمات آسان",
+    "mediumWords": "کلمات متوسط",
+    "hardWords": "کلمات سخت",
+    "totalWords": "تعداد کل کلمات",
+    "totalClassified": "کلمات طبقه‌بندی شده",
+    "reminedClassification": "کلمات باقی‌مانده",
+    "emptyWordsOfEasyWords": "هنوز کلمه‌ای به عنوان آسان طبقه‌بندی نکردی. شروع کن به طبقه‌بندی کلمات تا اینجا نمایش داده شوند",
+    "emptyWordsOfMediumWords": "هنوز کلمه‌ای به عنوان متوسط طبقه‌بندی نکردی. کلمات متوسط اینجا نمایش داده می‌شوند",
+    "emptyWordsOfHardWords": "هنوز کلمه‌ای به عنوان سخت طبقه‌بندی نکردی. کلمات چالش‌برانگیز اینجا نمایش داده می‌شوند"
+  },
+
   "driving": {
     "title": "آزمون تئوری رانندگی",
     "backToMenu": "بازگشت به منو",

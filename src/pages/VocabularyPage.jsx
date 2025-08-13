@@ -6,7 +6,7 @@ import AddWordForm from "../components/AddWordForm";
 import LoadingSpinner from "../components/LoadingSpinner";
 import "../styles/VocabularyPage.css";
 
-const VocabularyPage = () => {
+const VocabularyPage = ({ translate }) => {
   const {
     loading,
     updating,
@@ -38,7 +38,7 @@ const VocabularyPage = () => {
   };
 
   if (loading) {
-    return <LoadingSpinner message="טוען מילים מ-Supabase..." />;
+    return <LoadingSpinner message={translate.vocabulary.message} />;
   }
 
   const WordSection = ({
@@ -75,15 +75,17 @@ const VocabularyPage = () => {
     <div className="vocabulary-page">
       <div className="page-header">
         <div className="header-content">
-          <h1>🔤 לימוד מילים</h1>
-          <p>סווג את המילים לפי רמת הקושי האישית שלך</p>
+          <h1>🔤 {translate.vocabulary.learningWords}</h1>
+          <p>{}</p>
         </div>
         <div className="header-actions">
           <button
             className="add-word-button"
             onClick={() => setShowAddForm(!showAddForm)}
           >
-            {showAddForm ? "❌ סגור" : "➕ הוסף מילה"}
+            {showAddForm
+              ? `❌ ${translate.vocabulary.close}`
+              : `➕ ${translate.vocabulary.addWord}`}
           </button>
         </div>
       </div>
@@ -100,35 +102,35 @@ const VocabularyPage = () => {
 
       {/* מילים לסיווג */}
       <WordSection
-        title="📝 מילים לסיווג"
+        title={`📝 ${translate.vocabulary.wordClassificationTitle}`}
         words={getUnclassifiedWords()}
         className="unclassified"
         showButtons={true}
-        emptyMessage="🎉 כל הכבוד! סיווגת את כל המילים"
+        emptyMessage={`🎉 ${translate.vocabulary.emptyMessage}`}
       />
 
       {/* מילים קלות */}
       <WordSection
-        title="✅ מילים קלות"
+        title={`✅ ${translate.vocabulary.easyWords}`}
         words={getWordsByDifficulty("easy")}
         className="easy"
-        emptyMessage="🎯 עדיין לא סווגת מילים כקלות. התחל לסווג מילים כדי לראות אותן כאן"
+        emptyMessage={`🎯${translate.vocabulary.emptyWordsOfEasyWords}`}
       />
 
       {/* מילים בינוניות */}
       <WordSection
-        title="⚠️ מילים בינוניות"
+        title={`⚠️${translate.vocabulary.mediumWords}`}
         words={getWordsByDifficulty("medium")}
         className="medium"
-        emptyMessage="📚 עדיין לא סווגת מילים כבינוניות. המילים הבינוניות יופיעו כאן"
+        emptyMessage={`📚${translate.vocabulary.emptyWordsOfMediumWords}`}
       />
 
       {/* מילים קשות */}
       <WordSection
-        title="🔥 מילים קשות"
+        title={`🔥${translate.vocabulary.mediumWords}`}
         words={getWordsByDifficulty("hard")}
         className="hard"
-        emptyMessage="💪 עדיין לא סווגת מילים כקשות. המילים המאתגרות יופיעו כאן"
+        emptyMessage={`💪${translate.vocabulary.emptyWordsOfHardWords}`}
       />
 
       {/* סטטיסטיקות תחתונות */}
@@ -137,17 +139,23 @@ const VocabularyPage = () => {
           <div className="stat-card">
             <span className="stat-icon">📚</span>
             <span className="stat-value">{stats.total}</span>
-            <span className="stat-label">סה"כ מילים</span>
+            <span className="stat-label">
+              {translate.vocabulary.totalWords}
+            </span>
           </div>
           <div className="stat-card">
             <span className="stat-icon">✅</span>
             <span className="stat-value">{stats.classified}</span>
-            <span className="stat-label">מילים סווגו</span>
+            <span className="stat-label">
+              {translate.vocabulary.totalClassifiedWords}
+            </span>
           </div>
           <div className="stat-card">
             <span className="stat-icon">⏳</span>
             <span className="stat-value">{stats.unclassified}</span>
-            <span className="stat-label">נותרו לסיווג</span>
+            <span className="stat-label">
+              {translate.vocabulary.remainedClassification}
+            </span>
           </div>
         </div>
       )}

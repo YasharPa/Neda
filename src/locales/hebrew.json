@@ -15,6 +15,24 @@
     "totalPracticeSessions": "תרגילים שבוצעו",
     "completedSentences": "משפטים שהושלמו"
   },
+  "vocabulary": {
+    "message": "טוען מילים מהשרת...",
+    "learningWords": "לימוד מילים",
+    "wordClassification": "סווג את המילים לפי רמת הקושי האישית שלך",
+    "addWord": "הוסף מילה",
+    "close": "סגור",
+    "wordClassificationTitle": "מילים לסיווג",
+    "emptyMessage": "כל הכבוד! סיווגת את כל המילים",
+    "easyWords": "מילים קלות",
+    "mediumWords": "מילים בינוניות",
+    "hardWords": "מילים קשות",
+    "totalWords": "סה''כ מילים",
+    "totalClassifiedWords": "מילים סווגו",
+    "remainedClassification": "נותרו לסווג",
+    "emptyWordsOfEasyWords": "עדיין לא סווגת מילים כקלות. התחל לסווג מילים כדי לראות אותן כאן",
+    "emptyWordsOfMediumWords": "עדיין לא סווגת מילים כבינוניות. המילים הבינוניות יופיעו כאן",
+    "emptyWordsOfHardWords": "עדיין לא סווגת מילים כקשות. המילים המאתגרות יופיעו כאן"
+  },
   "driving": {
     "title": "בחינת תיאוריה לנהיגה",
     "backToMenu": "חזור לתפריט",
@@ -57,5 +75,20 @@
       "loadingError": "שגיאה בטעינת השאלות",
       "connectionError": "בעיית חיבור למסד הנתונים"
     }
+  },
+  "wordCard": {
+    "difficulty": "רמת קושי",
+    "edit": "ערוך",
+    "delete": "מחק",
+    "confirmDelete": "האם אתה בטוח שברצונך למחוק את המילה?",
+    "difficultyLabels": {
+      "easy": "קל",
+      "medium": "בינוני",
+      "hard": "קשה"
+    },
+    "updateSuccess": "המילה עודכנה בהצלחה!",
+    "deleteSuccess": "המילה נמחקה בהצלחה!",
+    "updateError": "שגיאה בעדכון המילה",
+    "deleteError": "שגיאה במחיקת המילה"
   }
 }
