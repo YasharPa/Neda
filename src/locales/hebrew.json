@@ -9,6 +9,11 @@
     "loading": "טוען...",
     "loadingsubtitle": "אנא המתן בזמן שהנתונים נטענים"
   },
+  "progressBar": {
+    "classified": "סווגו",
+    "outof": "מתוך",
+    "total": "סה''כ"
+  },
   "statistics": {
     "totalWordsLearned": "מילים שנלמדו",
     "totalPracticeSessions": "תרגילים שבוצעו",

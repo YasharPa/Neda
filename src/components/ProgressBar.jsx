@@ -1,6 +1,6 @@
 import "../styles/ProgressBar.css";
 
-const ProgressBar = ({ stats, percentage }) => {
+const ProgressBar = ({ stats, percentage, translate }) => {
   return (
     <div className="progress-container">
       <div className="progress-header">
@@ -18,12 +18,12 @@ const ProgressBar = ({ stats, percentage }) => {
       <div className="progress-stats">
         <div className="stat-item">
           <span className="stat-number">{stats.classified}</span>
-          <span className="stat-label">סווגו</span>
+          <span className="stat-label">{translate.progressBar.classified}</span>
         </div>
-        <div className="stat-divider">מתוך</div>
+        <div className="stat-divider">{translate.progressBar.outof}</div>
         <div className="stat-item">
           <span className="stat-number">{stats.total}</span>
-          <span className="stat-label">סה"כ</span>
+          <span className="stat-label">{translate.progressBar.total}</span>
         </div>
       </div>
 

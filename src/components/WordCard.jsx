@@ -17,8 +17,8 @@ const WordCard = ({
   showDifficultyButtons = false,
   isUpdating = false,
   onUpdateDifficulty,
+  onEdit, // הוספה חדשה
   onDelete,
-
   translate,
 }) => {
   const colors = word.difficulty
@@ -28,6 +28,12 @@ const WordCard = ({
   const handleDifficultyClick = (difficulty) => {
     if (onUpdateDifficulty && !isUpdating) {
       onUpdateDifficulty(word.id, difficulty);
+    }
+  };
+
+  const handleEdit = () => {
+    if (onEdit && !isUpdating) {
+      onEdit(word);
     }
   };
 
@@ -55,11 +61,21 @@ const WordCard = ({
       }}
     >
       <div className="card-actions">
+        {onEdit && (
+          <button
+            className="edit-btn"
+            onClick={handleEdit}
+            title={translate?.wordCard?.edit || "ערוך מילה"}
+            disabled={isUpdating}
+          >
+            ✏️
+          </button>
+        )}
         {onDelete && (
           <button
             className="delete-btn"
             onClick={handleDelete}
-            title="מחק מילה"
+            title={translate?.wordCard?.delete || "מחק מילה"}
             disabled={isUpdating}
           >
             ❌

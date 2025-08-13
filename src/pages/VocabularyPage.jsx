@@ -3,6 +3,7 @@ import { useVocabulary } from "../hooks/useVocabulary";
 import ProgressBar from "../components/ProgressBar";
 import WordCard from "../components/WordCard";
 import AddWordForm from "../components/AddWordForm";
+import EditWordForm from "../components/EditWordForm";
 import "../styles/VocabularyPage.css";
 
 const VocabularyPage = ({ translate }) => {
@@ -11,6 +12,7 @@ const VocabularyPage = ({ translate }) => {
     stats,
     updateWordDifficulty,
     addWord,
+    updateWord, // ודא שהפונקציה קיימת ב-hook
     deleteWord,
     getWordsByDifficulty,
     getUnclassifiedWords,
@@ -18,6 +20,7 @@ const VocabularyPage = ({ translate }) => {
   } = useVocabulary();
 
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingWord, setEditingWord] = useState(null); // מילה שנערכת כרגע
 
   const handleAddWord = async (wordData) => {
     const success = await addWord(wordData);
@@ -31,8 +34,24 @@ const VocabularyPage = ({ translate }) => {
     return await updateWordDifficulty(wordId, difficulty);
   };
 
+  const handleEditWord = (word) => {
+    setEditingWord(word);
+  };
+
+  const handleUpdateWord = async (wordId, wordData) => {
+    const success = await updateWord(wordId, wordData);
+    if (success) {
+      setEditingWord(null);
+    }
+    return success;
+  };
+
   const handleDeleteWord = async (wordId) => {
     return await deleteWord(wordId);
+  };
+
+  const handleCloseEditForm = () => {
+    setEditingWord(null);
   };
 
   const WordSection = ({
@@ -55,7 +74,9 @@ const VocabularyPage = ({ translate }) => {
               showDifficultyButtons={showButtons}
               isUpdating={updating === word.id}
               onUpdateDifficulty={handleUpdateDifficulty}
+              onEdit={handleEditWord}
               onDelete={handleDeleteWord}
+              translate={translate}
             />
           ))}
         </div>
@@ -90,6 +111,16 @@ const VocabularyPage = ({ translate }) => {
         />
       )}
 
+      {/* טופס עריכת מילה */}
+      {editingWord && (
+        <EditWordForm
+          word={editingWord}
+          onUpdateWord={handleUpdateWord}
+          onClose={handleCloseEditForm}
+          translate={translate}
+        />
+      )}
+
       {/* פס התקדמות */}
       <ProgressBar stats={stats} percentage={getProgressPercentage()} />
 
@@ -107,23 +138,23 @@ const VocabularyPage = ({ translate }) => {
         title={`✅ ${translate.vocabulary.easyWords}`}
         words={getWordsByDifficulty("easy")}
         className="easy"
-        emptyMessage={`🎯${translate.vocabulary.emptyWordsOfEasyWords}`}
+        emptyMessage={`🎯 ${translate.vocabulary.emptyWordsOfEasyWords}`}
       />
 
       {/* מילים בינוניות */}
       <WordSection
-        title={`⚠️${translate.vocabulary.mediumWords}`}
+        title={`⚠️ ${translate.vocabulary.mediumWords}`}
         words={getWordsByDifficulty("medium")}
         className="medium"
-        emptyMessage={`📚${translate.vocabulary.emptyWordsOfMediumWords}`}
+        emptyMessage={`📚 ${translate.vocabulary.emptyWordsOfMediumWords}`}
       />
 
       {/* מילים קשות */}
       <WordSection
-        title={`🔥${translate.vocabulary.mediumWords}`}
+        title={`🔥 ${translate.vocabulary.hardWords}`}
         words={getWordsByDifficulty("hard")}
         className="hard"
-        emptyMessage={`💪${translate.vocabulary.emptyWordsOfHardWords}`}
+        emptyMessage={`💪 ${translate.vocabulary.emptyWordsOfHardWords}`}
       />
 
       {/* סטטיסטיקות תחתונות */}

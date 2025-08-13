@@ -1,12 +1,24 @@
 import { Link } from "react-router-dom";
 import "../styles/HomePage.css";
-import StatsCard from "../components/StatCard";
+import StatCard from "../components/StatCard";
 
 export default function HomePage({ translate }) {
   const stats = [
-    { title: translate.statistics.totalPracticeSessions, value: 0 },
-    { title: translate.statistics.totalWordsLearned, value: 0 },
-    { title: translate.statistics.completedSentences, value: 0 },
+    {
+      title: translate.statistics.totalPracticeSessions,
+      value: 0,
+      icon: "📝",
+    },
+    {
+      title: translate.statistics.totalWordsLearned,
+      value: 0,
+      icon: "📚",
+    },
+    {
+      title: translate.statistics.completedSentences,
+      value: 0,
+      icon: "✅",
+    },
   ];
 
   return (
@@ -14,7 +26,7 @@ export default function HomePage({ translate }) {
       <section className="stats-section">
         <div className="stats-row">
           {stats.map((stat, i) => (
-            <StatsCard key={i} {...stat} />
+            <StatCard key={i} {...stat} />
           ))}
         </div>
       </section>

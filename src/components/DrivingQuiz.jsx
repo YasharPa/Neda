@@ -229,7 +229,7 @@ const DrivingQuiz = ({ translate, language = "he" }) => {
     return (
       <div className="quiz-complete">
         <div className="completion-header">
-          <h2>🎉 {translate.quiz.quizComplete}</h2>
+          <h2>🎉 {translate.driving.quiz.quizComplete}</h2>
           <div className="final-score">
             <span className="score-percentage">{successRate}%</span>
             <span className="score-details">
@@ -292,8 +292,8 @@ const DrivingQuiz = ({ translate, language = "he" }) => {
           ></div>
         </div>
         <span className="progress-text">
-          {translate.question} {userAnswers.length + 1} {translate.of}{" "}
-          {questions.length}
+          {translate.driving.quiz.question} {userAnswers.length + 1}{" "}
+          {translate.driving.quiz.of} {questions.length}
         </span>
       </div>
 
