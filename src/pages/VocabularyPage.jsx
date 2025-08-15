@@ -90,7 +90,7 @@ const VocabularyPage = ({ translate }) => {
     <div className="vocabulary-page">
       <div className="page-header">
         <div className="header-content">
-          <h1>🔤 {translate.vocabulary.learningWords}</h1>
+          <h1>🔤 {translate?.vocabulary.learningWords}</h1>
         </div>
         <div className="header-actions">
           <button
@@ -98,8 +98,8 @@ const VocabularyPage = ({ translate }) => {
             onClick={() => setShowAddForm(!showAddForm)}
           >
             {showAddForm
-              ? `❌ ${translate.vocabulary.close}`
-              : `➕ ${translate.vocabulary.addWord}`}
+              ? `❌ ${translate?.vocabulary.close}`
+              : `➕ ${translate?.vocabulary.addWord}`}
           </button>
         </div>
       </div>
@@ -122,7 +122,11 @@ const VocabularyPage = ({ translate }) => {
       )}
 
       {/* פס התקדמות */}
-      <ProgressBar stats={stats} percentage={getProgressPercentage()} />
+      <ProgressBar
+        translate={translate}
+        stats={stats}
+        percentage={getProgressPercentage()}
+      />
 
       {/* מילים לסיווג */}
       <WordSection
@@ -135,7 +139,7 @@ const VocabularyPage = ({ translate }) => {
 
       {/* מילים קלות */}
       <WordSection
-        title={`✅ ${translate.vocabulary.easyWords}`}
+        title={`✅ ${translate?.vocabulary.easyWords}`}
         words={getWordsByDifficulty("easy")}
         className="easy"
         emptyMessage={`🎯 ${translate.vocabulary.emptyWordsOfEasyWords}`}
@@ -143,10 +147,10 @@ const VocabularyPage = ({ translate }) => {
 
       {/* מילים בינוניות */}
       <WordSection
-        title={`⚠️ ${translate.vocabulary.mediumWords}`}
+        title={`⚠️ ${translate?.vocabulary.mediumWords}`}
         words={getWordsByDifficulty("medium")}
         className="medium"
-        emptyMessage={`📚 ${translate.vocabulary.emptyWordsOfMediumWords}`}
+        emptyMessage={`📚 ${translate?.vocabulary.emptyWordsOfMediumWords}`}
       />
 
       {/* מילים קשות */}

@@ -27,7 +27,7 @@ export default function PracticePage({ translate }) {
 
   return (
     <div className="practice-page">
-      <h1>בחר סוג תרגול</h1>
+      <h1>{translate?.choosePracticeType}</h1>
       <div className="topics-grid">
         {topics.map((topic, index) => (
           <TopicCard key={index} {...topic} />

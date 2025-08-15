@@ -2,17 +2,19 @@
   "welcome": "ברוכים הבאים",
   "home": "בית",
   "practice": "תרגול",
+  "choosePracticeType": "בחר סוג תרגול",
   "stats": "סטטיסטיקות",
   "chooseSubject": "בחר נושא ללמידה",
   "allRightsReserved": "כל הזכויות שמורות",
-  "spinner": {
-    "loading": "טוען...",
-    "loadingsubtitle": "אנא המתן בזמן שהנתונים נטענים"
-  },
   "progressBar": {
+    "title": "התקדמות סיווג המילים",
     "classified": "סווגו",
     "outof": "מתוך",
     "total": "סה''כ"
+  },
+  "spinner": {
+    "loading": "טוען...",
+    "loadingsubtitle": "אנא המתן בזמן שהנתונים נטענים"
   },
   "statistics": {
     "totalWordsLearned": "מילים שנלמדו",
