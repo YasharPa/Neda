@@ -30,7 +30,7 @@ const DrivingQuiz = ({
     loadQuestions();
   }, [maxQuestions]);
 
-  //Fisher-Yates Shuffle
+  // Fisher-Yates Shuffle
   const shuffleArray = (array) => {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -329,6 +329,25 @@ const DrivingQuiz = ({
       {/* השאלה */}
       <div className="question-container">
         <div className="question-category">📂 {questionContent.category}</div>
+
+        {/* תמונה אם קיימת */}
+        {currentQuestion.image_url && (
+          <div className="question-image">
+            <img
+              src={currentQuestion.image_url}
+              alt={
+                language === "he"
+                  ? currentQuestion.image_alt_he
+                  : currentQuestion.image_alt_fa
+              }
+              onError={(e) => {
+                e.target.style.display = "none";
+                console.error("Failed to load question image");
+              }}
+            />
+          </div>
+        )}
+
         <h2 className="question-text">{questionContent.question}</h2>
 
         <div className="options-container">

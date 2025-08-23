@@ -2,16 +2,16 @@ import { Link } from "react-router-dom";
 import "../styles/HomePage.css";
 import StatCard from "../components/StatCard";
 
-export default function HomePage({ translate }) {
+export default function HomePage({ translate, statistics }) {
   const stats = [
     {
       title: translate.statistics.totalPracticeSessions,
-      value: 0,
+      value: statistics?.totalPracticeSessions || 0,
       icon: "📝",
     },
     {
       title: translate.statistics.totalWordsLearned,
-      value: 0,
+      value: statistics?.easy || 0,
       icon: "📚",
     },
     {

@@ -155,7 +155,7 @@ const VocabularyPage = ({ translate }) => {
 
       {/* מילים קשות */}
       <WordSection
-        title={`🔥 ${translate.vocabulary.hardWords}`}
+        title={`🔥 ${translate?.vocabulary.hardWords}`}
         words={getWordsByDifficulty("hard")}
         className="hard"
         emptyMessage={`💪 ${translate.vocabulary.emptyWordsOfHardWords}`}

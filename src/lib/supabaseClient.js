@@ -116,15 +116,228 @@ export const vocabularyAPI = {
     }
   },
 };
-
-// API לבחינות נהיגה
 export const drivingAPI = {
-  // קבלת כל השאלות
+  // העלאת תמונה
+  async uploadImage(file, questionId = null) {
+    try {
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${questionId || Date.now()}_${Math.random()
+        .toString(36)
+        .substring(7)}.${fileExt}`;
+      const filePath = `questions/${fileName}`;
+
+      const { error } = await supabase.storage
+        .from("question-images")
+        .upload(filePath, file, {
+          cacheControl: "3600",
+          upsert: false,
+        });
+
+      if (error) throw error;
+
+      // קבלת URL ציבורי
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("question-images").getPublicUrl(filePath);
+
+      return { data: { path: filePath, url: publicUrl }, error: null };
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      return { data: null, error };
+    }
+  },
+
+  // מחיקת תמונה
+  async deleteImage(imagePath) {
+    try {
+      const { error } = await supabase.storage
+        .from("question-images")
+        .remove([imagePath]);
+
+      return { error };
+    } catch (error) {
+      console.error("Error deleting image:", error);
+      return { error };
+    }
+  },
+
+  // הוספת שאלה חדשה
+  async addQuestion(questionData, imageFile = null) {
+    try {
+      let imageUrl = null;
+      let imagePath = null;
+
+      // העלאת תמונה אם קיימת
+      if (imageFile) {
+        const { data: imageData, error: imageError } = await this.uploadImage(
+          imageFile
+        );
+        if (imageError) {
+          console.error("Error uploading image:", imageError);
+          return { data: null, error: imageError };
+        }
+        imageUrl = imageData.url;
+        imagePath = imageData.path;
+      }
+
+      // הוספת השאלה עם URL התמונה
+      const { data, error } = await supabase
+        .from("driving_questions")
+        .insert([
+          {
+            ...questionData,
+            image_url: imageUrl,
+            created_at: new Date().toISOString(),
+          },
+        ])
+        .select();
+
+      if (error) {
+        // מחיקת התמונה אם נכשלה הוספת השאלה
+        if (imagePath) {
+          await this.deleteImage(imagePath);
+        }
+        throw error;
+      }
+
+      return { data, error: null };
+    } catch (error) {
+      console.error("Error adding question:", error);
+      return { data: null, error };
+    }
+  },
+
+  // עדכון שאלה
+  async updateQuestion(questionId, questionData, newImageFile = null) {
+    try {
+      let imageUrl = questionData.image_url;
+      let imagePath = null;
+
+      // טיפול בתמונה חדשה
+      if (newImageFile) {
+        // מחיקת תמונה ישנה אם קיימת
+        if (questionData.image_url) {
+          const oldImagePath = questionData.image_url.split("/").pop();
+          await this.deleteImage(`questions/${oldImagePath}`);
+        }
+
+        // העלאת תמונה חדשה
+        const { data: imageData, error: imageError } = await this.uploadImage(
+          newImageFile,
+          questionId
+        );
+        if (imageError) {
+          console.error("Error uploading new image:", imageError);
+          return { data: null, error: imageError };
+        }
+        imageUrl = imageData.url;
+        imagePath = imageData.path;
+      }
+
+      // עדכון השאלה
+      const { data, error } = await supabase
+        .from("driving_questions")
+        .update({
+          ...questionData,
+          image_url: imageUrl,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", questionId)
+        .select();
+
+      if (error) {
+        // מחיקת התמונה החדשה אם נכשל העדכון
+        if (imagePath) {
+          await this.deleteImage(imagePath);
+        }
+        throw error;
+      }
+
+      return { data, error: null };
+    } catch (error) {
+      console.error("Error updating question:", error);
+      return { data: null, error };
+    }
+  },
+
+  // מחיקת שאלה
+  async deleteQuestion(questionId) {
+    try {
+      // קבלת פרטי השאלה לפני מחיקה
+      const { data: question } = await supabase
+        .from("driving_questions")
+        .select("image_url")
+        .eq("id", questionId)
+        .single();
+
+      // מחיקת השאלה
+      const { error } = await supabase
+        .from("driving_questions")
+        .delete()
+        .eq("id", questionId);
+
+      if (error) throw error;
+
+      // מחיקת התמונה אם קיימת
+      if (question?.image_url) {
+        const imagePath = question.image_url.split("/").pop();
+        await this.deleteImage(`questions/${imagePath}`);
+      }
+
+      return { error: null };
+    } catch (error) {
+      console.error("Error deleting question:", error);
+      return { error };
+    }
+  },
+
+  // העלאה מרובה של שאלות מ-JSON
+  async bulkImportQuestions(questionsArray) {
+    try {
+      const results = [];
+      const errors = [];
+
+      for (let i = 0; i < questionsArray.length; i++) {
+        const question = questionsArray[i];
+
+        try {
+          const { data, error } = await this.addQuestion(question);
+
+          if (error) {
+            errors.push({ index: i, question: question.question_he, error });
+          } else {
+            results.push(data[0]);
+          }
+        } catch (error) {
+          errors.push({ index: i, question: question.question_he, error });
+        }
+
+        // המתנה קצרה בין העלאות כדי לא להעמיס על השרת
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+
+      return {
+        data: {
+          imported: results.length,
+          failed: errors.length,
+          results,
+          errors,
+        },
+        error: errors.length > 0 ? errors : null,
+      };
+    } catch (error) {
+      console.error("Error in bulk import:", error);
+      return { data: null, error };
+    }
+  },
+
+  // קבלת כל השאלות (הפונקציות הקיימות נשארות)
   async getAllQuestions() {
     try {
       const { data, error } = await supabase
         .from("driving_questions")
         .select("*")
+        .eq("is_active", true)
         .order("id", { ascending: true });
 
       if (error) throw error;
@@ -135,13 +348,14 @@ export const drivingAPI = {
     }
   },
 
-  // קבלת שאלות לפי קטגוריה
+  // שאר הפונקציות הקיימות...
   async getQuestionsByCategory(category) {
     try {
       const { data, error } = await supabase
         .from("driving_questions")
         .select("*")
         .eq("category", category)
+        .eq("is_active", true)
         .order("id", { ascending: true });
 
       if (error) throw error;
@@ -206,17 +420,15 @@ export const drivingAPI = {
     }
   },
 
-  // עדכון סטטיסטיקות קטגוריה
+  // עדכון סטטיסטיקות קטגוריה (הפונקציה הקיימת)
   async updateCategoryStats(category, isCorrect) {
     try {
-      // ניסיון להשתמש בפונקציה המותאמת אישית
       const { error: rpcError } = await supabase.rpc("update_category_stats", {
         cat: category,
         is_correct: isCorrect,
       });
 
       if (rpcError) {
-        // fallback - עדכון ידני
         const { data: existing, error: selectError } = await supabase
           .from("user_category_stats")
           .select("*")
@@ -228,7 +440,6 @@ export const drivingAPI = {
         }
 
         if (existing) {
-          // עדכון רשומה קיימת
           const { error: updateError } = await supabase
             .from("user_category_stats")
             .update({
@@ -240,7 +451,6 @@ export const drivingAPI = {
 
           if (updateError) throw updateError;
         } else {
-          // יצירת רשומה חדשה
           const { error: insertError } = await supabase
             .from("user_category_stats")
             .insert([
@@ -262,7 +472,6 @@ export const drivingAPI = {
     }
   },
 
-  // קבלת סטטיסטיקות לפי קטגוריה
   async getCategoryStats() {
     try {
       const { data, error } = await supabase
@@ -278,13 +487,10 @@ export const drivingAPI = {
     }
   },
 
-  // אלגוריתם חכם לקבלת השאלה הבאה
   async getSmartNextQuestion(excludeIds = []) {
     try {
-      // קבלת סטטיסטיקות קטגוריות
       const { data: categoryStats } = await this.getCategoryStats();
 
-      // מציאת הקטגוריה הכי חלשה
       let weakestCategory = null;
       let lowestSuccessRate = 1;
 
@@ -300,15 +506,15 @@ export const drivingAPI = {
         });
       }
 
-      // בניית שאילתה חכמה
-      let query = supabase.from("driving_questions").select("*");
+      let query = supabase
+        .from("driving_questions")
+        .select("*")
+        .eq("is_active", true);
 
-      // הוצאת שאלות שכבר נענו
       if (excludeIds.length > 0) {
         query = query.not("id", "in", `(${excludeIds.join(",")})`);
       }
 
-      // התמקדות בקטגוריה החלשה אם קיימת
       if (weakestCategory) {
         query = query.eq("category", weakestCategory);
       }
@@ -317,11 +523,11 @@ export const drivingAPI = {
 
       if (error) throw error;
 
-      // אם אין שאלות בקטגוריה החלשה, קח שאלה רנדומלית
       if (!data || data.length === 0) {
         const { data: allQuestions, error: allError } = await supabase
           .from("driving_questions")
           .select("*")
+          .eq("is_active", true)
           .not(
             "id",
             "in",
@@ -339,7 +545,6 @@ export const drivingAPI = {
         };
       }
 
-      // בחירה רנדומלית מהקטגוריה החלשה
       const randomQuestion = data[Math.floor(Math.random() * data.length)];
       return { data: randomQuestion, error: null };
     } catch (error) {
@@ -348,7 +553,6 @@ export const drivingAPI = {
     }
   },
 
-  // קבלת תוצאות המשתמש האחרונות
   async getRecentResults(limit = 50) {
     try {
       const { data, error } = await supabase
@@ -374,17 +578,16 @@ export const drivingAPI = {
     }
   },
 
-  // קבלת כל הקטגוריות הזמינות
   async getCategories() {
     try {
       const { data, error } = await supabase
         .from("driving_questions")
         .select("category")
+        .eq("is_active", true)
         .order("category", { ascending: true });
 
       if (error) throw error;
 
-      // הסרת כפילויות
       const uniqueCategories = [...new Set(data.map((item) => item.category))];
       return { data: uniqueCategories, error: null };
     } catch (error) {

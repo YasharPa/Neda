@@ -4,13 +4,33 @@ import PracticePage from "./pages/PracticePage";
 import StatsPage from "./pages/StatsPage";
 import VocabularyPage from "./pages/VocabularyPage";
 import DrivingPage from "./pages/DrivingPage";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import he from "./locales/hebrew.json";
 import fa from "./locales/persian.json";
 import "./App.css";
+import { vocabularyAPI } from "./lib/supabaseClient";
 
 export default function App() {
   const [lang, setLang] = useState("he");
+  const [stats, setStatistics] = useState({});
+  const loadStats = async () => {
+    try {
+      const { data: stats, error } = await vocabularyAPI.getStats();
+      if (error) {
+        console.error("Error loading stats:", error);
+        return;
+      }
+      setStatistics(stats);
+      console.log("Loaded stats:", stats);
+    } catch (error) {
+      console.error("Error loading stats:", error);
+    }
+  };
+
+  useEffect(() => {
+    loadStats();
+  }, []);
+
   const translate = lang === "he" ? he : fa;
 
   const handleLanguageChange = () => {
@@ -36,16 +56,13 @@ export default function App() {
         <Routes>
           <Route
             path="/"
-            element={<HomePage translate={translate} language={lang} />}
+            element={<HomePage statistics={stats} translate={translate} />}
           />
           <Route
             path="/practice"
-            element={<PracticePage translate={translate} language={lang} />}
+            element={<PracticePage translate={translate} />}
           />
-          <Route
-            path="/stats"
-            element={<StatsPage translate={translate} language={lang} />}
-          />
+          <Route path="/stats" element={<StatsPage translate={translate} />} />
           <Route
             path="/practice/vocabulary"
             element={<VocabularyPage translate={translate} language={lang} />}

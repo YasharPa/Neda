@@ -65,7 +65,7 @@ const ProgressBar = ({ stats, percentage, translate }) => {
           </span>
         </div>
         <div className="summary-item hard">
-          <span className="summary-label">{translate?.progressBar?.hard}</span>
+          <span className="summary-icon">🔥</span>
           <span className="summary-count">{stats.hard}</span>
           <span className="summary-label">{translate?.progressBar.hard}</span>
         </div>
