@@ -47,6 +47,13 @@
     "title": "آزمون تئوری رانندگی",
     "backToMenu": "بازگشت به منو",
     "startQuiz": "شروع آزمون",
+    "quizSettings": {
+      "title": "تنظیمات آزمون",
+      "amountOfQuestions": "تعداد سوالات",
+      "questions": "سوالات",
+      "allQuestions": "تمام سوالات",
+      "recommended": "توصیه شده"
+    },
     "quizTypes": {
       "title": "انواع آزمون‌ها",
       "adaptive": "آزمون تطبیقی",

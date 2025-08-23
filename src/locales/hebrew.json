@@ -43,7 +43,13 @@
     "title": "בחינת תיאוריה לנהיגה",
     "backToMenu": "חזור לתפריט",
     "startQuiz": "התחל בחינה",
-
+    "quizSettings": {
+      "title": "הגדרות בחינה",
+      "amountOfQuestions": "כמות שאלות",
+      "questions": "שאלות",
+      "allQuestions": "כל השאלות",
+      "recommended": "מומלץ"
+    },
     "quizTypes": {
       "title": "סוגי בחינות",
       "adaptive": "בחינה אדפטיבית",

@@ -12,7 +12,7 @@ const VocabularyPage = ({ translate }) => {
     stats,
     updateWordDifficulty,
     addWord,
-    updateWord, // ודא שהפונקציה קיימת ב-hook
+    updateWord,
     deleteWord,
     getWordsByDifficulty,
     getUnclassifiedWords,

@@ -27,23 +27,36 @@ const DrivingPage = ({ translate, language = "he" }) => {
   return (
     <div className="driving-page">
       <div className="quiz-types">
-        <h2>🎮 {translate.driving.quizTypes.title}</h2>
+        <h2>🎮 {translate?.driving.quizSettings.title}</h2>
         <div className="quiz-settings">
-          <h3>⚙️ הגדרות בחינה</h3>
+          <h3>⚙️ {translate?.driving?.quizSettings?.title}</h3>
           <div className="settings-grid">
             <div className="setting-item">
-              <label htmlFor="questionCount">כמות שאלות:</label>
+              <label htmlFor="questionCount">
+                {translate?.driving?.quizSettings?.amountOfQuestions}:
+              </label>
               <select
                 id="questionCount"
                 value={questionCount}
                 onChange={(e) => setQuestionCount(parseInt(e.target.value))}
                 className="question-count-select"
               >
-                <option value={10}>10 שאלות</option>
-                <option value={20}>20 שאלות</option>
-                <option value={30}>30 שאלות (מומלץ)</option>
-                <option value={50}>50 שאלות</option>
-                <option value={0}>כל השאלות</option>
+                <option value={10}>
+                  10 {translate?.driving?.quizSettings?.questions}
+                </option>
+                <option value={20}>
+                  20 {translate?.driving?.quizSettings?.questions}
+                </option>
+                <option value={30}>
+                  30 {translate?.driving?.quizSettings?.questions} (
+                  {translate?.driving?.quizSettings?.recommended})
+                </option>
+                <option value={50}>
+                  50 {translate?.driving?.quizSettings?.questions}
+                </option>
+                <option value={0}>
+                  {translate?.driving?.quizSettings?.allQuestions}
+                </option>
               </select>
             </div>
           </div>
@@ -61,7 +74,9 @@ const DrivingPage = ({ translate, language = "he" }) => {
               <div className="quiz-info">
                 <span className="quiz-count">
                   📊{" "}
-                  {questionCount === 0 ? "כל השאלות" : `${questionCount} שאלות`}
+                  {questionCount === 0
+                    ? `${translate?.driving?.quizSettings?.allQuestions}`
+                    : `${questionCount} ${translate?.driving?.quizSettings?.questions}`}
                 </span>
               </div>
               <button className="start-quiz-btn">
