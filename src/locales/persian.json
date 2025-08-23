@@ -22,7 +22,29 @@
   "statistics": {
     "totalWordsLearned": "کلمات یادگرفته شده",
     "totalPracticeSessions": "جلسات تمرین انجام شده",
-    "completedSentences": "جملات تکمیل شده"
+    "completedSentences": "جملات تکمیل شده",
+    "generalStats": "آمار کلی",
+    "trackProgress": "پیگیری پیشرفت در یادگیری",
+    "totalWordsInSystem": "کل کلمات در سیستم",
+    "wordClassificationProgress": "پیشرفت طبقه‌بندی کلمات",
+    "newWordsThisWeek": "کلمات جدید این هفته",
+    "averageDrivingScore": "میانگین نمره رانندگی",
+    "wordStats": "آمار کلمات",
+    "easyWords": "کلمات آسان",
+    "mediumWords": "کلمات متوسط",
+    "hardWords": "کلمات سخت",
+    "unclassified": "طبقه‌بندی نشده",
+    "drivingStats": "آمار رانندگی",
+    "totalQuestionsAnswered": "کل سوالات پاسخ داده شده",
+    "correctAnswers": "پاسخ‌های درست",
+    "performanceByTopic": "عملکرد بر اساس موضوع",
+    "correct": "درست",
+    "recentResults": "نتایج اخیر",
+    "unknownTopic": "موضوع ناشناخته",
+    "notStartedDriving": "هنوز تمرین رانندگی را شروع نکرده‌اید",
+    "whenStartDriving": "وقتی شروع به پاسخ دادن به سوالات آزمون رانندگی کنید، آمار اینجا نمایش داده می‌شود",
+    "startDrivingPractice": "شروع تمرین رانندگی",
+    "comingSoon": "به زودی"
   },
   "vocabulary": {
     "message": "در حال بارگذاری کلمات از سرور...",
@@ -42,7 +64,6 @@
     "emptyWordsOfMediumWords": "هنوز کلمه‌ای به عنوان متوسط طبقه‌بندی نکردی. کلمات متوسط اینجا نمایش داده می‌شوند",
     "emptyWordsOfHardWords": "هنوز کلمه‌ای به عنوان سخت طبقه‌بندی نکردی. کلمات چالش‌برانگیز اینجا نمایش داده می‌شوند"
   },
-
   "driving": {
     "title": "آزمون تئوری رانندگی",
     "backToMenu": "بازگشت به منو",
@@ -81,6 +102,21 @@
       "connectionError": "مشکل اتصال به پایگاه داده"
     }
   },
+  "wordCard": {
+    "difficulty": "سطح سختی",
+    "edit": "ویرایش",
+    "delete": "حذف",
+    "confirmDelete": "آیا از حذف این کلمه اطمینان دارید؟",
+    "difficultyLabels": {
+      "easy": "آسان",
+      "medium": "متوسط",
+      "hard": "سخت"
+    },
+    "updateSuccess": "کلمه با موفقیت به‌روزرسانی شد!",
+    "deleteSuccess": "کلمه با موفقیت حذف شد!",
+    "updateError": "خطا در به‌روزرسانی کلمه",
+    "deleteError": "خطا در حذف کلمه"
+  },
   "topics": {
     "driving": {
       "title": "آزمون تئوری رانندگی"
@@ -107,5 +143,15 @@
     "description": "آزمون بر اساس قوانین ترافیک به‌روز اسرائیل است",
     "features": "تمام نتایج برای پیگیری پیشرفت ذخیره می‌شود",
     "adaptiveLearning": "الگوریتم از پاسخ‌های شما یاد می‌گیرد و روی موضوعات سخت متمرکز می‌شود"
+  },
+  "editWordForm": {
+    "title": "ویرایش کلمه",
+    "word": "کلمه",
+    "difficulty": "سطح سختی",
+    "save": "ذخیره تغییرات",
+    "cancel": "لغو",
+    "reset": "بازنشانی",
+    "updateSuccess": "کلمه با موفقیت به‌روزرسانی شد!",
+    "updateError": "خطا در به‌روزرسانی کلمه"
   }
 }

@@ -55,7 +55,7 @@ const EditWordForm = ({ word, onUpdateWord, onClose, translate }) => {
     <div className="edit-word-overlay">
       <div className="edit-word-form">
         <div className="form-header">
-          <h4>✏️{translate.editWordForm.title}</h4>
+          <h4>✏️{translate?.editWordForm.title}</h4>
           <button
             type="button"
             className="close-btn"

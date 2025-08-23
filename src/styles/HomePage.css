@@ -1,85 +1,472 @@
 .home-container {
-  max-width: 900px;
-  margin: auto;
-  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  min-height: calc(100vh - 200px);
+}
+
+/* קטע ברוכים הבאים */
+.welcome-section {
   text-align: center;
-  flex-direction: column;
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+  opacity: 0.3;
+}
+
+.welcome-content {
+  position: relative;
+  z-index: 1;
+}
+
+.welcome-content h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.welcome-subtitle {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+}
+
+.progress-indicator {
+  margin-top: 1.5rem;
+}
+
+.progress-text {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.progress-bar-home {
+  width: 200px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4caf50, #8bc34a);
+  border-radius: 4px;
+  transition: width 0.3s ease;
 }
 
 /* סטטיסטיקות */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 1rem;
-  margin-top: 1rem;
+.stats-section {
+  margin-bottom: 3rem;
 }
 
-.stat-card {
-  background: #f3f3f3;
-  border-radius: 10px;
-  padding: 1rem;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+.stats-section h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #333;
+  font-size: 1.8rem;
 }
 
-.stat-value {
-  font-size: 1.5rem;
+.stats-row {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card-home {
+  background: white;
+  padding: 1.5rem;
+  flex: 1;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card-home:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon-home {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.stat-number-home {
+  font-size: 2rem;
   font-weight: bold;
   color: #2a7ae4;
+  margin-bottom: 0.25rem;
 }
 
-.stat-label {
-  display: block;
+.stat-label-home {
+  color: #666;
   font-size: 0.9rem;
-  margin-top: 0.3rem;
 }
 
-/* כפתור שינוי שפה */
-.language-switch {
-  margin: 2rem 0;
+/* פרטים נוספים */
+.detailed-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
 }
 
-.lang-btn {
-  background-color: #2a7ae4;
-  color: white;
-  padding: 0.6rem 1.2rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+.detailed-stat {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid;
 }
 
-.lang-btn:hover {
-  background-color: #1f5cb8;
+.detailed-stat.vocabulary {
+  border-left-color: #4caf50;
 }
 
-/* נושאים ללמידה */
+.detailed-stat.driving {
+  border-left-color: #ff9800;
+}
+
+.detailed-stat-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.detailed-stat-icon {
+  font-size: 1.5rem;
+  margin-left: 0.5rem;
+}
+
+.detailed-stat-title {
+  font-weight: 600;
+  color: #333;
+}
+
+.mini-stats {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.mini-stat {
+  text-align: center;
+  flex: 1;
+}
+
+.mini-stat span {
+  display: block;
+  font-weight: bold;
+  color: #333;
+}
+
+.mini-stat small {
+  display: block;
+  color: #666;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}
+
+.driving-summary {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+}
+
+.driving-score .score-number {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #ff9800;
+}
+
+.driving-count span {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #4caf50;
+}
+
+/* נושאי לימוד */
+.topics-section {
+  margin-bottom: 3rem;
+}
+
+.topics-section h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #333;
+  font-size: 1.8rem;
+}
+
 .topics-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.topic-card.enhanced {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.topic-card.enhanced:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.topic-card.enhanced::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #4caf50, #2196f3, #ff9800);
+}
+
+.topic-card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.topic-icon {
+  font-size: 2.5rem;
+  margin-left: 1rem;
+}
+
+.topic-card-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #333;
+}
+
+.topic-description {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.topic-progress {
   margin-top: 1rem;
 }
 
-.topic-card {
-  background: #fff;
-  padding: 1.2rem;
-  border-radius: 10px;
-  text-decoration: none;
-  color: #333;
-  font-size: 1.1rem;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease;
+.topic-progress-text {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.5rem;
 }
 
-.topic-card:hover {
-  transform: scale(1.05);
+.topic-progress-bar {
+  height: 6px;
+  background: #f0f0f0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.topic-progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.topic-progress-fill.driving {
+  background: linear-gradient(90deg, #ff9800, #ff5722);
+}
+
+.topic-progress-fill.vocabulary {
+  background: linear-gradient(90deg, #4caf50, #8bc34a);
+}
+
+.coming-soon-card {
+  opacity: 0.7;
+  position: relative;
+}
+
+.coming-soon-badge {
+  position: absolute;
+  top: -8px;
+  right: 1rem;
+  background: #ff6b35;
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+/* טיפים מהירים */
+.quick-tips {
+  margin-bottom: 3rem;
+}
+
+.quick-tips h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #333;
+  font-size: 1.8rem;
+}
+
+.tips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.tip-card {
+  background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border-left: 4px solid #2a7ae4;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.tip-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.tip-content h4 {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.tip-content p {
+  margin: 0;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* קישור לסטטיסטיקות מפורטות */
+.detailed-stats-link {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.view-detailed-stats {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.view-detailed-stats:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  color: white;
+}
+
+.stats-link-icon {
+  font-size: 1.2rem;
+}
+
+.stats-link-arrow {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.view-detailed-stats:hover .stats-link-arrow {
+  transform: translateX(-3px);
 }
 
 /* רספונסיביות */
-@media (max-width: 600px) {
-  .stat-value {
-    font-size: 1.2rem;
+@media (max-width: 768px) {
+  .home-container {
+    padding: 1rem;
   }
-  .topic-card {
+
+  .welcome-content h1 {
+    font-size: 2rem;
+  }
+
+  .stats-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .topics-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .tips-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .detailed-stats {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .mini-stats {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .driving-summary {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .welcome-content h1 {
+    font-size: 1.5rem;
+  }
+
+  .welcome-subtitle {
     font-size: 1rem;
+  }
+
+  .topic-card.enhanced {
+    padding: 1.5rem;
+  }
+
+  .topic-card-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .topic-icon {
+    margin-left: 0;
+    margin-bottom: 0.5rem;
   }
 }
