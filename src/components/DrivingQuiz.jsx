@@ -197,10 +197,10 @@ const DrivingQuiz = ({
   if (error) {
     return (
       <div className="error-container">
-        <h2>😔 שגיאה בטעינה</h2>
+        <h2>😔{translate?.errors?.loadingError}</h2>
         <p>{error}</p>
         <button className="retry-btn" onClick={loadQuestions}>
-          🔄 {language === "he" ? "נסה שוב" : "دوباره امتحان کن"}
+          🔄 {translate?.errors?.tryAgain}
         </button>
       </div>
     );
@@ -209,12 +209,8 @@ const DrivingQuiz = ({
   if (questions.length === 0) {
     return (
       <div className="no-questions">
-        <h2>😔 {translate.driving.quiz.noQuestions}</h2>
-        <p>
-          {language === "he"
-            ? "אנא נסה שוב מאוחר יותר"
-            : "لطفاً بعداً دوباره امتحان کنید"}
-        </p>
+        <h2>😔 {translate?.driving.quiz.noQuestions}</h2>
+        <p>{translate?.errors.tryAgaingLater}</p>
       </div>
     );
   }

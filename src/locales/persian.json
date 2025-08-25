@@ -6,6 +6,7 @@
   "stats": "آمار",
   "chooseSubject": "موضوعی برای یادگیری انتخاب کنید",
   "allRightsReserved": "کلیه حقوق محفوظ است",
+  "comingSoon": "به زودی",
   "progressBar": {
     "title": "پیشرفت طبقه‌ بندی کلمات",
     "classified": "طبقه‌ بندی شده",
@@ -43,8 +44,7 @@
     "unknownTopic": "موضوع ناشناخته",
     "notStartedDriving": "هنوز تمرین رانندگی را شروع نکرده‌اید",
     "whenStartDriving": "وقتی شروع به پاسخ دادن به سوالات آزمون رانندگی کنید، آمار اینجا نمایش داده می‌شود",
-    "startDrivingPractice": "شروع تمرین رانندگی",
-    "comingSoon": "به زودی"
+    "startDrivingPractice": "شروع تمرین رانندگی"
   },
   "vocabulary": {
     "message": "در حال بارگذاری کلمات از سرور...",
@@ -153,5 +153,10 @@
     "reset": "بازنشانی",
     "updateSuccess": "کلمه با موفقیت به‌روزرسانی شد!",
     "updateError": "خطا در به‌روزرسانی کلمه"
+  },
+  "errors": {
+    "tryAgainLater": "لطفاً بعداً دوباره امتحان کنید",
+    "loadingError": "خطا در بارگذاری داده‌ها",
+    "tryAgain": "دوباره امتحان کنید"
   }
 }

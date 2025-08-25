@@ -90,9 +90,7 @@ const DrivingPage = ({ translate, language = "he" }) => {
             <div className="quiz-content">
               <h3>{translate.driving.quizTypes.practice}</h3>
               <p>{translate.driving.quizTypes.practiceDesc}</p>
-              <span className="coming-soon-badge">
-                {language === "he" ? "בקרוב" : "به زودی"}
-              </span>
+              <span className="coming-soon-badge">{translate?.comingSoon}</span>
             </div>
           </div>
         </div>

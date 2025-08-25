@@ -6,6 +6,7 @@
   "stats": "סטטיסטיקות",
   "chooseSubject": "בחר נושא ללמידה",
   "allRightsReserved": "כל הזכויות שמורות",
+  "comingSoon": "בקרוב",
   "progressBar": {
     "title": "התקדמות סיווג המילים",
     "classified": "סווגו",
@@ -130,5 +131,10 @@
     "reset": "איפוס",
     "updateSuccess": "המילה עודכנה בהצלחה!",
     "updateError": "שגיאה בעדכון המילה"
+  },
+  "errors": {
+    "tryAgainLater": "אנא נסה שוב מאוחר יותר",
+    "loadingError": "שגיאה בטעינה",
+    "tryAgain": "נסה שוב"
   }
 }

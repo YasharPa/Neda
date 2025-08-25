@@ -21,7 +21,6 @@ export default function App() {
         return;
       }
       setStatistics(stats);
-      console.log("Loaded stats:", stats);
     } catch (error) {
       console.error("Error loading stats:", error);
     }
@@ -44,11 +43,11 @@ export default function App() {
       </button>
 
       <header className="app-header">
-        <h1>💙 {translate.welcome}</h1>
+        <h1>💙 {translate?.welcome}</h1>
         <nav className="app-nav">
-          <Link to="/">{translate.home}</Link>
-          <Link to="/practice">{translate.practice}</Link>
-          <Link to="/stats">{translate.stats}</Link>
+          <Link to="/">{translate?.home}</Link>
+          <Link to="/practice">{translate?.practice}</Link>
+          <Link to="/stats">{translate?.stats}</Link>
         </nav>
       </header>
 
@@ -65,7 +64,7 @@ export default function App() {
           <Route path="/stats" element={<StatsPage translate={translate} />} />
           <Route
             path="/practice/vocabulary"
-            element={<VocabularyPage translate={translate} language={lang} />}
+            element={<VocabularyPage translate={translate} />}
           />
           <Route
             path="/practice/driving"

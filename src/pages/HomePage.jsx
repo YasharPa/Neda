@@ -78,7 +78,6 @@ export default function HomePage({ translate, statistics, language = "he" }) {
   return (
     <div className="home-container">
       <section className="stats-section">
-        <h2>📊 {translate?.statistics?.generalStats}</h2>
         <div className="stats-row">
           {stats.map((stat, i) => (
             <div key={i} className="stat-card-home">
