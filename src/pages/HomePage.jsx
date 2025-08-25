@@ -102,14 +102,12 @@ export default function HomePage({ translate, statistics, language = "he" }) {
               <h3>{translate?.topics?.driving?.title || "תיאוריה לנהיגה"}</h3>
             </div>
             <p className="topic-description">
-              {language === "he"
-                ? "תרגל שאלות תיאוריה ושפר את הציונים שלך"
-                : "سوالات تئوری را تمرین کنید و نمرات خود را بهبود دهید"}
+              {translate?.topics?.driving?.description}
             </p>
             {drivingStats?.overallPercentage > 0 && (
               <div className="topic-progress">
                 <div className="topic-progress-text">
-                  {language === "he" ? "ציון נוכחי:" : "نمره فعلی:"}{" "}
+                  {translate?.progressBar?.currrentScore}{" "}
                   {drivingStats.overallPercentage}%
                 </div>
                 <div className="topic-progress-bar">
@@ -161,7 +159,7 @@ export default function HomePage({ translate, statistics, language = "he" }) {
                 {translate?.topics?.sentenceCompletion?.title || "השלמת משפטים"}
               </h3>
               <span className="coming-soon-badge">
-                {language === "he" ? "בקרוב" : "به زودی"}
+                {translate?.comingSoon || "בקרוב..."}
               </span>
             </div>
             <p className="topic-description">
