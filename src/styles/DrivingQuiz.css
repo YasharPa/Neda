@@ -1,37 +1,41 @@
 .driving-quiz {
   max-width: 900px;
   margin: 0 auto;
-  padding: 15px;
+  padding: clamp(8px, 2vw, 20px);
   background: #f8f9fa;
   min-height: 100vh;
+  /* מניעת זום בעת מגע על שדות קלט */
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  /* שיפור ביצועים במובייל */
+  -webkit-overflow-scrolling: touch;
 }
 
-/* פס התקדמות - מותאם למובייל */
 .quiz-progress {
   background: white;
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 20px;
+  border-radius: clamp(8px, 2vw, 12px);
+  padding: clamp(12px, 3vw, 16px);
+  margin-bottom: clamp(15px, 3vw, 20px);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   position: sticky;
-  top: 10px;
+  top: clamp(5px, 2vw, 10px);
   z-index: 100;
 }
 
 .progress-bar {
   width: 100%;
-  height: 12px;
+  height: clamp(10px, 2.5vw, 12px);
   background: #e9ecef;
-  border-radius: 6px;
+  border-radius: clamp(5px, 1.25vw, 6px);
   overflow: hidden;
-  margin-bottom: 8px;
+  margin-bottom: clamp(6px, 1.5vw, 8px);
 }
 
 .progress-fill {
   height: 100%;
   background: linear-gradient(90deg, #28a745, #20c997);
   transition: width 0.5s ease;
-  border-radius: 6px;
+  border-radius: clamp(5px, 1.25vw, 6px);
 }
 
 .progress-text {
@@ -39,27 +43,30 @@
   text-align: center;
   font-weight: 600;
   color: #495057;
-  font-size: 0.95em;
+  font-size: clamp(0.8rem, 2.5vw, 0.95rem);
 }
 
-/* סטטיסטיקות נוכחיות - מותאמות למובייל */
+/* סטטיסטיקות נוכחיות - גמישות מלאה */
 .current-stats {
   display: flex;
   justify-content: center;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: clamp(8px, 2vw, 12px);
+  margin-bottom: clamp(15px, 3vw, 20px);
+  flex-wrap: wrap;
 }
 
 .stat-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: clamp(3px, 1vw, 4px);
   background: white;
-  padding: 12px 16px;
-  border-radius: 10px;
+  padding: clamp(10px, 2.5vw, 12px) clamp(12px, 3vw, 16px);
+  border-radius: clamp(8px, 2vw, 10px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  min-width: 70px;
+  min-width: clamp(60px, 15vw, 70px);
+  flex: 1;
+  max-width: 120px;
 }
 
 .stat-item.correct {
@@ -71,11 +78,11 @@
 }
 
 .stat-icon {
-  font-size: 1.2em;
+  font-size: clamp(1rem, 3vw, 1.2rem);
 }
 
 .stat-value {
-  font-size: 1.4em;
+  font-size: clamp(1.1rem, 3.5vw, 1.4rem);
   font-weight: bold;
   color: #2c3e50;
   line-height: 1;
@@ -84,75 +91,83 @@
 .stat-label {
   color: #6c757d;
   font-weight: 500;
-  font-size: 0.8em;
+  font-size: clamp(0.65rem, 2vw, 0.8rem);
   text-align: center;
 }
 
-/* מכולת השאלה - מותאמת למובייל */
+/* מכולת השאלה - אופטימיזציה למובייל */
 .question-container {
   background: white;
-  border-radius: 15px;
-  padding: 20px;
+  border-radius: clamp(12px, 3vw, 15px);
+  padding: clamp(16px, 4vw, 20px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
+  margin-bottom: clamp(15px, 3vw, 20px);
 }
 
 .question-category {
   display: inline-block;
   background: linear-gradient(135deg, #6c5ce7, #a29bfe);
   color: white;
-  padding: 6px 12px;
-  border-radius: 15px;
-  font-size: 0.8em;
+  padding: clamp(5px, 1.5vw, 6px) clamp(10px, 2.5vw, 12px);
+  border-radius: clamp(12px, 3vw, 15px);
+  font-size: clamp(0.75rem, 2vw, 0.8rem);
   font-weight: 600;
-  margin-bottom: 16px;
+  margin-bottom: clamp(14px, 3.5vw, 16px);
 }
 
 .question-text {
-  font-size: 1.1em;
+  font-size: clamp(0.95rem, 2.8vw, 1.1rem);
   font-weight: 600;
   color: #2c3e50;
-  margin-bottom: 20px;
+  margin-bottom: clamp(16px, 4vw, 20px);
   line-height: 1.5;
   text-align: center;
 }
 
-/* תמונת השאלה - מותאמת למובייל */
+/* תמונת השאלה - אופטימיזציה */
 .question-image {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: clamp(16px, 4vw, 20px);
 }
 
 .question-image img {
   max-width: 100%;
   height: auto;
-  max-height: 250px;
-  border-radius: 8px;
+  max-height: clamp(200px, 40vw, 300px);
+  border-radius: clamp(6px, 1.5vw, 8px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  /* שיפור טעינה במובייל */
+  object-fit: contain;
 }
 
-/* אפשרויות תשובה - מותאמות למובייל */
+/* אפשרויות תשובה - רספונסיביות מלאה */
 .options-container {
   display: grid;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: clamp(10px, 2.5vw, 12px);
+  margin-bottom: clamp(16px, 4vw, 20px);
 }
 
 .option-btn {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  padding: 16px;
+  gap: clamp(10px, 2.5vw, 12px);
+  padding: clamp(12px, 3vw, 16px);
   background: #f8f9fa;
   border: 2px solid #e9ecef;
-  border-radius: 12px;
+  border-radius: clamp(10px, 2.5vw, 12px);
   cursor: pointer;
   transition: all 0.3s ease;
   text-align: right;
-  font-size: 0.95em;
+  font-size: clamp(0.85rem, 2.3vw, 0.95rem);
   position: relative;
-  min-height: 60px;
-  /* הבטחה שכל הכפתורים באותו גובה מינימלי */
+  min-height: clamp(50px, 12vw, 60px);
+  /* מגע מולטי טאץ' */
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  /* שיפור זמן תגובה למגע */
+  touch-action: manipulation;
 }
 
 .option-btn:hover:not(:disabled) {
@@ -162,25 +177,30 @@
   box-shadow: 0 3px 10px rgba(33, 150, 243, 0.2);
 }
 
-.option-btn:disabled {
-  cursor: not-allowed;
+/* אופטימיזציה למגע במובייל */
+@media (hover: none) and (pointer: coarse) {
+  .option-btn:active:not(:disabled) {
+    background: #e3f2fd;
+    border-color: #2196f3;
+    transform: scale(0.98);
+  }
 }
 
-.option-btn:active:not(:disabled) {
-  transform: scale(0.98);
+.option-btn:disabled {
+  cursor: not-allowed;
 }
 
 .option-letter {
   background: #6c757d;
   color: white;
-  width: 32px;
-  height: 32px;
+  width: clamp(26px, 6vw, 32px);
+  height: clamp(26px, 6vw, 32px);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  font-size: 0.9em;
+  font-size: clamp(0.75rem, 2vw, 0.9rem);
   flex-shrink: 0;
   margin-top: 2px;
 }
@@ -190,6 +210,8 @@
   text-align: right;
   line-height: 1.4;
   padding-top: 2px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .option-btn.correct {
@@ -221,10 +243,10 @@
 .correct-indicator,
 .incorrect-indicator {
   position: absolute;
-  left: 12px;
+  left: clamp(10px, 2.5vw, 12px);
   top: 50%;
   transform: translateY(-50%);
-  font-size: 1.3em;
+  font-size: clamp(1.1rem, 3vw, 1.3rem);
   font-weight: bold;
 }
 
@@ -246,7 +268,7 @@
   }
 }
 
-/* תוצאה והסבר */
+/* תוצאה והסבר - אופטימיזציה */
 .result-container {
   animation: slideIn 0.4s ease-out;
 }
@@ -255,11 +277,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 16px;
-  border-radius: 12px;
-  margin-bottom: 16px;
-  font-size: 1.1em;
+  gap: clamp(8px, 2vw, 10px);
+  padding: clamp(12px, 3vw, 16px);
+  border-radius: clamp(10px, 2.5vw, 12px);
+  margin-bottom: clamp(14px, 3.5vw, 16px);
+  font-size: clamp(0.95rem, 2.8vw, 1.1rem);
   font-weight: 600;
 }
 
@@ -276,52 +298,57 @@
 }
 
 .result-icon {
-  font-size: 1.3em;
+  font-size: clamp(1.1rem, 3vw, 1.3rem);
 }
 
 .explanation {
   background: linear-gradient(135deg, #e3f2fd, #bbdefb);
   border-right: 4px solid #2196f3;
-  padding: 16px;
-  border-radius: 12px;
-  margin-bottom: 20px;
+  padding: clamp(12px, 3vw, 16px);
+  border-radius: clamp(10px, 2.5vw, 12px);
+  margin-bottom: clamp(16px, 4vw, 20px);
 }
 
 .explanation h4 {
-  margin: 0 0 10px 0;
+  margin: 0 0 clamp(8px, 2vw, 10px) 0;
   color: #1976d2;
-  font-size: 1em;
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: clamp(5px, 1.25vw, 6px);
 }
 
 .explanation p {
   margin: 0;
   line-height: 1.6;
   color: #37474f;
-  font-size: 0.95em;
+  font-size: clamp(0.85rem, 2.3vw, 0.95rem);
 }
 
 .next-btn {
   width: 100%;
-  padding: 16px;
+  padding: clamp(12px, 3vw, 16px);
   background: linear-gradient(135deg, #2a7ae4, #1e5bb8);
   color: white;
   border: none;
-  border-radius: 12px;
-  font-size: 1.1em;
+  border-radius: clamp(10px, 2.5vw, 12px);
+  font-size: clamp(0.95rem, 2.8vw, 1.1rem);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: clamp(8px, 2vw, 10px);
   position: sticky;
-  bottom: 15px;
+  bottom: clamp(8px, 2vw, 15px);
   z-index: 100;
   box-shadow: 0 4px 15px rgba(42, 122, 228, 0.3);
+  /* אופטימיזציה למגע */
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+  min-height: 48px; /* גודל מינימלי לנגישות מגע */
 }
 
 .next-btn:hover {
@@ -334,96 +361,96 @@
   transform: scale(0.98);
 }
 
-/* מסך סיום - מותאם למובייל */
+/* מסך סיום - רספונסיביות מתקדמת */
 .quiz-complete {
   max-width: 100%;
   margin: 0 auto;
   text-align: center;
-  padding: 20px;
+  padding: clamp(16px, 4vw, 20px);
 }
 
 .completion-header {
   background: white;
-  border-radius: 15px;
-  padding: 30px 20px;
-  margin-bottom: 25px;
+  border-radius: clamp(12px, 3vw, 15px);
+  padding: clamp(20px, 5vw, 30px) clamp(16px, 4vw, 20px);
+  margin-bottom: clamp(20px, 5vw, 25px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .completion-header h2 {
-  margin: 0 0 20px 0;
+  margin: 0 0 clamp(16px, 4vw, 20px) 0;
   color: #2c3e50;
-  font-size: 1.6em;
+  font-size: clamp(1.3rem, 4vw, 1.6rem);
 }
 
 .final-score {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: clamp(6px, 1.5vw, 8px);
 }
 
 .score-percentage {
-  font-size: 3em;
+  font-size: clamp(2.2rem, 8vw, 3rem);
   font-weight: bold;
   color: #27ae60;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .score-details {
-  font-size: 1.2em;
+  font-size: clamp(1rem, 3vw, 1.2rem);
   color: #7f8c8d;
 }
 
 .quiz-summary {
-  margin: 15px 0;
+  margin: clamp(12px, 3vw, 15px) 0;
 }
 
 .summary-info {
   background: rgba(42, 122, 228, 0.1);
   color: #2a7ae4;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 0.9em;
+  padding: clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px);
+  border-radius: clamp(16px, 4vw, 20px);
+  font-size: clamp(0.8rem, 2.3vw, 0.9rem);
   font-weight: 600;
   display: inline-block;
 }
 
 .stats-breakdown {
   background: white;
-  border-radius: 15px;
-  padding: 25px 20px;
-  margin-bottom: 25px;
+  border-radius: clamp(12px, 3vw, 15px);
+  padding: clamp(20px, 5vw, 25px) clamp(16px, 4vw, 20px);
+  margin-bottom: clamp(20px, 5vw, 25px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .stats-breakdown h3 {
-  margin: 0 0 20px 0;
+  margin: 0 0 clamp(16px, 4vw, 20px) 0;
   color: #2c3e50;
-  font-size: 1.2em;
+  font-size: clamp(1.1rem, 3vw, 1.2rem);
 }
 
 .category-stat {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
-  padding: 10px 0;
+  gap: clamp(10px, 2.5vw, 12px);
+  margin-bottom: clamp(10px, 2.5vw, 12px);
+  padding: clamp(8px, 2vw, 10px) 0;
 }
 
 .category-name {
-  min-width: 80px;
+  min-width: clamp(70px, 18vw, 80px);
   text-align: right;
   font-weight: 600;
   color: #34495e;
-  font-size: 0.9em;
+  font-size: clamp(0.8rem, 2.3vw, 0.9rem);
 }
 
 .category-progress {
   flex: 1;
-  height: 20px;
+  height: clamp(16px, 4vw, 20px);
   background: #e9ecef;
-  border-radius: 10px;
+  border-radius: clamp(8px, 2vw, 10px);
   overflow: hidden;
 }
 
@@ -431,21 +458,21 @@
   height: 100%;
   background: linear-gradient(90deg, #28a745, #20c997);
   transition: width 0.8s ease;
-  border-radius: 10px;
+  border-radius: clamp(8px, 2vw, 10px);
 }
 
 .category-score {
-  min-width: 45px;
+  min-width: clamp(40px, 10vw, 45px);
   font-weight: bold;
   color: #27ae60;
-  font-size: 1em;
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
   text-align: left;
 }
 
 .completion-actions {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: clamp(10px, 2.5vw, 12px);
   align-items: center;
 }
 
@@ -454,17 +481,22 @@
   background: linear-gradient(135deg, #e74c3c, #c0392b);
   color: white;
   border: none;
-  border-radius: 12px;
-  padding: 14px 25px;
-  font-size: 1em;
+  border-radius: clamp(10px, 2.5vw, 12px);
+  padding: clamp(12px, 3vw, 14px) clamp(20px, 5vw, 25px);
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  min-width: 200px;
+  gap: clamp(6px, 1.5vw, 8px);
+  min-width: clamp(160px, 40vw, 200px);
+  min-height: 48px; /* נגישות מגע */
+  /* אופטימיזציה למגע */
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
 }
 
 .back-to-menu-btn {
@@ -500,113 +532,12 @@
   }
 }
 
-/* רספונסיביות מתקדמת */
-@media (max-width: 768px) {
+/* ברייקפוינטים ספציפיים למכשירים */
+
+/* טלפונים קטנים */
+@media (max-width: 375px) {
   .driving-quiz {
-    padding: 10px;
-  }
-
-  .quiz-progress {
-    padding: 12px;
-    margin-bottom: 15px;
-  }
-
-  .current-stats {
-    gap: 8px;
-    margin-bottom: 15px;
-  }
-
-  .stat-item {
-    padding: 10px 12px;
-    min-width: 60px;
-  }
-
-  .stat-value {
-    font-size: 1.2em;
-  }
-
-  .stat-label {
-    font-size: 0.7em;
-  }
-
-  .question-container {
-    padding: 16px;
-  }
-
-  .question-text {
-    font-size: 1em;
-    margin-bottom: 16px;
-  }
-
-  .options-container {
-    gap: 10px;
-  }
-
-  .option-btn {
-    padding: 14px;
-    font-size: 0.9em;
-    min-height: 55px;
-  }
-
-  .option-letter {
-    width: 28px;
-    height: 28px;
-    font-size: 0.8em;
-  }
-
-  .result-feedback {
-    padding: 14px;
-    font-size: 1em;
-  }
-
-  .explanation {
-    padding: 14px;
-  }
-
-  .next-btn {
-    padding: 14px;
-    font-size: 1em;
-    bottom: 10px;
-  }
-
-  .completion-header {
-    padding: 25px 16px;
-  }
-
-  .score-percentage {
-    font-size: 2.5em;
-  }
-
-  .stats-breakdown {
-    padding: 20px 16px;
-  }
-
-  .category-stat {
-    gap: 10px;
-  }
-
-  .category-name {
-    min-width: 70px;
-    font-size: 0.85em;
-  }
-
-  .category-progress {
-    height: 18px;
-  }
-}
-
-@media (max-width: 480px) {
-  .driving-quiz {
-    padding: 8px;
-  }
-
-  .quiz-progress {
-    padding: 10px;
-    top: 5px;
-  }
-
-  .progress-text {
-    font-size: 0.85em;
+    padding: 6px;
   }
 
   .current-stats {
@@ -614,126 +545,100 @@
   }
 
   .stat-item {
+    min-width: 50px;
     padding: 8px 10px;
-    min-width: 55px;
-  }
-
-  .stat-value {
-    font-size: 1.1em;
-  }
-
-  .stat-label {
-    font-size: 0.65em;
   }
 
   .question-container {
-    padding: 14px;
-  }
-
-  .question-category {
-    font-size: 0.75em;
-    padding: 5px 10px;
-  }
-
-  .question-text {
-    font-size: 0.95em;
-    line-height: 1.4;
-  }
-
-  .question-image img {
-    max-height: 200px;
+    padding: 12px;
   }
 
   .option-btn {
-    padding: 12px;
-    font-size: 0.85em;
-    gap: 10px;
-    min-height: 50px;
-  }
-
-  .option-letter {
-    width: 26px;
-    height: 26px;
-    font-size: 0.75em;
-  }
-
-  .option-text {
-    line-height: 1.3;
-  }
-
-  .correct-indicator,
-  .incorrect-indicator {
-    font-size: 1.1em;
-    left: 10px;
-  }
-
-  .result-feedback {
-    padding: 12px;
-    font-size: 0.95em;
-    gap: 8px;
-  }
-
-  .explanation {
-    padding: 12px;
-  }
-
-  .explanation h4 {
-    font-size: 0.95em;
-  }
-
-  .explanation p {
-    font-size: 0.9em;
-  }
-
-  .next-btn {
-    padding: 12px;
-    font-size: 0.95em;
-    bottom: 8px;
-  }
-
-  .completion-header h2 {
-    font-size: 1.4em;
-  }
-
-  .score-percentage {
-    font-size: 2.2em;
-  }
-
-  .score-details {
-    font-size: 1.1em;
+    min-height: 48px;
+    padding: 10px;
   }
 
   .category-stat {
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
     text-align: center;
-    padding: 8px 0;
+    padding: 6px 0;
   }
 
   .category-name {
     min-width: auto;
-    font-size: 0.8em;
   }
 
   .category-progress {
     width: 100%;
-    height: 16px;
   }
 
   .category-score {
     min-width: auto;
-    font-size: 0.9em;
+  }
+}
+
+/* טאבלטים בפורטרט */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+  .driving-quiz {
+    padding: 16px;
+  }
+
+  .options-container {
+    gap: 14px;
+  }
+
+  .option-btn {
+    padding: 18px;
+    font-size: 1rem;
+    min-height: 65px;
   }
 
   .completion-actions {
-    gap: 10px;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+/* טאבלטים בלנדסקייפ */
+@media (min-width: 1024px) and (orientation: landscape) {
+  .driving-quiz {
+    padding: 24px;
   }
 
-  .restart-btn,
-  .back-to-menu-btn {
-    padding: 12px 20px;
-    font-size: 0.9em;
-    min-width: 180px;
+  .current-stats {
+    gap: 16px;
+  }
+
+  .options-container {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .completion-actions {
+    flex-direction: row;
+    gap: 16px;
+  }
+}
+
+/* מסכים גדולים */
+@media (min-width: 1200px) {
+  .driving-quiz {
+    padding: 30px;
+  }
+
+  .question-container {
+    padding: 30px;
+  }
+
+  .options-container {
+    gap: 18px;
+  }
+
+  .option-btn {
+    padding: 20px;
+    font-size: 1.05rem;
   }
 }
 
@@ -745,22 +650,17 @@
 [dir="rtl"] .correct-indicator,
 [dir="rtl"] .incorrect-indicator {
   left: auto;
-  right: 12px;
+  right: clamp(10px, 2.5vw, 12px);
 }
 
-@media (max-width: 480px) {
-  [dir="rtl"] .correct-indicator,
-  [dir="rtl"] .incorrect-indicator {
-    right: 10px;
-  }
-}
-
-/* שיפור נגישות */
+/* אופטימיזציה לביצועים */
 @media (prefers-reduced-motion: reduce) {
   .option-btn,
   .next-btn,
   .restart-btn,
-  .back-to-menu-btn {
+  .back-to-menu-btn,
+  .progress-fill,
+  .category-fill {
     transition: none;
   }
 
@@ -770,40 +670,150 @@
   }
 }
 
-/* תמיכה במסכי מגע גדולים יותר */
-@media (min-width: 769px) and (max-width: 1024px) {
+/* הצבעים נשארים כמו במקור - ללא מצב כהה */
+
+/* שיפורי נגישות נוספים */
+@media (min-width: 480px) {
+  .option-btn {
+    min-height: 55px;
+  }
+}
+
+@media (min-width: 768px) {
+  .option-btn {
+    min-height: 60px;
+  }
+}
+
+/* אופטימיזציה למכשירי מגע */
+@supports (hover: none) {
+  .option-btn:hover {
+    transform: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .next-btn:hover,
+  .restart-btn:hover,
+  .back-to-menu-btn:hover {
+    transform: none;
+  }
+}
+
+/* שיפור קריאות בטקסטים ארוכים */
+.option-text {
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+}
+
+/* אופטימיזציה לטעינת גופנים */
+.driving-quiz {
+  font-display: swap;
+}
+
+/* שיפור ביצועים לאנימציות */
+.option-btn,
+.next-btn,
+.restart-btn,
+.back-to-menu-btn,
+.progress-fill,
+.category-fill {
+  will-change: transform, background-color, box-shadow;
+}
+
+/* תמיכה בגדלי מסך יוצאי דופן */
+@media (max-width: 320px) {
   .driving-quiz {
-    padding: 20px;
+    padding: 4px;
+  }
+
+  .stat-item {
+    min-width: 45px;
+    padding: 6px 8px;
   }
 
   .option-btn {
-    padding: 18px;
-    font-size: 1em;
+    padding: 8px;
+    gap: 8px;
+    min-height: 45px;
+  }
+
+  .option-letter {
+    width: 24px;
+    height: 24px;
+    font-size: 0.7rem;
+  }
+}
+
+@media (min-width: 1400px) {
+  .driving-quiz {
+    max-width: 1000px;
+    padding: 40px;
+  }
+
+  .options-container {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+}
+
+/* שיפורי UX נוספים */
+.option-btn:focus-visible {
+  outline: 3px solid #2196f3;
+  outline-offset: 2px;
+}
+
+.next-btn:focus-visible,
+.restart-btn:focus-visible,
+.back-to-menu-btn:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* אופטימיזציה לרזולוציות גבוהות */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .question-image img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* תמיכה במסכי אורך */
+@media (max-height: 600px) and (orientation: landscape) {
+  .quiz-progress {
+    position: static;
+    margin-bottom: 10px;
   }
 
   .next-btn {
-    font-size: 1.05em;
-    padding: 15px;
+    position: static;
+    margin-top: 15px;
+  }
+
+  .question-image img {
+    max-height: 150px;
   }
 }
 
-/* שיפורים נוספים לחוויית משתמש במובייל */
-.driving-quiz {
-  /* מניעת זום בעת מגע על שדות קלט */
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
+/* שיפור עבור Safari Mobile */
+@supports (-webkit-touch-callout: none) {
+  .option-btn,
+  .next-btn,
+  .restart-btn,
+  .back-to-menu-btn {
+    -webkit-appearance: none;
+    -webkit-border-radius: clamp(10px, 2.5vw, 12px);
+  }
 }
 
-.option-btn {
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  user-select: none;
-}
+/* אופטימיזציה לזום נגישות */
+@media (min-resolution: 1.5dppx) {
+  .option-btn {
+    border-width: 1.5px;
+  }
 
-.next-btn,
-.restart-btn,
-.back-to-menu-btn {
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
-  -webkit-touch-callout: none;
+  .progress-bar,
+  .category-progress {
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
 }

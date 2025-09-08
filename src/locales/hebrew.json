@@ -20,7 +20,27 @@
   "statistics": {
     "totalWordsLearned": "מילים שנלמדו",
     "totalPracticeSessions": "תרגילים שבוצעו",
-    "completedSentences": "משפטים שהושלמו"
+    "completedSentences": "משפטים שהושלמו",
+    "overallStatistics": "סטטיסטיקות כלליות",
+    "learningProgress": "מעקב אחר ההתקדמות שלך בלימוד",
+    "totalWords": "סה''כ מילים",
+    "classifiedProgress": "התקדמות סיווג מילים",
+    "newWordOfWeekend": "מילים חדשות השבוע",
+    "avarageGrade": "ציון ממוצע נהיגה",
+    "wordStats": "סטטיסטיקות מילים",
+    "easyWords": "מילים קלות",
+    "mediumWords": "מילים בינוניות",
+    "hardWords": "מילים קשות",
+    "notClassifiedWords": "שלא סווגו",
+    "drivingStats": "סטטיסטיקות נהיגה",
+    "sumAnsweredQuestions": "סה״כ שאלות נענו",
+    "correctAnswers": "תשובות נכונות",
+    "performanceBySubject": "ביצועים לפי נושא",
+    "correct": "נכון",
+    "lastResults": "תוצאות אחרונות",
+    "startPracticing": "התחל לתרגל נהיגה",
+    "noRecentResults": "עדיין לא התחלת לתרגל נהיגה",
+    "pleasePractice": "כשתתחיל לענות על שאלות בחינת הנהיגה, הסטטיסטיקות יופיעו כאן"
   },
   "vocabulary": {
     "message": "טוען מילים מהשרת...",

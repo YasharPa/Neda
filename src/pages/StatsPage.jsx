@@ -85,10 +85,10 @@ const StatsPage = ({ translate }) => {
     <div className="stats-page">
       <div className="page-header">
         <div className="header-title-container">
-          <h1>📊 סטטיסטיקות כלליות</h1>
+          <h1>📊 {translate?.statistics?.overallStatistics}</h1>
           <span className="coming-soon-badge-stats">בקרוב</span>
         </div>
-        <p>מעקב אחר ההתקדמות שלך בלימוד</p>
+        <p>{translate?.statistics?.learningProgress}</p>
       </div>
 
       {/* סטטיסטיקות כלליות */}
@@ -97,15 +97,19 @@ const StatsPage = ({ translate }) => {
           <div className="stat-icon">📚</div>
           <div className="stat-content">
             <div className="stat-number">{vocabularyStats.total}</div>
-            <div className="stat-label">סה״כ מילים במערכת</div>
+            <div className="stat-label">
+              {translate?.statistics?.totalWords}
+            </div>
           </div>
         </div>
 
         <div className="stat-card success">
-          <div className="stat-icon">✅</div>
+          <div className="stat-icon">
+            ✅ {translate?.statistics.classifiedProgress}
+          </div>
           <div className="stat-content">
             <div className="stat-number">{vocabularyProgress}%</div>
-            <div className="stat-label">התקדמות סיווג מילים</div>
+            <div className="stat-label"></div>
           </div>
         </div>
 
@@ -113,7 +117,9 @@ const StatsPage = ({ translate }) => {
           <div className="stat-icon">🆕</div>
           <div className="stat-content">
             <div className="stat-number">{wordsThisWeek}</div>
-            <div className="stat-label">מילים חדשות השבוע</div>
+            <div className="stat-label">
+              {translate?.statistics.newWordOfWeekend}
+            </div>
           </div>
         </div>
 
@@ -123,20 +129,24 @@ const StatsPage = ({ translate }) => {
             <div className="stat-number">
               {drivingOverall.overallPercentage}%
             </div>
-            <div className="stat-label">ציון ממוצע נהיגה</div>
+            <div className="stat-label">
+              {translate?.statistics.avarageGrade}
+            </div>
           </div>
         </div>
       </div>
 
       {/* סטטיסטיקות מילים */}
       <div className="section">
-        <h2>📖 סטטיסטיקות מילים</h2>
+        <h2>📖 {translate.statistics.wordStats}</h2>
         <div className="vocab-stats-grid">
           <div className="vocab-stat easy">
             <div className="vocab-stat-icon">✅</div>
             <div className="vocab-stat-content">
               <div className="vocab-stat-number">{vocabularyStats.easy}</div>
-              <div className="vocab-stat-label">מילים קלות</div>
+              <div className="vocab-stat-label">
+                {translate?.statistics.easyWords}
+              </div>
             </div>
           </div>
 
@@ -144,7 +154,9 @@ const StatsPage = ({ translate }) => {
             <div className="vocab-stat-icon">⚠️</div>
             <div className="vocab-stat-content">
               <div className="vocab-stat-number">{vocabularyStats.medium}</div>
-              <div className="vocab-stat-label">מילים בינוניות</div>
+              <div className="vocab-stat-label">
+                {translate?.statistics.mediumWords}
+              </div>
             </div>
           </div>
 
@@ -152,7 +164,9 @@ const StatsPage = ({ translate }) => {
             <div className="vocab-stat-icon">🔥</div>
             <div className="vocab-stat-content">
               <div className="vocab-stat-number">{vocabularyStats.hard}</div>
-              <div className="vocab-stat-label">מילים קשות</div>
+              <div className="vocab-stat-label">
+                {translate?.statistics.hardWords}
+              </div>
             </div>
           </div>
 
@@ -162,7 +176,9 @@ const StatsPage = ({ translate }) => {
               <div className="vocab-stat-number">
                 {vocabularyStats.unclassified}
               </div>
-              <div className="vocab-stat-label">לא סווגו</div>
+              <div className="vocab-stat-label">
+                {translate?.statistics.notClassifiedWords}
+              </div>
             </div>
           </div>
         </div>
@@ -171,7 +187,7 @@ const StatsPage = ({ translate }) => {
       {/* סטטיסטיקות נהיגה */}
       {drivingStats && drivingStats.length > 0 && (
         <div className="section">
-          <h2>🚗 סטטיסטיקות נהיגה</h2>
+          <h2>{translate?.statistics.drivingStats}</h2>
           <div className="driving-stats-summary">
             <div className="summary-card">
               <div className="summary-icon">📝</div>
@@ -179,7 +195,9 @@ const StatsPage = ({ translate }) => {
                 <div className="summary-number">
                   {drivingOverall.totalQuestions}
                 </div>
-                <div className="summary-label">סה״כ שאלות נענו</div>
+                <div className="summary-label">
+                  {translate?.statistics.sumAnsweredQuestions}
+                </div>
               </div>
             </div>
 
@@ -189,13 +207,15 @@ const StatsPage = ({ translate }) => {
                 <div className="summary-number">
                   {drivingOverall.totalCorrect}
                 </div>
-                <div className="summary-label">תשובות נכונות</div>
+                <div className="summary-label">
+                  {translate?.statistics.correctAnswers}
+                </div>
               </div>
             </div>
           </div>
 
           <div className="category-stats">
-            <h3>📊 ביצועים לפי נושא</h3>
+            <h3>📊 {translate?.statistics.performanceBySubject}</h3>
             <div className="category-grid">
               {drivingStats.map((stat, index) => {
                 const percentage =
@@ -225,7 +245,8 @@ const StatsPage = ({ translate }) => {
                         ></div>
                       </div>
                       <div className="category-numbers">
-                        {stat.correct_answers} / {stat.total_questions} נכון
+                        {stat.correct_answers} / {stat.total_questions}{" "}
+                        {translate?.statistics.correct}
                       </div>
                     </div>
                   </div>
@@ -239,7 +260,7 @@ const StatsPage = ({ translate }) => {
       {/* תוצאות אחרונות */}
       {recentResults && recentResults.length > 0 && (
         <div className="section">
-          <h2>📋 תוצאות אחרונות</h2>
+          <h2>{translate?.statistics.lastResults}</h2>
           <div className="recent-results">
             {recentResults.slice(0, 10).map((result, index) => (
               <div
@@ -270,10 +291,10 @@ const StatsPage = ({ translate }) => {
         <div className="section">
           <div className="empty-state">
             <div className="empty-icon">🚗</div>
-            <h3>עדיין לא התחלת לתרגל נהיגה</h3>
-            <p>כשתתחיל לענות על שאלות בחינת הנהיגה, הסטטיסטיקות יופיעו כאן</p>
+            <h3>{translate?.statistics.noRecentResults}</h3>
+            <p>{translate?.statistics.pleasePractice}</p>
             <a href="/practice/driving" className="cta-button">
-              התחל לתרגל נהיגה
+              {translate?.statistics.startPracticing}
             </a>
           </div>
         </div>

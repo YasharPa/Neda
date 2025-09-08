@@ -9,6 +9,7 @@ import he from "./locales/hebrew.json";
 import fa from "./locales/persian.json";
 import "./App.css";
 import { vocabularyAPI } from "./lib/supabaseClient";
+import SentenceCompletion from "./components/SentenceCompletion";
 
 export default function App() {
   const [lang, setLang] = useState("he");
@@ -41,9 +42,8 @@ export default function App() {
       <button className="lang-button" onClick={handleLanguageChange}>
         🌐 {lang === "he" ? "עברית" : "فارسی"}
       </button>
-
       <header className="app-header">
-        <h1>💙 {translate?.welcome}</h1>
+        <h1>{translate?.welcome} 💙</h1>
         <nav className="app-nav">
           <Link to="/">{translate?.home}</Link>
           <Link to="/practice">{translate?.practice}</Link>
@@ -69,6 +69,10 @@ export default function App() {
           <Route
             path="/practice/driving"
             element={<DrivingPage translate={translate} language={lang} />}
+          />
+          <Route
+            path="practice/complete-sentences"
+            element={<SentenceCompletion translate={translate} />}
           />
         </Routes>
       </main>

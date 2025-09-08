@@ -28,7 +28,7 @@ const DrivingQuiz = ({
 
   useEffect(() => {
     loadQuestions();
-  }, [maxQuestions]);
+  }, []);
 
   // Fisher-Yates Shuffle
   const shuffleArray = (array) => {
