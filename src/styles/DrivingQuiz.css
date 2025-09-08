@@ -149,7 +149,7 @@
 
 .option-btn {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: clamp(10px, 2.5vw, 12px);
   padding: clamp(12px, 3vw, 16px);
   background: #f8f9fa;
@@ -795,17 +795,6 @@
   }
 }
 
-/* שיפור עבור Safari Mobile */
-@supports (-webkit-touch-callout: none) {
-  .option-btn,
-  .next-btn,
-  .restart-btn,
-  .back-to-menu-btn {
-    -webkit-appearance: none;
-    -webkit-border-radius: clamp(10px, 2.5vw, 12px);
-  }
-}
-
 /* אופטימיזציה לזום נגישות */
 @media (min-resolution: 1.5dppx) {
   .option-btn {
@@ -816,4 +805,10 @@
   .category-progress {
     border: 1px solid rgba(0, 0, 0, 0.05);
   }
+}
+
+.question-text-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

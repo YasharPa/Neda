@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { drivingAPI } from "../lib/supabaseClient";
 import LoadingSpinner from "./LoadingSpinner";
+import Speaker from "./Speaker";
 import "../styles/DrivingQuiz.css";
 
 const DrivingQuiz = ({
@@ -343,41 +344,56 @@ const DrivingQuiz = ({
             />
           </div>
         )}
-
-        <h2 className="question-text">{questionContent.question}</h2>
-
+        <div className="question-text-container">
+          <Speaker
+            text={questionContent.question}
+            lang={language === "he" ? "he-IL" : "fa-IR"}
+          />
+          <h2 className="question-text">{questionContent.question}</h2>
+        </div>
         <div className="options-container">
-          {questionContent.options.map((option, index) => (
-            <button
-              key={index}
-              className={`option-btn ${
-                selectedAnswer === index
-                  ? index === currentQuestion.correct_answer
-                    ? "correct"
-                    : "incorrect"
-                  : ""
-              } ${
-                showResult && index === currentQuestion.correct_answer
-                  ? "correct-answer"
-                  : ""
-              }`}
-              onClick={() => handleAnswerSelect(index)}
-              disabled={showResult}
-            >
-              <span className="option-letter">
-                {String.fromCharCode(65 + index)}.
-              </span>
-              <span className="option-text">{option}</span>
-              {showResult && index === currentQuestion.correct_answer && (
-                <span className="correct-indicator">✓</span>
-              )}
-              {showResult &&
-                selectedAnswer === index &&
-                index !== currentQuestion.correct_answer && (
-                  <span className="incorrect-indicator">✗</span>
-                )}
-            </button>
-          ))}
+          {questionContent.options.map(
+            (option, index) => (
+              console.log("1" + questionContent.options[index]),
+              (
+                <button
+                  key={index}
+                  className={`option-btn ${
+                    selectedAnswer === index
+                      ? index === currentQuestion.correct_answer
+                        ? "correct"
+                        : "incorrect"
+                      : ""
+                  } ${
+                    showResult && index === currentQuestion.correct_answer
+                      ? "correct-answer"
+                      : ""
+                  }`}
+                  onClick={() => handleAnswerSelect(index)}
+                  disabled={showResult}
+                >
+                  <span className="option-letter">
+                    {String.fromCharCode(65 + index)}.
+                  </span>
+                  <span className="option-text">{option}</span>
+                  <h2 className="question-text">
+                    <Speaker
+                      text={questionContent.options[index]}
+                      lang={language === "he" ? "he-IL" : "fa-IR"}
+                    />
+                  </h2>
+                  {showResult && index === currentQuestion.correct_answer && (
+                    <span className="correct-indicator">✓</span>
+                  )}
+                  {showResult &&
+                    selectedAnswer === index &&
+                    index !== currentQuestion.correct_answer && (
+                      <span className="incorrect-indicator">✗</span>
+                    )}
+                </button>
+              )
+            )
+          )}
         </div>
 
         {/* תוצאה והסבר */}
