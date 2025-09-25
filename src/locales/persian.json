@@ -7,6 +7,9 @@
   "chooseSubject": "موضوعی برای یادگیری انتخاب کنید",
   "allRightsReserved": "کلیه حقوق محفوظ است",
   "comingSoon": "به زودی",
+  "correctAnswer": "پاسخ درست!",
+  "wrongAnswer": "پاسخ غلط",
+  "theAnsewerIs": "پاسخ درست است:",
   "progressBar": {
     "title": "پیشرفت طبقه‌ بندی کلمات",
     "classified": "طبقه‌ بندی شده",
@@ -100,8 +103,6 @@
       "of": "از",
       "correct": "درست",
       "incorrect": "غلط",
-      "correctAnswer": "پاسخ درست!",
-      "wrongAnswer": "پاسخ غلط",
       "explanation": "توضیح:",
       "nextQuestion": "سوال بعدی",
       "finishQuiz": "پایان آزمون",

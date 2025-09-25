@@ -1,13 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "../styles/SentenceCompletion.css";
-import { useVocabulary } from "../hooks/useVocabulary";
 
-export default function SentenceCompletion() {
+export default function SentenceCompletion({ translate }) {
   const [selected, setSelected] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
   const [current, setCurrent] = useState(0);
-  useEffect(() => {});
-  // const { words } = useVocabulary();
+
   const fakeData = [
     {
       id: 1,
@@ -60,8 +58,9 @@ export default function SentenceCompletion() {
         {selected && (
           <p className="feedback">
             {isCorrect
-              ? "✅ תשובה נכונה!"
-              : `❌ תשובה שגויה. התשובה היא: ${currentQuestion.answer}`}
+              ? translate.correctAnswer
+              : translate.wrongAnswer + "." + translate.theAnswerIs}
+            : {currentQuestion.answer}
           </p>
         )}
 

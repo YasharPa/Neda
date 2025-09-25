@@ -1,16 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../styles/Speaker.css";
 
 export default function Speaker({ text, lang = "he-IL" }) {
   const [speaking, setSpeaking] = useState(false);
+  const [disabled, setDisabled] = useState(false);
+  useEffect(() => {
+    if (lang === "fa-IR") {
+      setDisabled(true);
+    } else {
+      setDisabled(false);
+    }
+  }, [lang]);
 
   const handleSpeak = (event) => {
-    if (!text) return;
+    if (!text || lang === "fa-IR") return;
     event.stopPropagation();
     // עצירה של הקראה קודמת
     speechSynthesis.cancel();
 
     const utterance = new SpeechSynthesisUtterance(text);
+
     utterance.lang = lang;
 
     utterance.onstart = () => setSpeaking(true);
@@ -18,13 +27,14 @@ export default function Speaker({ text, lang = "he-IL" }) {
 
     speechSynthesis.speak(utterance);
   };
-  const voices = speechSynthesis.getVoices();
-  console.log(voices);
 
   return (
     <button
       onClick={handleSpeak}
-      className={`speaker ${speaking ? "speaker--active" : ""}`}
+      disabled={disabled}
+      className={`speaker ${speaking ? "speaker--active" : ""} ${
+        disabled ? "speaker--disabled" : ""
+      }`}
       aria-label="הקרא טקסט"
     >
       {speaking ? (

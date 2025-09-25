@@ -409,16 +409,12 @@ const DrivingQuiz = ({
               {selectedAnswer === currentQuestion.correct_answer ? (
                 <>
                   <span className="result-icon">🎉</span>
-                  <span className="result-text">
-                    {translate.driving.quiz.correctAnswer}
-                  </span>
+                  <span className="result-text">{translate.correctAnswer}</span>
                 </>
               ) : (
                 <>
                   <span className="result-icon">😔</span>
-                  <span className="result-text">
-                    {translate.driving.quiz.wrongAnswer}
-                  </span>
+                  <span className="result-text">{translate.wrongAnswer}</span>
                 </>
               )}
             </div>

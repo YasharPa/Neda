@@ -7,6 +7,9 @@
   "chooseSubject": "בחר נושא ללמידה",
   "allRightsReserved": "כל הזכויות שמורות",
   "comingSoon": "בקרוב",
+  "correctAnswer": "תשובה נכונה!",
+  "wrongAnswer": "תשובה שגויה",
+  "theAnsewerIs": "התשובה היא:",
   "progressBar": {
     "title": "התקדמות סיווג המילים",
     "classified": "סווגו",
@@ -83,8 +86,6 @@
       "of": "מתוך",
       "correct": "נכון",
       "incorrect": "שגוי",
-      "correctAnswer": "תשובה נכונה!",
-      "wrongAnswer": "תשובה שגויה",
       "explanation": "הסבר:",
       "nextQuestion": "שאלה הבאה",
       "finishQuiz": "סיים בחינה",

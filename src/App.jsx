@@ -71,7 +71,7 @@ export default function App() {
             element={<DrivingPage translate={translate} language={lang} />}
           />
           <Route
-            path="practice/complete-sentences"
+            path="practice/sentence-completion"
             element={<SentenceCompletion translate={translate} />}
           />
         </Routes>

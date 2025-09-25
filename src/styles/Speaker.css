@@ -30,3 +30,20 @@
 .speaker__icon--active {
   color: #2196f3; /* כחול */
 }
+
+.speaker--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  position: relative;
+}
+
+.speaker--disabled::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: red;
+  transform: rotate(-45deg);
+  top: 50%;
+  left: -10%;
+}
