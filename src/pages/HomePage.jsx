@@ -150,7 +150,7 @@ export default function HomePage({ translate, statistics, language = "he" }) {
           </Link>
 
           <Link
-            to="/practice/complete-sentences"
+            to="/practice/sentence-completion"
             className="topic-card enhanced coming-soon-card"
           >
             <div className="topic-card-header">

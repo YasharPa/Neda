@@ -12,12 +12,16 @@ export default function SentenceCompletion({ translate }) {
       question: "I ____ to school every day.",
       answer: "go",
       options: ["go", "goes", "went", "wont"],
+      explanation:
+        "The correct answer is 'go' because the subject is 'I', which takes the base form of the verb.",
     },
     {
       id: 2,
       question: "She ____ pizza every Friday.",
       answer: "eats",
       options: ["eat", "eats", "eating", "ate"],
+      explanation:
+        "The correct answer is 'eats' because the subject is 'She', which takes the third person singular form of the verb.",
     },
   ];
 
@@ -59,14 +63,16 @@ export default function SentenceCompletion({ translate }) {
           <p className="feedback">
             {isCorrect
               ? translate.correctAnswer
-              : translate.wrongAnswer + "." + translate.theAnswerIs}
+              : translate.wrongAnswer + ". " + translate.theAnswerIs}
             : {currentQuestion.answer}
           </p>
         )}
-
+        {selected && (
+          <p className="explanation">{currentQuestion.explanation}</p>
+        )}
         {selected && (
           <button className="next-btn" onClick={nextQuestion}>
-            שאלה הבאה ➡️
+            שאלה הבאה
           </button>
         )}
       </div>

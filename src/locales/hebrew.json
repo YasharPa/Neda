@@ -7,9 +7,9 @@
   "chooseSubject": "בחר נושא ללמידה",
   "allRightsReserved": "כל הזכויות שמורות",
   "comingSoon": "בקרוב",
-  "correctAnswer": "תשובה נכונה!",
+  "correctAnswer": "תשובה נכונה",
   "wrongAnswer": "תשובה שגויה",
-  "theAnsewerIs": "התשובה היא:",
+  "theAnswerIs": "התשובה היא",
   "progressBar": {
     "title": "התקדמות סיווג המילים",
     "classified": "סווגו",
