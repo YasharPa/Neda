@@ -1,15 +1,15 @@
 import { Routes, Route, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { vocabularyAPI } from "./lib/supabaseClient";
 import HomePage from "./pages/HomePage";
 import PracticePage from "./pages/PracticePage";
 import StatsPage from "./pages/StatsPage";
 import VocabularyPage from "./pages/VocabularyPage";
 import DrivingPage from "./pages/DrivingPage";
-import { useEffect, useState } from "react";
+import SentenceCompletionPage from "./pages/SentenceCompletionPage";
 import he from "./locales/hebrew.json";
 import fa from "./locales/persian.json";
 import "./App.css";
-import { vocabularyAPI } from "./lib/supabaseClient";
-import SentenceCompletion from "./components/SentenceCompletion";
 
 export default function App() {
   const [lang, setLang] = useState("he");
@@ -72,7 +72,7 @@ export default function App() {
           />
           <Route
             path="practice/sentence-completion"
-            element={<SentenceCompletion translate={translate} />}
+            element={<SentenceCompletionPage translate={translate} />}
           />
         </Routes>
       </main>

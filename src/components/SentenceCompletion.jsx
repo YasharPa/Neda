@@ -40,7 +40,6 @@ export default function SentenceCompletion({ translate }) {
 
   return (
     <div>
-      <h2>השלמת משפטים</h2>
       <div className="sentence-completion">
         <p className="sentence">{currentQuestion.question}</p>
 
