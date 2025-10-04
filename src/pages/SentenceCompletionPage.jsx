@@ -1,10 +1,10 @@
 import SentenceCompletion from "../components/SentenceCompletion";
 
-function SentenceCompletionPage({ translate }) {
+function SentenceCompletionPage({ translate, language }) {
   return (
     <div>
       <h2>השלמת משפטים</h2>
-      <SentenceCompletion translate={translate} />
+      <SentenceCompletion translate={translate} language={language} />
     </div>
   );
 }

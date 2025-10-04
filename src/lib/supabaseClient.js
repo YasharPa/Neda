@@ -7,18 +7,13 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export const vocabularyAPI = {
   async getAll() {
-    try {
-      const { data, error } = await supabase
-        .from("vocabulary")
-        .select("*")
-        .order("created_at", { ascending: true });
+    const { data, error } = await supabase
+      .from("vocabulary")
+      .select("*")
+      .order("created_at", { ascending: true });
 
-      if (error) throw error;
-      return { data: data || [], error: null };
-    } catch (error) {
-      console.error("Error fetching vocabulary:", error);
-      return { data: [], error };
-    }
+    if (error) throw error;
+    return { data: data || [], error: null };
   },
 
   async add(wordData) {
@@ -592,6 +587,20 @@ export const drivingAPI = {
       return { data: uniqueCategories, error: null };
     } catch (error) {
       console.error("Error fetching categories:", error);
+      return { data: [], error };
+    }
+  },
+};
+
+export const sentenceCompletionAPI = {
+  // פונקציות API רלוונטיות אם יש צורך
+  async getData() {
+    try {
+      const { data } = await supabase.from("sentencecompletion").select("*");
+
+      return { data: data || [], error: null };
+    } catch (error) {
+      console.error("Error fetching sentence completion questions:", error);
       return { data: [], error };
     }
   },
