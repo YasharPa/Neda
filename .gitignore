@@ -24,4 +24,8 @@ dist-ssr
 *.sln
 *.sw?
 
+# Server & Database
+*.db
+*.db-journal
+server/.env
 .env
