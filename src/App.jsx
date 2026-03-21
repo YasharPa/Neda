@@ -51,7 +51,8 @@ export default function App() {
         </nav>
       </header>
 
-      <main className="app-main">
+      <main className="app-container">
+        <h1 className="text-4xl font-bold text-blue-500"> vhhh tbh a</h1>
         <Routes>
           <Route
             path="/"

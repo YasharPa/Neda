@@ -20,7 +20,7 @@ exports.createWord = async (req, res) => {
     if (!hebrew || !persian) {
       return res
         .status(400)
-        .json({ error: "Please add your herbrew and persian fileds" });
+        .json({ error: "Please add your hebrew and persian fileds" });
     }
 
     const newWord = await prisma.vocabulary.create({
