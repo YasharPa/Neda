@@ -52,7 +52,6 @@ export default function App() {
       </header>
 
       <main className="app-container">
-        <h1 className="text-4xl font-bold text-blue-500"> vhhh tbh a</h1>
         <Routes>
           <Route
             path="/"
