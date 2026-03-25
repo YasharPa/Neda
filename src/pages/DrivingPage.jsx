@@ -13,7 +13,7 @@ const DrivingPage = ({ translate, language = "he" }) => {
           <button className="back-btn" onClick={() => setShowQuiz(false)}>
             ← {translate.driving.backToMenu}
           </button>
-          <h1>🚗 {translate.driving.title}</h1>
+          <h1>{translate.driving.title}</h1>
         </div>
         <DrivingQuiz
           translate={translate}
@@ -27,9 +27,8 @@ const DrivingPage = ({ translate, language = "he" }) => {
   return (
     <div className="driving-page">
       <div className="quiz-types">
-        <h2>🎮 {translate?.driving.quizSettings.title}</h2>
+        <h2>{translate?.driving.quizSettings.title}</h2>
         <div className="quiz-settings">
-          <h3>⚙️ {translate?.driving?.quizSettings?.title}</h3>
           <div className="settings-grid">
             <div className="setting-item">
               <label htmlFor="questionCount">

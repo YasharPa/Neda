@@ -51,7 +51,7 @@ export default function App() {
         </nav>
       </header>
 
-      <main className="app-main">
+      <main className="app-container">
         <Routes>
           <Route
             path="/"

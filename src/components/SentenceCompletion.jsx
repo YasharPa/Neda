@@ -9,7 +9,7 @@ export default function SentenceCompletion({ translate, language }) {
   const [current, setCurrent] = useState(0);
 
   const { questions, loading, error } = useSentceCompleation();
-
+  if (loading) return <LoadingSpinner translate={translate}></LoadingSpinner>;
   if (questions.length === 0) return <p>אין שאלות להצגה</p>;
 
   const currentQuestion = questions[current];
@@ -25,7 +25,6 @@ export default function SentenceCompletion({ translate, language }) {
   };
   return (
     <div>
-      {loading && <LoadingSpinner translate={translate}></LoadingSpinner>}
       {error && (
         <div className="error-message">
           <p>Error loading questions. Please try again later.</p>
