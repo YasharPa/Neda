@@ -7,13 +7,18 @@ import StatsPage from "./pages/StatsPage";
 import VocabularyPage from "./pages/VocabularyPage";
 import DrivingPage from "./pages/DrivingPage";
 import SentenceCompletionPage from "./pages/SentenceCompletionPage";
+import AuthPage from "./pages/AuthPage";
 import he from "./locales/hebrew.json";
 import fa from "./locales/persian.json";
+import { useAuth } from "./hooks/useAuth";
 import "./App.css";
+import LoadingSpinner from "./components/LoadingSpinner";
 
 export default function App() {
   const [lang, setLang] = useState("he");
   const [stats, setStatistics] = useState({});
+  const { user, isLoading, signOut } = useAuth();
+
   const loadStats = async () => {
     try {
       const { data: stats, error } = await vocabularyAPI.getStats();
@@ -37,51 +42,63 @@ export default function App() {
     setLang(lang === "he" ? "fa" : "he");
   };
 
-  return (
-    <div className="app-container">
-      <button className="lang-button" onClick={handleLanguageChange}>
-        🌐 {lang === "he" ? "עברית" : "فارسی"}
-      </button>
-      <header className="app-header">
-        <h1>{translate?.welcome} 💙</h1>
-        <nav className="app-nav">
-          <Link to="/">{translate?.home}</Link>
-          <Link to="/practice">{translate?.practice}</Link>
-          <Link to="/stats">{translate?.stats}</Link>
-        </nav>
-      </header>
+  const handleSignOutChange = () => {
+    signOut();
+  };
 
-      <main className="app-container">
-        <Routes>
-          <Route
-            path="/"
-            element={<HomePage statistics={stats} translate={translate} />}
-          />
-          <Route
-            path="/practice"
-            element={<PracticePage translate={translate} />}
-          />
-          <Route path="/stats" element={<StatsPage translate={translate} />} />
-          <Route
-            path="/practice/vocabulary"
-            element={<VocabularyPage translate={translate} />}
-          />
-          <Route
-            path="/practice/driving"
-            element={<DrivingPage translate={translate} language={lang} />}
-          />
-          <Route
-            path="/practice/sentence-completion"
-            element={
-              <SentenceCompletionPage translate={translate} language={lang} />
-            }
-          />
-        </Routes>
-      </main>
+  if (!user) {
+    return <AuthPage translate={translate} />;
+  } else {
+    return (
+      <div className="app-container">
+        <button className="lang-button" onClick={handleLanguageChange}>
+          🌐 {lang === "he" ? "עברית" : "فارسی"}
+        </button>
+        <header className="app-header">
+          <h1>{translate?.welcome} 💙</h1>
+          <nav className="app-nav">
+            <Link to="/">{translate?.home}</Link>
+            <Link to="/practice">{translate?.practice}</Link>
+            <Link to="/stats">{translate?.stats}</Link>
+            <button onClick={handleSignOutChange}>{translate?.signOut}</button>
+          </nav>
+        </header>
+        <main className="app-container">
+          <Routes>
+            <Route
+              path="/"
+              element={<HomePage statistics={stats} translate={translate} />}
+            />
+            <Route path="/auth" element={<AuthPage translate={translate} />} />
+            <Route
+              path="/practice"
+              element={<PracticePage translate={translate} />}
+            />
+            <Route
+              path="/stats"
+              element={<StatsPage translate={translate} />}
+            />
+            <Route
+              path="/practice/vocabulary"
+              element={<VocabularyPage translate={translate} />}
+            />
+            <Route
+              path="/practice/driving"
+              element={<DrivingPage translate={translate} language={lang} />}
+            />
+            <Route
+              path="/practice/sentence-completion"
+              element={
+                <SentenceCompletionPage translate={translate} language={lang} />
+              }
+            />
+          </Routes>
+        </main>
 
-      <footer className="app-footer">
-        <p>© 2025 {translate.allRightsReserved}</p>
-      </footer>
-    </div>
-  );
+        <footer className="app-footer">
+          <p>© 2025 {translate.allRightsReserved}</p>
+        </footer>
+      </div>
+    );
+  }
 }

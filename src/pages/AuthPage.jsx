@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import "../styles/AuthPage.css";
 
@@ -31,7 +31,7 @@ const AuthPage = ({ translate }) => {
           if (error.message.includes("Invalid login credentials")) {
             setError(
               translate?.auth?.errors?.invalidCredentials ||
-                "אימייל או סיסמה שגויים"
+                "אימייל או סיסמה שגויים",
             );
           } else {
             setError(error.message);
@@ -43,7 +43,7 @@ const AuthPage = ({ translate }) => {
         // הרשמה
         if (password !== confirmPassword) {
           setError(
-            translate?.auth?.errors?.passwordMismatch || "הסיסמאות לא תואמות"
+            translate?.auth?.errors?.passwordMismatch || "הסיסמאות לא תואמות",
           );
           setLoading(false);
           return;
@@ -52,20 +52,20 @@ const AuthPage = ({ translate }) => {
         if (password.length < 6) {
           setError(
             translate?.auth?.errors?.passwordTooShort ||
-              "הסיסמה חייבת להכיל לפחות 6 תווים"
+              "הסיסמה חייבת להכיל לפחות 6 תווים",
           );
           setLoading(false);
           return;
         }
 
-        const { data, error } = await signUp(email, password, {
+        const { error } = await signUp(email, password, {
           full_name: fullName,
         });
 
         if (error) {
           if (error.message.includes("already registered")) {
             setError(
-              translate?.auth?.errors?.emailExists || "האימייל כבר רשום במערכת"
+              translate?.auth?.errors?.emailExists || "האימייל כבר רשום במערכת",
             );
           } else {
             setError(error.message);
@@ -73,7 +73,7 @@ const AuthPage = ({ translate }) => {
         } else {
           setMessage(
             translate?.auth?.success?.checkEmail ||
-              "נרשמת בהצלחה! אנא בדוק את האימייל שלך לאימות החשבון."
+              "נרשמת בהצלחה! אנא בדוק את האימייל שלך לאימות החשבון.",
           );
           // ניתן להתחבר אוטומטית או להמתין לאימות
           setTimeout(() => {

@@ -1,7 +1,8 @@
 import { createContext, useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 
-const AuthContext = createContext({});
+// eslint-disable-next-line react-refresh/only-export-components
+export const AuthContext = createContext({});
 
 export function AuthProvider({ children }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -44,8 +45,13 @@ export function AuthProvider({ children }) {
     return { data, error };
   };
 
+  const signOut = async () => {
+    const { data, error } = await supabase.auth.signOut();
+    return { data, error };
+  };
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, signIn, signUp }}>
+    <AuthContext.Provider value={{ user, isLoading, signIn, signUp, signOut }}>
       {children}
     </AuthContext.Provider>
   );
