@@ -26,9 +26,11 @@ export default function PracticePage({ translate }) {
   ];
 
   return (
-    <div className="practice-page">
-      <h1>{translate?.choosePracticeType}</h1>
-      <div className="topics-grid">
+    <div className="p-[20px] text-center">
+      <h1 className="text-center mb-8 text-[#333] text-3xl">
+        {translate?.choosePracticeType}
+      </h1>
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4 mt-5">
         {topics.map((topic, index) => (
           <TopicCard key={index} {...topic} />
         ))}
