@@ -5,7 +5,7 @@ const EditWordForm = ({ word, onUpdateWord, onClose, translate }) => {
   const [formData, setFormData] = useState({
     hebrew: word.hebrew || "",
     persian: word.persian || "",
-    example: word.example || "",
+    example_sentence: word.example_sentence || "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -47,7 +47,7 @@ const EditWordForm = ({ word, onUpdateWord, onClose, translate }) => {
     setFormData({
       hebrew: word.hebrew || "",
       persian: word.persian || "",
-      example: word.example || "",
+      example_sentence: word.example_sentence || "",
     });
   };
 
@@ -104,9 +104,9 @@ const EditWordForm = ({ word, onUpdateWord, onClose, translate }) => {
             <input
               type="text"
               id="edit-example"
-              name="example"
+              name="example_sentence"
               placeholder="למשל: שלום, מה שלומך?"
-              value={formData.example}
+              value={formData.example_sentence}
               onChange={handleChange}
               disabled={isSubmitting}
             />

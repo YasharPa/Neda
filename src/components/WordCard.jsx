@@ -94,9 +94,9 @@ const WordCard = ({
       <div className="text-[1.2em] mb-[12px] text-[#34495e] text-center italic">
         {word.persian}
       </div>
-      {word.example && (
+      {word.example_sentence && (
         <div className="text-[0.95em] text-[#7f8c8d] text-center mb-[15px] px-[12px] py-[8px] bg-[#f8f9fa] rounded-[6px] border-r-[3px] border-[#3498db]">
-          {word.example}
+          {word.example_sentence}
         </div>
       )}
 

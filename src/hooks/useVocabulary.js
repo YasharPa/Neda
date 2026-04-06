@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { vocabularyAPI } from "../lib/supabaseClient";
+import { AuthContext } from "../context/AuthContext";
 
 export function useVocabulary() {
   const [words, setWords] = useState([]);
@@ -14,10 +15,15 @@ export function useVocabulary() {
     unclassified: 0,
   });
 
+  const { user } = useContext(AuthContext);
   // טעינת מילים ראשונית
   useEffect(() => {
-    fetchWords();
-  }, []);
+    if (user) {
+      fetchWords();
+    } else {
+      setWords([]);
+    }
+  }, [user]);
 
   // פונקציה לטעינת כל המילים
   const fetchWords = async () => {
@@ -52,7 +58,7 @@ export function useVocabulary() {
     try {
       const { error } = await vocabularyAPI.updateDifficulty(
         wordId,
-        difficulty
+        difficulty,
       );
 
       if (error) {
@@ -63,8 +69,8 @@ export function useVocabulary() {
       // עדכון מקומי
       setWords((prevWords) =>
         prevWords.map((word) =>
-          word.id === wordId ? { ...word, difficulty } : word
-        )
+          word.id === wordId ? { ...word, difficulty } : word,
+        ),
       );
 
       // עדכון סטטיסטיקות
@@ -80,8 +86,9 @@ export function useVocabulary() {
 
   // הוספת מילה חדשה
   const addWord = async (wordData) => {
+    console.log("User ID being sent:", user?.id);
     try {
-      const { data, error } = await vocabularyAPI.add(wordData);
+      const { data, error } = await vocabularyAPI.add(wordData, user.id);
 
       if (error) {
         console.error("Error adding word:", error);
@@ -112,8 +119,8 @@ export function useVocabulary() {
       // עדכון מקומי
       setWords((prevWords) =>
         prevWords.map((word) =>
-          word.id === wordId ? { ...word, ...wordData } : word
-        )
+          word.id === wordId ? { ...word, ...wordData } : word,
+        ),
       );
 
       return true;

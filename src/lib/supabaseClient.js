@@ -8,7 +8,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 export const vocabularyAPI = {
   async getAll() {
     const { data, error } = await supabase
-      .from("vocabulary")
+      .from("user_words")
       .select("*")
       .order("created_at", { ascending: true });
 
@@ -16,14 +16,15 @@ export const vocabularyAPI = {
     return { data: data || [], error: null };
   },
 
-  async add(wordData) {
+  async add(wordData, userID) {
     try {
       const { data, error } = await supabase
-        .from("vocabulary")
+        .from("user_words")
         .insert([
           {
             ...wordData,
             created_at: new Date().toISOString(),
+            user_id: userID,
           },
         ])
         .select();
@@ -39,7 +40,7 @@ export const vocabularyAPI = {
   async update(id, wordData) {
     try {
       const { data, error } = await supabase
-        .from("vocabulary")
+        .from("user_words")
         .update({
           ...wordData,
           updated_at: new Date().toISOString(),
@@ -58,7 +59,7 @@ export const vocabularyAPI = {
   async updateDifficulty(id, difficulty) {
     try {
       const { data, error } = await supabase
-        .from("vocabulary")
+        .from("user_words")
         .update({
           difficulty,
           updated_at: new Date().toISOString(),
@@ -76,7 +77,7 @@ export const vocabularyAPI = {
 
   async delete(id) {
     try {
-      const { error } = await supabase.from("vocabulary").delete().eq("id", id);
+      const { error } = await supabase.from("user_words").delete().eq("id", id);
 
       if (error) throw error;
       return { error: null };
@@ -89,7 +90,7 @@ export const vocabularyAPI = {
   async getStats() {
     try {
       const { data: allWords, error: allError } = await supabase
-        .from("vocabulary")
+        .from("user_words")
         .select("id, difficulty");
 
       if (allError) throw allError;
@@ -164,9 +165,8 @@ export const drivingAPI = {
 
       // העלאת תמונה אם קיימת
       if (imageFile) {
-        const { data: imageData, error: imageError } = await this.uploadImage(
-          imageFile
-        );
+        const { data: imageData, error: imageError } =
+          await this.uploadImage(imageFile);
         if (imageError) {
           console.error("Error uploading image:", imageError);
           return { data: null, error: imageError };
@@ -219,7 +219,7 @@ export const drivingAPI = {
         // העלאת תמונה חדשה
         const { data: imageData, error: imageError } = await this.uploadImage(
           newImageFile,
-          questionId
+          questionId,
         );
         if (imageError) {
           console.error("Error uploading new image:", imageError);
@@ -367,7 +367,7 @@ export const drivingAPI = {
     questionId,
     selectedAnswer,
     isCorrect,
-    responseTime = null
+    responseTime = null,
   ) {
     try {
       const { data, error } = await supabase
@@ -526,7 +526,7 @@ export const drivingAPI = {
           .not(
             "id",
             "in",
-            excludeIds.length > 0 ? `(${excludeIds.join(",")})` : "(0)"
+            excludeIds.length > 0 ? `(${excludeIds.join(",")})` : "(0)",
           )
           .limit(10);
 
@@ -560,7 +560,7 @@ export const drivingAPI = {
             question_he,
             question_fa
           )
-        `
+        `,
         )
         .order("created_at", { ascending: false })
         .limit(limit);

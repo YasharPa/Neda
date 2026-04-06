@@ -5,7 +5,7 @@ const AddWordForm = ({ onAddWord, onClose }) => {
   const [formData, setFormData] = useState({
     hebrew: "",
     persian: "",
-    example: "",
+    example_sentence: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -32,7 +32,7 @@ const AddWordForm = ({ onAddWord, onClose }) => {
 
       if (success) {
         // איפוס הטופס
-        setFormData({ hebrew: "", persian: "", example: "" });
+        setFormData({ hebrew: "", persian: "", example_sentence: "" });
         // סגירת הטופס אוטומטית אחרי הוספה מוצלחת
         if (onClose) onClose();
       } else {
@@ -47,7 +47,7 @@ const AddWordForm = ({ onAddWord, onClose }) => {
   };
 
   const handleReset = () => {
-    setFormData({ hebrew: "", persian: "", example: "" });
+    setFormData({ hebrew: "", persian: "", example_sentence: "" });
   };
 
   return (
@@ -102,9 +102,9 @@ const AddWordForm = ({ onAddWord, onClose }) => {
           <input
             type="text"
             id="example"
-            name="example"
+            name="example_sentence"
             placeholder="למשל: שלום, מה שלומך?"
-            value={formData.example}
+            value={formData.example_sentence}
             onChange={handleChange}
             disabled={isSubmitting}
           />
