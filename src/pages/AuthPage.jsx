@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import "../styles/AuthPage.css";
 
 const AuthPage = ({ translate }) => {
   const [isLogin, setIsLogin] = useState(true);
@@ -24,23 +23,18 @@ const AuthPage = ({ translate }) => {
 
     try {
       if (isLogin) {
-        // התחברות
         const { data, error } = await signIn(email, password);
-
         if (error) {
-          if (error.message.includes("Invalid login credentials")) {
-            setError(
-              translate?.auth?.errors?.invalidCredentials ||
-                "אימייל או סיסמה שגויים",
-            );
-          } else {
-            setError(error.message);
-          }
+          setError(
+            error.message.includes("Invalid login credentials")
+              ? translate?.auth?.errors?.invalidCredentials ||
+                  "אימייל או סיסמה שגויים"
+              : error.message,
+          );
         } else if (data.user) {
           navigate("/");
         }
       } else {
-        // הרשמה
         if (password !== confirmPassword) {
           setError(
             translate?.auth?.errors?.passwordMismatch || "הסיסמאות לא תואמות",
@@ -48,7 +42,6 @@ const AuthPage = ({ translate }) => {
           setLoading(false);
           return;
         }
-
         if (password.length < 6) {
           setError(
             translate?.auth?.errors?.passwordTooShort ||
@@ -57,25 +50,21 @@ const AuthPage = ({ translate }) => {
           setLoading(false);
           return;
         }
-
         const { error } = await signUp(email, password, {
           full_name: fullName,
         });
-
         if (error) {
-          if (error.message.includes("already registered")) {
-            setError(
-              translate?.auth?.errors?.emailExists || "האימייל כבר רשום במערכת",
-            );
-          } else {
-            setError(error.message);
-          }
+          setError(
+            error.message.includes("already registered")
+              ? translate?.auth?.errors?.emailExists ||
+                  "האימייל כבר רשום במערכת"
+              : error.message,
+          );
         } else {
           setMessage(
             translate?.auth?.success?.checkEmail ||
-              "נרשמת בהצלחה! אנא בדוק את האימייל שלך לאימות החשבון.",
+              "נרשמת בהצלחה! אנא בדוק את האימייל שלך.",
           );
-          // ניתן להתחבר אוטומטית או להמתין לאימות
           setTimeout(() => {
             setIsLogin(true);
             setMessage(translate?.auth?.success?.canLogin || "כעת תוכל להתחבר");
@@ -83,8 +72,10 @@ const AuthPage = ({ translate }) => {
         }
       }
     } catch (err) {
+      if (import.meta.env.DEV) {
+        console.error("DEBUG INFO:", err);
+      }
       setError(translate?.auth?.errors?.general || "אירעה שגיאה, נסה שוב");
-      console.error("Auth error:", err);
     } finally {
       setLoading(false);
     }
@@ -100,40 +91,52 @@ const AuthPage = ({ translate }) => {
     setFullName("");
   };
 
+  const messageBaseClass =
+    "p-4 rounded-xl mb-6 flex items-center gap-3 text-[0.9rem] animate-slide-down border";
+
   return (
-    <div className="auth-page">
-      <div className="auth-container">
-        <div className="auth-header">
-          <h1>
+    <div className="min-h-screen flex items-center justify-center bg-[#f4f8fe] p-4 sm:p-8">
+      <div className="bg-white rounded-[20px] p-8 sm:p-12 shadow-[0_20px_40px_rgba(42,122,228,0.08)] max-w-[450px] w-full animate-slide-up">
+        {/* כותרת */}
+        <div className="text-center mb-8">
+          <h1 className="text-[2rem] text-slate-800 mb-2 font-bold leading-tight">
             {isLogin
               ? translate?.auth?.login || "התחברות"
               : translate?.auth?.signup || "הרשמה"}
           </h1>
-          <p className="auth-subtitle">
+          <p className="text-[0.95rem] text-slate-500 m-0">
             {isLogin
               ? translate?.auth?.welcomeBack || "ברוך שובך! התחבר כדי להמשיך"
               : translate?.auth?.createAccount || "צור חשבון חדש והתחל ללמוד"}
           </p>
         </div>
 
+        {/* הודעות שגיאה / הצלחה */}
         {error && (
-          <div className="auth-message error">
-            <span className="message-icon">⚠️</span>
+          <div
+            className={`${messageBaseClass} bg-red-50 text-red-500 border-red-200`}
+          >
+            <span className="text-lg">⚠️</span>
             <span>{error}</span>
           </div>
         )}
 
         {message && (
-          <div className="auth-message success">
-            <span className="message-icon">✅</span>
+          <div
+            className={`${messageBaseClass} bg-green-50 text-green-500 border-green-200`}
+          >
+            <span className="text-lg">✅</span>
             <span>{message}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="auth-form">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           {!isLogin && (
-            <div className="form-group">
-              <label htmlFor="fullName">
+            <div className="flex flex-col gap-2">
+              <label
+                className="font-semibold text-slate-700 text-[0.9rem]"
+                htmlFor="fullName"
+              >
                 {translate?.auth?.fields?.fullName || "שם מלא"}
               </label>
               <input
@@ -141,6 +144,7 @@ const AuthPage = ({ translate }) => {
                 id="fullName"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
+                className="p-[0.85rem] border-2 border-slate-200 rounded-[10px] text-base transition-all duration-200 focus:outline-none focus:border-[#2a7ae4] focus:ring-4 focus:ring-[#2a7ae4]/15 disabled:bg-slate-50 disabled:cursor-not-allowed"
                 placeholder={
                   translate?.auth?.placeholders?.fullName || "הזן את שמך המלא"
                 }
@@ -150,8 +154,11 @@ const AuthPage = ({ translate }) => {
             </div>
           )}
 
-          <div className="form-group">
-            <label htmlFor="email">
+          <div className="flex flex-col gap-2">
+            <label
+              className="font-semibold text-slate-700 text-[0.9rem]"
+              htmlFor="email"
+            >
               {translate?.auth?.fields?.email || "אימייל"}
             </label>
             <input
@@ -159,6 +166,7 @@ const AuthPage = ({ translate }) => {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              className="p-[0.85rem] border-2 border-slate-200 rounded-[10px] text-base transition-all duration-200 focus:outline-none focus:border-[#2a7ae4] focus:ring-4 focus:ring-[#2a7ae4]/15 disabled:bg-slate-50 disabled:cursor-not-allowed"
               placeholder={
                 translate?.auth?.placeholders?.email || "example@email.com"
               }
@@ -167,8 +175,11 @@ const AuthPage = ({ translate }) => {
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="password">
+          <div className="flex flex-col gap-2">
+            <label
+              className="font-semibold text-slate-700 text-[0.9rem]"
+              htmlFor="password"
+            >
               {translate?.auth?.fields?.password || "סיסמה"}
             </label>
             <input
@@ -176,6 +187,7 @@ const AuthPage = ({ translate }) => {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              className="p-[0.85rem] border-2 border-slate-200 rounded-[10px] text-base transition-all duration-200 focus:outline-none focus:border-[#2a7ae4] focus:ring-4 focus:ring-[#2a7ae4]/15 disabled:bg-slate-50 disabled:cursor-not-allowed"
               placeholder={
                 translate?.auth?.placeholders?.password || "הזן סיסמה"
               }
@@ -186,8 +198,11 @@ const AuthPage = ({ translate }) => {
           </div>
 
           {!isLogin && (
-            <div className="form-group">
-              <label htmlFor="confirmPassword">
+            <div className="flex flex-col gap-2">
+              <label
+                className="font-semibold text-slate-700 text-[0.9rem]"
+                htmlFor="confirmPassword"
+              >
                 {translate?.auth?.fields?.confirmPassword || "אימות סיסמה"}
               </label>
               <input
@@ -195,6 +210,7 @@ const AuthPage = ({ translate }) => {
                 id="confirmPassword"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                className="p-[0.85rem] border-2 border-slate-200 rounded-[10px] text-base transition-all duration-200 focus:outline-none focus:border-[#2a7ae4] focus:ring-4 focus:ring-[#2a7ae4]/15 disabled:bg-slate-50 disabled:cursor-not-allowed"
                 placeholder={
                   translate?.auth?.placeholders?.confirmPassword ||
                   "הזן את הסיסמה שוב"
@@ -206,11 +222,15 @@ const AuthPage = ({ translate }) => {
             </div>
           )}
 
-          <button type="submit" className="auth-submit-btn" disabled={loading}>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full p-4 mt-2 bg-[#2a7ae4] text-white rounded-[10px] text-base font-semibold flex items-center justify-center gap-2 transition-all duration-300 enabled:hover:-translate-y-0.5 enabled:hover:bg-[#1c65c9] enabled:hover:shadow-[0_8px_20px_rgba(42,122,228,0.35)] enabled:active:translate-y-0 disabled:opacity-70 disabled:cursor-not-allowed"
+          >
             {loading ? (
               <>
-                <span className="btn-spinner"></span>
-                {translate?.auth?.loading || "מעבד..."}
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                <span>{translate?.auth?.loading || "מעבד..."}</span>
               </>
             ) : isLogin ? (
               translate?.auth?.loginButton || "התחבר"
@@ -220,16 +240,17 @@ const AuthPage = ({ translate }) => {
           </button>
         </form>
 
-        <div className="auth-toggle">
-          <p>
+        {/* החלפה בין מצבים */}
+        <div className="text-center mt-6 pt-6 border-t border-slate-200">
+          <p className="text-slate-500 text-[0.9rem] m-0">
             {isLogin
               ? translate?.auth?.noAccount || "אין לך חשבון?"
               : translate?.auth?.hasAccount || "כבר יש לך חשבון?"}
             <button
               type="button"
               onClick={toggleMode}
-              className="toggle-btn"
               disabled={loading}
+              className="text-[#2a7ae4] font-semibold text-[0.9rem] mr-2 transition-colors duration-200 hover:enabled:text-[#1c65c9] hover:enabled:underline disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLogin
                 ? translate?.auth?.signupLink || "הירשם כאן"
@@ -239,12 +260,12 @@ const AuthPage = ({ translate }) => {
         </div>
 
         {isLogin && (
-          <div className="auth-footer">
+          <div className="text-center mt-4">
             <button
               type="button"
-              className="forgot-password-btn"
-              onClick={() => alert("פיצ'ר איפוס סיסמה יתווסף בקרוב")}
               disabled={loading}
+              onClick={() => alert("פיצ'ר איפוס סיסמה יתווסף בקרוב")}
+              className="text-slate-500 text-[0.85rem] hover:enabled:text-[#2a7ae4] hover:enabled:underline transition-colors duration-200 disabled:opacity-50"
             >
               {translate?.auth?.forgotPassword || "שכחת סיסמה?"}
             </button>

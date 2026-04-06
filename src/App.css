@@ -90,29 +90,3 @@ body {
   background-color: #2a7ae4;
   color: white;
 }
-
-.logout-button {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #ef4444;
-  border: 1px solid #ef4444;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-}
-
-.logout-button:hover {
-  background-color: #ef4444;
-  color: #ffffff;
-}
-
-.logout-button:active {
-  transform: scale(0.95);
-}

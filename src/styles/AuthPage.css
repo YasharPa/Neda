@@ -3,15 +3,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #f4f8fe; /* רקע תכלת-לבנבן, נקי ומזמין שמתכתב עם הכחול של המותג */
   padding: 2rem;
 }
 
 .auth-container {
   background: white;
-  border-radius: 16px;
+  border-radius: 20px;
   padding: 3rem;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 40px rgba(42, 122, 228, 0.08); /* צל רך מבוסס על הכחול שלך */
   max-width: 450px;
   width: 100%;
   animation: slideUp 0.4s ease-out;
@@ -28,27 +28,22 @@
   }
 }
 
-.auth-header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
 .auth-header h1 {
   font-size: 2rem;
-  color: #333;
+  color: #1e293b;
   margin: 0 0 0.5rem 0;
   font-weight: 700;
 }
 
 .auth-subtitle {
-  color: #666;
+  color: #64748b;
   font-size: 0.95rem;
   margin: 0;
 }
 
 .auth-message {
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: 12px;
   margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
@@ -69,15 +64,15 @@
 }
 
 .auth-message.error {
-  background-color: #fee;
-  color: #c33;
-  border: 1px solid #fcc;
+  background-color: #fef2f2;
+  color: #ef4444;
+  border: 1px solid #fecaca;
 }
 
 .auth-message.success {
-  background-color: #efe;
-  color: #3c3;
-  border: 1px solid #cfc;
+  background-color: #f0fdf4;
+  color: #22c55e;
+  border: 1px solid #bbf7d0;
 }
 
 .message-icon {
@@ -98,40 +93,41 @@
 
 .form-group label {
   font-weight: 600;
-  color: #333;
+  color: #334155;
   font-size: 0.9rem;
 }
 
 .form-group input {
   padding: 0.85rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
   font-size: 1rem;
   transition: all 0.2s;
   font-family: inherit;
+  color: #0f172a;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #2a7ae4; /* הכחול של הפרויקט */
+  box-shadow: 0 0 0 4px rgba(42, 122, 228, 0.15); /* הילת פוקוס רכה בכחול המותג */
 }
 
 .form-group input:disabled {
-  background-color: #f5f5f5;
+  background-color: #f8fafc;
   cursor: not-allowed;
 }
 
 .auth-submit-btn {
   padding: 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #2a7ae4; /* הכחול של הפרויקט */
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
   margin-top: 0.5rem;
   display: flex;
   align-items: center;
@@ -141,7 +137,8 @@
 
 .auth-submit-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+  background: #1c65c9; /* גוון מעט כהה יותר של הכחול בריחוף */
+  box-shadow: 0 8px 20px rgba(42, 122, 228, 0.35);
 }
 
 .auth-submit-btn:active:not(:disabled) {
@@ -172,11 +169,11 @@
   text-align: center;
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid #e2e8f0;
 }
 
 .auth-toggle p {
-  color: #666;
+  color: #64748b;
   font-size: 0.9rem;
   margin: 0;
 }
@@ -184,7 +181,7 @@
 .toggle-btn {
   background: none;
   border: none;
-  color: #667eea;
+  color: #2a7ae4; /* הכחול של הפרויקט */
   font-weight: 600;
   cursor: pointer;
   margin-right: 0.5rem;
@@ -194,7 +191,7 @@
 }
 
 .toggle-btn:hover:not(:disabled) {
-  color: #764ba2;
+  color: #1c65c9;
   text-decoration: underline;
 }
 
@@ -211,7 +208,7 @@
 .forgot-password-btn {
   background: none;
   border: none;
-  color: #667eea;
+  color: #64748b;
   font-size: 0.85rem;
   cursor: pointer;
   padding: 0.5rem;
@@ -219,7 +216,7 @@
 }
 
 .forgot-password-btn:hover:not(:disabled) {
-  color: #764ba2;
+  color: #2a7ae4; /* הכחול של הפרויקט */
   text-decoration: underline;
 }
 
