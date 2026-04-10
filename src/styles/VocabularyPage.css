@@ -39,7 +39,7 @@
 }
 
 .add-word-button {
-  background: linear-gradient(135deg, #2a7ae4, #1e5bb8);
+  background: #2a7ae4;
   color: white;
   border: none;
   border-radius: 8px;
@@ -54,7 +54,7 @@
 }
 
 .add-word-button:hover {
-  background: linear-gradient(135deg, #1e5bb8, #164a9e);
+  background: #164a9e;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(42, 122, 228, 0.3);
 }

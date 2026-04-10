@@ -21,6 +21,17 @@
     "loading": "טוען...",
     "loadingsubtitle": "אנא המתן בזמן שהנתונים נטענים"
   },
+  "filterBar": {
+    "filter": "סינון",
+    "all": "הכל",
+    "easy": "קל",
+    "medium": "בינוני",
+    "hard": "קשה",
+    "unclassified": "לא מסווג"
+  },
+  "dropZone": {
+    "message": "שחרר כאן לשינוי רמת הקושי"
+  },
   "statistics": {
     "totalWordsLearned": "מילים שנלמדו",
     "totalPracticeSessions": "תרגילים שבוצעו",
@@ -104,6 +115,7 @@
     "difficulty": "רמת קושי",
     "edit": "ערוך",
     "delete": "מחק",
+    "updating": "מעדכן",
     "confirmDelete": "האם אתה בטוח שברצונך למחוק את המילה?",
     "difficultyLabels": {
       "easy": "קל",

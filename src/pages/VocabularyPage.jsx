@@ -1,13 +1,74 @@
 import { useState } from "react";
+import {
+  DndContext,
+  DragOverlay,
+  closestCenter,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import { useDroppable } from "@dnd-kit/core";
 import { useVocabulary } from "../hooks/useVocabulary";
 import ProgressBar from "../components/ProgressBar";
 import WordCard from "../components/WordCard";
 import AddWordForm from "../components/AddWordForm";
 import EditWordForm from "../components/EditWordForm";
+import FilterBar from "../components/FilterBar";
 import "../styles/VocabularyPage.css";
+
+// ─── DroppableZone ────────────────────────────────────────────────────────────
+const DroppableZone = ({
+  id,
+  title,
+  className,
+  emptyMessage,
+  children,
+  translate,
+}) => {
+  const { setNodeRef, isOver } = useDroppable({ id });
+
+  return (
+    <div className="mb-[30px]">
+      <div
+        className={`text-[1.2em] md:text-[1.4em] font-semibold py-3 px-4 md:py-[15px] md:px-[20px] rounded-lg mb-[15px] flex items-center gap-2.5 ${className}`}
+      >
+        {title}
+      </div>
+      <div
+        ref={setNodeRef}
+        className={`
+          min-h-[120px] rounded-xl transition-all duration-200 p-1
+          ${
+            isOver
+              ? "ring-2 ring-[#2a7ae4] ring-offset-2 bg-blue-50/40 scale-[1.005]"
+              : ""
+          }
+        `}
+      >
+        {children.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-[15px] md:gap-[20px] px-1">
+            {children}
+          </div>
+        ) : (
+          <div
+            className={`bg-white border-2 border-dashed rounded-xl p-[40px] text-center text-[1.1em] leading-[1.5] transition-all duration-150 ${
+              isOver
+                ? "border-[#2a7ae4] border-solid text-[#2a7ae4] bg-blue-50/60"
+                : ""
+            }`}
+          >
+            {isOver ? translate.dropZone.message : emptyMessage}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 const VocabularyPage = ({ translate }) => {
   const {
+    words,
     updating,
     stats,
     updateWordDifficulty,
@@ -20,174 +81,242 @@ const VocabularyPage = ({ translate }) => {
   } = useVocabulary();
 
   const [showAddForm, setShowAddForm] = useState(false);
-  const [editingWord, setEditingWord] = useState(null); // מילה שנערכת כרגע
+  const [editingWord, setEditingWord] = useState(null);
+  const [activeWord, setActiveWord] = useState(null);
+  const [filter, setFilter] = useState("all"); // "all" | null | "easy" | "medium" | "hard"
 
-  const handleAddWord = async (wordData) => {
-    const success = await addWord(wordData);
-    if (success) {
-      setShowAddForm(false);
-    }
-    return success;
-  };
-
-  const handleUpdateDifficulty = async (wordId, difficulty) => {
-    return await updateWordDifficulty(wordId, difficulty);
-  };
-
-  const handleEditWord = (word) => {
-    setEditingWord(word);
-  };
-
-  const handleUpdateWord = async (wordId, wordData) => {
-    const success = await updateWord(wordId, wordData);
-    if (success) {
-      setEditingWord(null);
-    }
-    return success;
-  };
-
-  const handleDeleteWord = async (wordId) => {
-    return await deleteWord(wordId);
-  };
-
-  const handleCloseEditForm = () => {
-    setEditingWord(null);
-  };
-
-  const WordSection = ({
-    title,
-    words,
-    className,
-    showButtons = false,
-    emptyMessage,
-  }) => (
-    <div className="section">
-      <div className={`section-title ${className}`}>
-        {title} ({words.length})
-      </div>
-      {words.length > 0 ? (
-        <div className="words-grid">
-          {words.map((word) => (
-            <WordCard
-              key={word.id}
-              word={word}
-              showDifficultyButtons={showButtons}
-              isUpdating={updating === word.id}
-              onUpdateDifficulty={handleUpdateDifficulty}
-              onEdit={handleEditWord}
-              onDelete={handleDeleteWord}
-              translate={translate}
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="empty-section">{emptyMessage}</div>
-      )}
-    </div>
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 8 },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 250, tolerance: 6 },
+    }),
   );
 
+  // ─── Drag handlers ──────────────────────────────────────────────────────────
+  const handleDragStart = ({ active }) => {
+    const dragged = words.find((w) => w.id === active.id);
+    setActiveWord(dragged ?? null);
+  };
+
+  const handleDragEnd = async ({ active, over }) => {
+    setActiveWord(null);
+    if (!over) return;
+
+    const wordId = active.id;
+    const newDifficulty = over.id; // "easy" | "medium" | "hard" | "unclassified"
+    const currentWord = words.find((w) => w.id === wordId);
+
+    if (currentWord?.difficulty === newDifficulty) return;
+    const difficultyValue =
+      newDifficulty === "unclassified" ? null : newDifficulty;
+    await updateWordDifficulty(wordId, difficultyValue);
+  };
+
+  // ─── Word actions ────────────────────────────────────────────────────────────
+  const handleAddWord = async (d) => {
+    const ok = await addWord(d);
+    if (ok) setShowAddForm(false);
+    return ok;
+  };
+  const handleUpdateDifficulty = (id, diff) => updateWordDifficulty(id, diff);
+  const handleEditWord = (word) => setEditingWord(word);
+  const handleUpdateWord = async (id, d) => {
+    const ok = await updateWord(id, d);
+    if (ok) setEditingWord(null);
+    return ok;
+  };
+  const handleDeleteWord = (id) => deleteWord(id);
+
+  // ─── Filtered word lists ─────────────────────────────────────────────────────
+  const filteredUnclassified =
+    filter === "all" || filter === null ? getUnclassifiedWords() : [];
+
+  const filteredEasy =
+    filter === "all" || filter === "easy" ? getWordsByDifficulty("easy") : [];
+
+  const filteredMedium =
+    filter === "all" || filter === "medium"
+      ? getWordsByDifficulty("medium")
+      : [];
+
+  const filteredHard =
+    filter === "all" || filter === "hard" ? getWordsByDifficulty("hard") : [];
+
+  const counts = {
+    total: words.length,
+    unclassified: getUnclassifiedWords().length,
+    easy: getWordsByDifficulty("easy").length,
+    medium: getWordsByDifficulty("medium").length,
+    hard: getWordsByDifficulty("hard").length,
+  };
+
+  // ─── Word card renderer (שימוש חוזר) ────────────────────────────────────────
+
+  const renderCard = (word, showButtons = false) => (
+    <WordCard
+      key={word.id}
+      word={word}
+      showDifficultyButtons={showButtons}
+      isUpdating={updating === word.id}
+      onUpdateDifficulty={handleUpdateDifficulty}
+      onEdit={handleEditWord}
+      onDelete={handleDeleteWord}
+      translate={translate}
+    />
+  );
+
+  const statCard =
+    "bg-white rounded-xl p-6 text-center shadow-md transition-transform duration-200";
+  const statValue = "text-[2em] font-bold text-[#2c3e50] mb-2 block";
+  const statLabel = "text-base text-[#7f8c8d] font-medium";
+
   return (
-    <div className="vocabulary-page">
-      <div className="page-header">
-        <div className="header-content">
-          <h1>🔤 {translate?.vocabulary.learningWords}</h1>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+    >
+      <div className="max-w-7xl mx-auto p-[20px] bg-[#f8f9fa] min-h-screen md:p-5">
+        {/* ── header ── */}
+        <div className="bg-white rounded-xl p-[25px] mb-[25px] shadow-[0_2px_10px_rgba(0,0,0,0.1)] flex flex-col md:flex-row justify-center md:justify-between items-center flex-wrap gap-[20px] text-center md:text-right">
+          <div className="header-content">
+            <h1 className="m-0 mb-2 text-[#2c3e50] font-bold text-[1.6em] sm:text-[1.8em] md:text-[2.2em]">
+              {translate.vocabulary.learningWords}
+            </h1>
+          </div>
+          <div className="flex gap-[12px]">
+            <button
+              className="bg-[#2a7ae4] text-white border-none rounded-lg py-3 px-5 text-[1em] font-semibold cursor-pointer transition-all duration-300 flex items-center gap-2 hover:bg-[#164a9e]  hover:shadow-[0_4px_12px_rgba(42,122,228,0.3)]"
+              onClick={() => setShowAddForm(!showAddForm)}
+            >
+              {showAddForm
+                ? ` ${translate?.vocabulary.close}`
+                : ` ${translate?.vocabulary.addWord}`}
+            </button>
+          </div>
         </div>
-        <div className="header-actions">
-          <button
-            className="add-word-button"
-            onClick={() => setShowAddForm(!showAddForm)}
-          >
-            {showAddForm
-              ? `❌ ${translate?.vocabulary.close}`
-              : `➕ ${translate?.vocabulary.addWord}`}
-          </button>
-        </div>
-      </div>
 
-      {showAddForm && (
-        <AddWordForm
-          onAddWord={handleAddWord}
-          onClose={() => setShowAddForm(false)}
+        {showAddForm && (
+          <AddWordForm
+            onAddWord={handleAddWord}
+            onClose={() => setShowAddForm(false)}
+          />
+        )}
+
+        {editingWord && (
+          <EditWordForm
+            word={editingWord}
+            onUpdateWord={handleUpdateWord}
+            onClose={() => setEditingWord(null)}
+            translate={translate}
+          />
+        )}
+
+        {/* ── פס התקדמות ── */}
+        <ProgressBar
+          translate={translate}
+          stats={stats}
+          percentage={getProgressPercentage()}
         />
-      )}
 
-      {/* טופס עריכת מילה */}
-      {editingWord && (
-        <EditWordForm
-          word={editingWord}
-          onUpdateWord={handleUpdateWord}
-          onClose={handleCloseEditForm}
+        {/* ── פילטר ── */}
+        <FilterBar
+          activeFilter={filter}
+          onChange={setFilter}
+          counts={counts}
           translate={translate}
         />
-      )}
 
-      {/* פס התקדמות */}
-      <ProgressBar
-        translate={translate}
-        stats={stats}
-        percentage={getProgressPercentage()}
-      />
+        {/* ── אזורי Drop ── */}
 
-      {/* מילים לסיווג */}
-      <WordSection
-        title={`📝 ${translate.vocabulary.wordClassificationTitle}`}
-        words={getUnclassifiedWords()}
-        className="unclassified"
-        showButtons={true}
-        emptyMessage={`🎉 ${translate.vocabulary.emptyMessage}`}
-      />
+        {/* לא מסווג */}
+        {(filter === "all" || filter === null) && (
+          <DroppableZone
+            id="unclassified"
+            title={`${translate.vocabulary.wordClassificationTitle} (${counts.unclassified})`}
+            className="unclassified"
+            emptyMessage={`${translate.vocabulary.emptyMessage}`}
+            translate={translate}
+          >
+            {filteredUnclassified.map((w) => renderCard(w, true))}
+          </DroppableZone>
+        )}
 
-      {/* מילים קלות */}
-      <WordSection
-        title={`✅ ${translate?.vocabulary.easyWords}`}
-        words={getWordsByDifficulty("easy")}
-        className="easy"
-        emptyMessage={`🎯 ${translate.vocabulary.emptyWordsOfEasyWords}`}
-      />
+        {/* easy */}
+        {(filter === "all" || filter === "easy") && (
+          <DroppableZone
+            id="easy"
+            title={`${translate?.vocabulary.easyWords} (${counts.easy})`}
+            className="bg-[linear-gradient(135deg,#27ae60,#229954)] text-white"
+            emptyMessage={`${translate.vocabulary.emptyWordsOfEasyWords}`}
+            translate={translate}
+          >
+            {filteredEasy.map((w) => renderCard(w))}
+          </DroppableZone>
+        )}
 
-      {/* מילים בינוניות */}
-      <WordSection
-        title={`⚠️ ${translate?.vocabulary.mediumWords}`}
-        words={getWordsByDifficulty("medium")}
-        className="medium"
-        emptyMessage={`📚 ${translate?.vocabulary.emptyWordsOfMediumWords}`}
-      />
+        {/* medium */}
+        {(filter === "all" || filter === "medium") && (
+          <DroppableZone
+            id="medium"
+            title={`${translate?.vocabulary.mediumWords} (${counts.medium})`}
+            className="bg-[linear-gradient(135deg,#f39c12,#e67e22)] text-white"
+            emptyMessage={` ${translate?.vocabulary.emptyWordsOfMediumWords}`}
+            translate={translate}
+          >
+            {filteredMedium.map((w) => renderCard(w))}
+          </DroppableZone>
+        )}
 
-      {/* מילים קשות */}
-      <WordSection
-        title={`🔥 ${translate?.vocabulary.hardWords}`}
-        words={getWordsByDifficulty("hard")}
-        className="hard"
-        emptyMessage={`💪 ${translate.vocabulary.emptyWordsOfHardWords}`}
-      />
+        {/* hard */}
+        {(filter === "all" || filter === "hard") && (
+          <DroppableZone
+            id="hard"
+            title={`${translate?.vocabulary.hardWords} (${counts.hard})`}
+            className="bg-[linear-gradient(135deg,#e74c3c,#c0392b)] text-white"
+            emptyMessage={`${translate.vocabulary.emptyWordsOfHardWords}`}
+            translate={translate}
+          >
+            {filteredHard.map((w) => renderCard(w))}
+          </DroppableZone>
+        )}
 
-      {/* סטטיסטיקות תחתונות */}
-      {stats.total > 0 && (
-        <div className="bottom-stats">
-          <div className="stat-card">
-            <span className="stat-icon">📚</span>
-            <span className="stat-value">{stats.total}</span>
-            <span className="stat-label">
-              {translate.vocabulary.totalWords}
-            </span>
+        {/* ── סטטיסטיקות תחתונות ── */}
+        {stats.total > 0 && (
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-2 mt-4">
+            <div className={statCard}>
+              <span className={statValue}>{stats.total}</span>
+              <span className={statLabel}>
+                {translate.vocabulary.totalWords}
+              </span>
+            </div>
+            <div className={statCard}>
+              <span className={statValue}>{stats.classified}</span>
+              <span className={statLabel}>
+                {translate.vocabulary.totalClassifiedWords}
+              </span>
+            </div>
+            <div className={statCard}>
+              <span className={statValue}>{stats.unclassified}</span>
+              <span className={statLabel}>
+                {translate.vocabulary.reminedClassification}
+              </span>
+            </div>
           </div>
-          <div className="stat-card">
-            <span className="stat-icon">✅</span>
-            <span className="stat-value">{stats.classified}</span>
-            <span className="stat-label">
-              {translate.vocabulary.totalClassifiedWords}
-            </span>
+        )}
+      </div>
+
+      <DragOverlay dropAnimation={{ duration: 180, easing: "ease" }}>
+        {activeWord ? (
+          <div className="rotate-[1deg] scale-[1.04] opacity-95 shadow-2xl pointer-events-none">
+            <WordCard word={activeWord} translate={translate} />
           </div>
-          <div className="stat-card">
-            <span className="stat-icon">⏳</span>
-            <span className="stat-value">{stats.unclassified}</span>
-            <span className="stat-label">
-              {translate.vocabulary.reminedClassification}
-            </span>
-          </div>
-        </div>
-      )}
-    </div>
+        ) : null}
+      </DragOverlay>
+    </DndContext>
   );
 };
 

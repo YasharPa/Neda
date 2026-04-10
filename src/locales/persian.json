@@ -21,6 +21,18 @@
     "medium": "متوسط",
     "hard": "سخت"
   },
+  "filterBar": {
+    "filter": "فیلتر",
+    "all": "همهچی",
+    "easy": "آسان",
+    "medium": "متوسط",
+    "hard": "سخت",
+    "unclassified": "طبقه‌ بندی نشده"
+  },
+  "dropZone": {
+    "message": "در حال بارگذاری کلمات از سرور..."
+  },
+
   "spinner": {
     "loading": "در حال بارگذاری...",
     "loadingsubtitle": "لطفاً منتظر بمانید تا داده‌ها بارگذاری شوند"
@@ -121,6 +133,8 @@
     "difficulty": "سطح سختی",
     "edit": "ویرایش",
     "delete": "حذف",
+    "updating": "بهروز می‌کند",
+
     "confirmDelete": "آیا از حذف این کلمه اطمینان دارید؟",
     "difficultyLabels": {
       "easy": "آسان",
