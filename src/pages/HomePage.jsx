@@ -17,7 +17,6 @@ export default function HomePage({ translate, statistics, language = "he" }) {
       const { data: recentResults } = await drivingAPI.getRecentResults(100);
 
       if (categoryStats) {
-        // חישוב סטטיסטיקות נהיגה
         const totalQuestions = categoryStats.reduce(
           (sum, stat) => sum + stat.total_questions,
           0,
@@ -45,14 +44,12 @@ export default function HomePage({ translate, statistics, language = "he" }) {
     }
   };
 
-  // חישוב תרגילים שבוצעו (בהתבסס על תוצאות נהיגה וסטטיסטיקות מילים)
   const getPracticeSessionsCount = () => {
     const drivingPractice = drivingStats?.practiceSessionsCount || 0;
-    const vocabularyPractice = statistics?.classified || 0; // כל מילה שסווגה = פעילות תרגול
+    const vocabularyPractice = statistics?.classified || 0;
     return drivingPractice + vocabularyPractice;
   };
 
-  // חישוב מילים שנלמדו (מילים שסווגו)
   const getWordsLearned = () => {
     return statistics?.classified || 0;
   };
@@ -71,6 +68,7 @@ export default function HomePage({ translate, statistics, language = "he" }) {
       value: 0,
     },
   ];
+
   const topicCardHeader =
     "flex flex-col sm:flex-row items-center text-center sm:text-start relative mb-4";
   const topicCardSubHeader = "m-0 text-[1.3rem] text-[#333]";
@@ -83,6 +81,7 @@ export default function HomePage({ translate, statistics, language = "he" }) {
   const topicProgressBar = "h-1.5 bg-gray-100 rounded overflow-hidden";
   const topicProgressFillBase =
     "h-full rounded-sm transition-all duration-300 ease-in-out";
+
   return (
     <div className="max-w-[1200px] mx-auto p-8 min-h-[calc(100vh-200px)] md:p-4">
       <section className="mb-12">

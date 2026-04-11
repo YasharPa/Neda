@@ -18,6 +18,18 @@ import FilterBar from "../components/FilterBar";
 import "../styles/VocabularyPage.css";
 
 // ─── DroppableZone ────────────────────────────────────────────────────────────
+
+/**
+ * DroppableZone component creates a designated area where draggable items (WordCards) can be dropped.
+ * It handles its own styling based on whether an item is currently being dragged over it.
+ *
+ * @param {Object} props
+ * @param {string} props.id - Unique identifier for the drop zone (e.g., "easy", "medium", "hard", "unclassified").
+ * @param {string} props.title - The visible title of the zone.
+ * @param {React.ReactNode} props.children - The WordCard components rendered inside this zone.
+ * @param {Object} props.translate - Translation object for localization (UI texts).
+ */
+
 const DroppableZone = ({
   id,
   title,
@@ -66,6 +78,17 @@ const DroppableZone = ({
   );
 };
 
+// ─── VocabularyPage ───────────────────────────────────────────────────────────
+/**
+ * VocabularyPage is the main container component for the vocabulary learning section.
+ * It orchestrates the Drag-and-Drop context, word filtering, progress tracking,
+ * and handles interactions for adding, editing, and categorizing words.
+ *
+ * @param {Object} props
+ * @param {Object} props.translate - Translation object for UI localization across the page.
+ * @returns {JSX.Element} The fully composed vocabulary page.
+ */
+
 const VocabularyPage = ({ translate }) => {
   const {
     words,
@@ -95,11 +118,14 @@ const VocabularyPage = ({ translate }) => {
   );
 
   // ─── Drag handlers ──────────────────────────────────────────────────────────
+
+  /** Stores the currently dragged word in state for the DragOverlay */
   const handleDragStart = ({ active }) => {
     const dragged = words.find((w) => w.id === active.id);
     setActiveWord(dragged ?? null);
   };
 
+  /** Handles the logic when a word is dropped into a specific DroppableZone */
   const handleDragEnd = async ({ active, over }) => {
     setActiveWord(null);
     if (!over) return;

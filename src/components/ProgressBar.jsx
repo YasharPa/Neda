@@ -1,5 +1,3 @@
-import "../styles/ProgressBar.css";
-
 /**
  * ProgressBar component displays a progress bar with a title and percentage.
  *
