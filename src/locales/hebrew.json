@@ -15,7 +15,11 @@
     "title": "התקדמות סיווג המילים",
     "classified": "סווגו",
     "outof": "מתוך",
-    "total": "סה''כ"
+    "total": "סה''כ",
+    "currrentScore": "نمره فعلی",
+    "easy": " קל",
+    "medium": "בינוני",
+    "hard": "קשה"
   },
   "spinner": {
     "loading": "טוען...",

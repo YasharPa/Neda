@@ -61,17 +61,14 @@ export default function HomePage({ translate, statistics, language = "he" }) {
     {
       title: translate?.statistics?.totalPracticeSessions || "תרגילים שבוצעו",
       value: getPracticeSessionsCount(),
-      icon: "📝",
     },
     {
       title: translate?.statistics?.totalWordsLearned || "מילים שנלמדו",
       value: getWordsLearned(),
-      icon: "📚",
     },
     {
       title: translate?.statistics?.completedSentences || "שאלות נענו",
       value: 0,
-      icon: "✅",
     },
   ];
   const topicCardHeader =

@@ -167,11 +167,6 @@ const VocabularyPage = ({ translate }) => {
     />
   );
 
-  const statCard =
-    "bg-white rounded-xl p-6 text-center shadow-md transition-transform duration-200";
-  const statValue = "text-[2em] font-bold text-[#2c3e50] mb-2 block";
-  const statLabel = "text-base text-[#7f8c8d] font-medium";
-
   return (
     <DndContext
       sensors={sensors}
@@ -282,30 +277,6 @@ const VocabularyPage = ({ translate }) => {
           >
             {filteredHard.map((w) => renderCard(w))}
           </DroppableZone>
-        )}
-
-        {/* ── סטטיסטיקות תחתונות ── */}
-        {stats.total > 0 && (
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-2 mt-4">
-            <div className={statCard}>
-              <span className={statValue}>{stats.total}</span>
-              <span className={statLabel}>
-                {translate.vocabulary.totalWords}
-              </span>
-            </div>
-            <div className={statCard}>
-              <span className={statValue}>{stats.classified}</span>
-              <span className={statLabel}>
-                {translate.vocabulary.totalClassifiedWords}
-              </span>
-            </div>
-            <div className={statCard}>
-              <span className={statValue}>{stats.unclassified}</span>
-              <span className={statLabel}>
-                {translate.vocabulary.reminedClassification}
-              </span>
-            </div>
-          </div>
         )}
       </div>
 
