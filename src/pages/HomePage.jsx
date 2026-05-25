@@ -1,15 +1,21 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import "../styles/HomePage.css";
 import { drivingAPI } from "../lib/supabaseClient";
 
-export default function HomePage({ translate, statistics, language = "he" }) {
+export default function HomePage({
+  translate,
+  statistics,
+  language = "he",
+  user,
+}) {
   const [drivingStats, setDrivingStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchDrivingStats();
-  }, []);
+    if (user) {
+      fetchDrivingStats();
+    }
+  }, [user]);
 
   const fetchDrivingStats = async () => {
     try {
@@ -72,7 +78,6 @@ export default function HomePage({ translate, statistics, language = "he" }) {
   const topicCardHeader =
     "flex flex-col sm:flex-row items-center text-center sm:text-start relative mb-4";
   const topicCardSubHeader = "m-0 text-[1.3rem] text-[#333]";
-  const topicIcon = "text-[2.5rem] mb-2 sm:mb-0 ml-0 sm:ml-4";
   const topicCardEnhanced =
     "block bg-white relative overflow-hidden rounded-2xl p-6 sm:p-8 text-inherit no-underline border border-black/5 shadow-[0_4px_20px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(0,0,0,0.15)] before:content-[''] before:absolute before:inset-x-0 before:top-0 before:h-1 before:bg-gradient-to-r before:from-[#4caf50] before:via-[#2196f3] before:to-[#ff9800]";
 
@@ -91,7 +96,6 @@ export default function HomePage({ translate, statistics, language = "he" }) {
               key={i}
               className="bg-white p-6 text-center flex-1  rounded-xl border border-black/10 shadow-[0_4px_6px_rgba(0,0,0,0.05)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(0,0,0,0.1)]"
             >
-              <div className="text-[2.5rem] mb-2">{stat.icon}</div>
               <div className="text-[2rem] font-bold text-[#2a7ae4] mb-1">
                 {loading ? "..." : stat.value}
               </div>
@@ -108,7 +112,6 @@ export default function HomePage({ translate, statistics, language = "he" }) {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-[repeat(auto-fit,minmax(300px,1fr))] md:gap-8">
           <Link to="/practice/driving" className={topicCardEnhanced}>
             <div className={topicCardHeader}>
-              <span className={topicIcon}>🚗</span>
               <h3 className={topicCardSubHeader}>
                 {translate?.topics?.driving?.title || "תיאוריה לנהיגה"}
               </h3>
@@ -134,7 +137,6 @@ export default function HomePage({ translate, statistics, language = "he" }) {
 
           <Link to="/practice/vocabulary" className={topicCardEnhanced}>
             <div className={topicCardHeader}>
-              <span className={topicIcon}>📖</span>
               <h3 className={topicCardSubHeader}>
                 {translate?.topics?.vocabulary?.title || "למידת מילים"}
               </h3>
@@ -168,7 +170,6 @@ export default function HomePage({ translate, statistics, language = "he" }) {
             className={`${topicCardEnhanced} opacity-70 relative`}
           >
             <div className={topicCardHeader}>
-              <span className={topicIcon}>✏️</span>
               <h3 className={topicCardSubHeader}>
                 {translate?.topics?.sentenceCompletion?.title || "השלמת משפטים"}
               </h3>

@@ -86,7 +86,6 @@ export const vocabularyAPI = {
       return { error };
     }
   },
-
   async getStats() {
     try {
       const { data: allWords, error: allError } = await supabase
@@ -361,6 +360,7 @@ export const drivingAPI = {
     }
   },
 
+  //  get the new scheme here
   // שמירת תוצאת תשובה
   async saveQuizResult(
     sessionId,

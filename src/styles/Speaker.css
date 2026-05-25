@@ -8,7 +8,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s, transform 0.2s;
+  transition:
+    background 0.2s,
+    transform 0.2s;
 }
 
 .speaker:hover {
@@ -44,6 +46,6 @@
   height: 2px;
   background: red;
   transform: rotate(-45deg);
-  top: 50%;
+  /* top: 50%; */
   left: -10%;
 }

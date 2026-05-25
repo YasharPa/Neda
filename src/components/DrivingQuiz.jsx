@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { drivingAPI } from "../lib/supabaseClient";
 import LoadingSpinner from "./LoadingSpinner";
 import Speaker from "./Speaker";
-import "../styles/DrivingQuiz.css";
+
+const LETTERS = ["א", "ב", "ג", "ד"];
 
 const DrivingQuiz = ({
   translate,
@@ -31,7 +32,6 @@ const DrivingQuiz = ({
     loadQuestions();
   }, []);
 
-  // Fisher-Yates Shuffle
   const shuffleArray = (array) => {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -46,46 +46,34 @@ const DrivingQuiz = ({
     setError(null);
     try {
       const { data, error } = await drivingAPI.getAllQuestions();
-
       if (error) {
-        console.error("Error loading questions:", error);
         setError(translate.driving.quiz.loadingError);
         return;
       }
-
       if (data && data.length > 0) {
-        // ערבוב השאלות
-        const shuffledQuestions = shuffleArray(data);
-
-        // הגבלת כמות השאלות
-        const limitedQuestions =
-          maxQuestions > 0 && maxQuestions < shuffledQuestions.length
-            ? shuffledQuestions.slice(0, maxQuestions)
-            : shuffledQuestions;
-
-        setQuestions(limitedQuestions);
-
-        // התחלה עם השאלה הראשונה
-        if (limitedQuestions.length > 0) {
-          setCurrentQuestion(limitedQuestions[0]);
+        const shuffled = shuffleArray(data);
+        const limited =
+          maxQuestions > 0 && maxQuestions < shuffled.length
+            ? shuffled.slice(0, maxQuestions)
+            : shuffled;
+        setQuestions(limited);
+        if (limited.length > 0) {
+          setCurrentQuestion(limited[0]);
           setCurrentQuestionIndex(0);
           setStartTime(Date.now());
         }
       } else {
         setError(translate.driving.quiz.noQuestions);
       }
-    } catch (error) {
-      console.error("Error in loadQuestions:", error);
+    } catch {
       setError(translate.driving.quiz.loadingError);
     } finally {
       setLoading(false);
     }
   };
 
-  // טעינת השאלה הבאה
   const loadNextQuestion = () => {
     const nextIndex = currentQuestionIndex + 1;
-
     if (nextIndex >= questions.length) {
       setQuizComplete(true);
       return;
@@ -106,47 +94,38 @@ const DrivingQuiz = ({
     const responseTime = startTime ? Date.now() - startTime : null;
     const category = currentQuestion.category;
 
-    // שמירה ב-Supabase
     try {
       await drivingAPI.saveQuizResult(
         sessionId,
         currentQuestion.id,
         answerIndex,
         isCorrect,
-        responseTime
+        responseTime,
       );
-    } catch (error) {
-      console.error("Error saving result:", error);
+    } catch {
+      /* add erorr handaling here */
     }
 
-    // עדכון תשובות המשתמש המקומיות
     const newAnswer = {
       questionId: currentQuestion.id,
       selectedAnswer: answerIndex,
       correct: isCorrect,
-      category: category,
-      responseTime: responseTime,
+      category,
+      responseTime,
     };
 
-    const updatedAnswers = [...userAnswers, newAnswer];
-    setUserAnswers(updatedAnswers);
+    setUserAnswers((prev) => [...prev, newAnswer]);
 
-    // עדכון סטטיסטיקות מקומיות
     setStats((prev) => {
       const newStats = {
         correct: prev.correct + (isCorrect ? 1 : 0),
         incorrect: prev.incorrect + (isCorrect ? 0 : 1),
         byCategory: { ...prev.byCategory },
       };
-
-      if (!newStats.byCategory[category]) {
+      if (!newStats.byCategory[category])
         newStats.byCategory[category] = { correct: 0, total: 0 };
-      }
       newStats.byCategory[category].total++;
-      if (isCorrect) {
-        newStats.byCategory[category].correct++;
-      }
-
+      if (isCorrect) newStats.byCategory[category].correct++;
       return newStats;
     });
   };
@@ -165,18 +144,12 @@ const DrivingQuiz = ({
     setQuizComplete(false);
     setError(null);
     setCurrentQuestionIndex(0);
-    setStats({
-      correct: 0,
-      incorrect: 0,
-      byCategory: {},
-    });
+    setStats({ correct: 0, incorrect: 0, byCategory: {} });
     loadQuestions();
   };
 
-  // פונקציה לקבלת התוכן לפי שפה
   const getQuestionContent = (question) => {
     if (!question) return null;
-
     return {
       question: language === "he" ? question.question_he : question.question_fa,
       options: [
@@ -191,30 +164,34 @@ const DrivingQuiz = ({
     };
   };
 
-  if (loading) {
-    return <LoadingSpinner translate={translate} message={translate.loading} />;
-  }
+  /* ── Loading / Error / Empty ───────────────────────────────────────────── */
 
-  if (error) {
+  if (loading) return <LoadingSpinner translate={translate} />;
+
+  if (error)
     return (
-      <div className="error-container">
-        <h2>😔{translate?.errors?.loadingError}</h2>
-        <p>{error}</p>
-        <button className="retry-btn" onClick={loadQuestions}>
-          🔄 {translate?.errors?.tryAgain}
+      <div
+        dir="rtl"
+        className="flex flex-col items-center justify-center gap-4 p-10 text-center"
+      >
+        <p className="text-base text-red-700">{error}</p>
+        <button
+          onClick={loadQuestions}
+          className="rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white active:scale-95"
+        >
+          {translate?.errors?.tryAgain}
         </button>
       </div>
     );
-  }
 
-  if (questions.length === 0) {
+  if (questions.length === 0)
     return (
-      <div className="no-questions">
-        <h2>😔 {translate?.driving.quiz.noQuestions}</h2>
-        <p>{translate?.errors.tryAgaingLater}</p>
+      <div dir="rtl" className="p-10 text-center text-base text-gray-500">
+        {translate?.driving.quiz.noQuestions}
       </div>
     );
-  }
+
+  /* ── Quiz Complete ─────────────────────────────────────────────────────── */
 
   if (quizComplete) {
     const totalQuestions = userAnswers.length;
@@ -224,52 +201,69 @@ const DrivingQuiz = ({
         : 0;
 
     return (
-      <div className="quiz-complete">
-        <div className="completion-header">
-          <h2>🎉 {translate.driving.quiz.quizComplete}</h2>
-          <div className="quiz-summary">
-            <div className="summary-info">
-              📊 השלמת {questions.length} שאלות
+      <div dir="rtl" className="mx-auto max-w-xl space-y-4 p-4">
+        {/* score header */}
+        <div className="rounded-xl border border-gray-200 bg-white p-6 text-center">
+          <h2 className="mb-3 text-xl font-medium text-gray-900">
+            {translate.driving.quiz.quizComplete}
+          </h2>
+          <p className="mb-4 text-sm text-gray-500">
+            {questions.length} שאלות הושלמו
+          </p>
+          <span className="block text-5xl font-medium text-green-700">
+            {successRate}%
+          </span>
+          <span className="mt-1 block text-sm text-gray-500">
+            ({stats.correct}/{totalQuestions})
+          </span>
+        </div>
+
+        {/* category breakdown */}
+        {Object.keys(stats.byCategory).length > 0 && (
+          <div className="rounded-xl border border-gray-200 bg-white p-5">
+            <h3 className="mb-4 text-base font-medium text-gray-800">
+              פירוט לפי נושאים
+            </h3>
+            <div className="space-y-3">
+              {Object.entries(stats.byCategory).map(([category, catStats]) => {
+                const rate =
+                  catStats.total > 0
+                    ? Math.round((catStats.correct / catStats.total) * 100)
+                    : 0;
+                return (
+                  <div key={category}>
+                    <div className="mb-1 flex justify-between text-sm">
+                      <span className="text-gray-700">{category}</span>
+                      <span className="font-medium text-green-700">
+                        {rate}%
+                      </span>
+                    </div>
+                    <div className="h-2 overflow-hidden rounded-full bg-gray-100">
+                      <div
+                        className="h-full rounded-full bg-green-600 transition-all duration-700"
+                        style={{ width: `${rate}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
-          <div className="final-score">
-            <span className="score-percentage">{successRate}%</span>
-            <span className="score-details">
-              ({stats.correct}/{totalQuestions})
-            </span>
-          </div>
-        </div>
+        )}
 
-        <div className="stats-breakdown">
-          <h3>📊 פירוט לפי נושאים</h3>
-          {Object.entries(stats.byCategory).map(([category, categoryStats]) => {
-            const rate =
-              categoryStats.total > 0
-                ? Math.round(
-                    (categoryStats.correct / categoryStats.total) * 100
-                  )
-                : 0;
-            return (
-              <div key={category} className="category-stat">
-                <span className="category-name">{category}</span>
-                <div className="category-progress">
-                  <div
-                    className="category-fill"
-                    style={{ width: `${rate}%` }}
-                  ></div>
-                </div>
-                <span className="category-score">{rate}%</span>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="completion-actions">
-          <button className="restart-btn" onClick={resetQuiz}>
-            🔄 {translate.driving.quiz.restartQuiz}
+        {/* actions */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+          <button
+            onClick={resetQuiz}
+            className="w-full rounded-lg bg-red-700 py-3 text-sm font-medium text-white active:scale-95 sm:w-auto sm:px-8"
+          >
+            {translate.driving.quiz.restartQuiz}
           </button>
           {onBack && (
-            <button className="back-to-menu-btn" onClick={onBack}>
+            <button
+              onClick={onBack}
+              className="w-full rounded-lg border border-gray-300 bg-white py-3 text-sm font-medium text-gray-700 active:scale-95 sm:w-auto sm:px-8"
+            >
               ← {translate.driving.backToMenu}
             </button>
           )}
@@ -278,58 +272,74 @@ const DrivingQuiz = ({
     );
   }
 
+  /* ── Active Quiz ───────────────────────────────────────────────────────── */
+
   const questionContent = getQuestionContent(currentQuestion);
-  if (!questionContent) {
-    return (
-      <LoadingSpinner
-        translate={translate}
-        message={translate.driving.quiz.loading}
-      />
-    );
-  }
+  if (!questionContent) return <LoadingSpinner translate={translate} />;
 
   const progress =
     questions.length > 0
       ? ((currentQuestionIndex + 1) / questions.length) * 100
       : 0;
 
+  const optionClass = (index) => {
+    const isSelected = selectedAnswer === index;
+    const isCorrect = index === currentQuestion.correct_answer;
+
+    if (!showResult) {
+      return "border-gray-200 bg-white hover:border-blue-400 hover:bg-blue-50 active:scale-[0.99] cursor-pointer";
+    }
+    if (isCorrect) return "border-green-600 bg-green-50 cursor-default";
+    if (isSelected && !isCorrect)
+      return "border-red-600 bg-red-50 cursor-default";
+    return "border-gray-200 bg-white opacity-60 cursor-default";
+  };
+
+  const letterClass = (index) => {
+    const isSelected = selectedAnswer === index;
+    const isCorrect = index === currentQuestion.correct_answer;
+
+    if (!showResult) return "bg-gray-100 text-gray-600";
+    if (isCorrect) return "bg-green-600 text-white";
+    if (isSelected && !isCorrect) return "bg-red-600 text-white";
+    return "bg-gray-100 text-gray-500";
+  };
+
   return (
-    <div className="driving-quiz">
-      {/* פס התקדמות */}
-      <div className="quiz-progress">
-        <div className="progress-bar">
+    <div dir="rtl" className="mx-auto max-w-xl space-y-3 p-4">
+      {/* ── Progress bar (sticky) ── */}
+      <div className="sticky top-0 z-10 rounded-xl border border-gray-200 bg-white p-4">
+        <div className="mb-2 flex items-center justify-between text-sm">
+          <span className="text-gray-500">
+            {translate.driving.quiz.question} {currentQuestionIndex + 1}{" "}
+            {translate.driving.quiz.of} {questions.length}
+          </span>
+          <div className="flex gap-4">
+            <span className="font-medium text-green-700">
+              ✓ {stats.correct}
+            </span>
+            <span className="font-medium text-red-700">
+              ✗ {stats.incorrect}
+            </span>
+          </div>
+        </div>
+        <div className="h-2 overflow-hidden rounded-full bg-gray-100">
           <div
-            className="progress-fill"
+            className="h-full rounded-full bg-green-600 transition-all duration-500"
             style={{ width: `${progress}%` }}
-          ></div>
+          />
         </div>
-        <span className="progress-text">
-          {translate.driving.quiz.question} {currentQuestionIndex + 1}{" "}
-          {translate.driving.quiz.of} {questions.length}
+      </div>
+
+      {/* ── Question card ── */}
+      <div className="rounded-xl border border-gray-200 bg-white p-5">
+        <span className="mb-3 inline-block rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600">
+          {questionContent.category}
         </span>
-      </div>
 
-      {/* סטטיסטיקות נוכחיות */}
-      <div className="current-stats">
-        <div className="stat-item correct">
-          <span className="stat-icon">✅</span>
-          <span className="stat-value">{stats.correct}</span>
-          <span className="stat-label">{translate.driving.quiz.correct}</span>
-        </div>
-        <div className="stat-item incorrect">
-          <span className="stat-icon">❌</span>
-          <span className="stat-value">{stats.incorrect}</span>
-          <span className="stat-label">{translate.driving.quiz.incorrect}</span>
-        </div>
-      </div>
-
-      {/* השאלה */}
-      <div className="question-container">
-        <div className="question-category">📂 {questionContent.category}</div>
-
-        {/* תמונה אם קיימת */}
+        {/* image */}
         {currentQuestion.image_url && (
-          <div className="question-image">
+          <div className="mb-4 overflow-hidden rounded-lg">
             <img
               src={currentQuestion.image_url}
               alt={
@@ -337,101 +347,95 @@ const DrivingQuiz = ({
                   ? currentQuestion.image_alt_he
                   : currentQuestion.image_alt_fa
               }
+              className="w-full object-contain"
+              style={{ maxHeight: "220px" }}
               onError={(e) => {
                 e.target.style.display = "none";
-                console.error("Failed to load question image");
               }}
             />
           </div>
         )}
-        <div className="question-text-container">
+
+        {/* question text */}
+        <div className="mb-5 flex items-start gap-2">
           <Speaker
             text={questionContent.question}
             lang={language === "he" ? "he-IL" : "fa-IR"}
           />
-          <h2 className="question-text">{questionContent.question}</h2>
-        </div>
-        <div className="options-container">
-          {questionContent.options.map(
-            (option, index) => (
-              console.log("1" + questionContent.options[index]),
-              (
-                <button
-                  key={index}
-                  className={`option-btn ${
-                    selectedAnswer === index
-                      ? index === currentQuestion.correct_answer
-                        ? "correct"
-                        : "incorrect"
-                      : ""
-                  } ${
-                    showResult && index === currentQuestion.correct_answer
-                      ? "correct-answer"
-                      : ""
-                  }`}
-                  onClick={() => handleAnswerSelect(index)}
-                  disabled={showResult}
-                >
-                  <span className="option-letter">
-                    {String.fromCharCode(65 + index)}.
-                  </span>
-                  <span className="option-text">{option}</span>
-                  <h2 className="question-text">
-                    <Speaker
-                      text={questionContent.options[index]}
-                      lang={language === "he" ? "he-IL" : "fa-IR"}
-                    />
-                  </h2>
-                  {showResult && index === currentQuestion.correct_answer && (
-                    <span className="correct-indicator">✓</span>
-                  )}
-                  {showResult &&
-                    selectedAnswer === index &&
-                    index !== currentQuestion.correct_answer && (
-                      <span className="incorrect-indicator">✗</span>
-                    )}
-                </button>
-              )
-            )
-          )}
+          <p className="text-base font-medium leading-relaxed text-gray-900">
+            {questionContent.question}
+          </p>
         </div>
 
-        {/* תוצאה והסבר */}
-        {showResult && (
-          <div className="result-container">
-            <div
-              className={`result-feedback ${
-                selectedAnswer === currentQuestion.correct_answer
-                  ? "correct"
-                  : "incorrect"
-              }`}
+        {/* answer options */}
+        <div className="space-y-2">
+          {questionContent.options.map((option, index) => (
+            <button
+              key={index}
+              disabled={showResult}
+              onClick={() => handleAnswerSelect(index)}
+              className={`flex w-full items-center gap-3 rounded-lg border px-4 py-3 text-right transition-colors duration-150 ${optionClass(index)}`}
             >
-              {selectedAnswer === currentQuestion.correct_answer ? (
-                <>
-                  <span className="result-icon">🎉</span>
-                  <span className="result-text">{translate.correctAnswer}</span>
-                </>
-              ) : (
-                <>
-                  <span className="result-icon">😔</span>
-                  <span className="result-text">{translate.wrongAnswer}</span>
-                </>
+              {/* letter badge */}
+              <span
+                className={`flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-sm font-medium transition-colors ${letterClass(index)}`}
+              >
+                {LETTERS[index]}
+              </span>
+
+              {/* option text */}
+              <span className="flex-1 text-sm leading-snug text-gray-800">
+                {option}
+              </span>
+
+              {/* speaker */}
+              <span onClick={(e) => e.stopPropagation()}>
+                <Speaker
+                  text={option}
+                  lang={language === "he" ? "he-IL" : "fa-IR"}
+                />
+              </span>
+
+              {/* indicator */}
+              {showResult && index === currentQuestion.correct_answer && (
+                <span className="text-base text-green-700">✓</span>
               )}
-            </div>
+              {showResult &&
+                selectedAnswer === index &&
+                index !== currentQuestion.correct_answer && (
+                  <span className="text-base text-red-700">✗</span>
+                )}
+            </button>
+          ))}
+        </div>
+      </div>
 
-            <div className="explanation">
-              <h4>💡 {translate.driving.quiz.explanation}</h4>
-              <p>{questionContent.explanation}</p>
-            </div>
+      {/* ── Result + explanation ── */}
+      {showResult && (
+        <div className="space-y-3">
+          {/* explanation */}
+          <div className="rounded-lg border-r-4 border-blue-700 bg-blue-50 px-4 py-3">
+            <p className="mb-1 text-s font-medium text-blue-800 font-bold">
+              {translate.driving.quiz.explanation}
+            </p>
+            <p className="text-sm leading-relaxed text-blue-900">
+              {questionContent.explanation}
+            </p>
+          </div>
 
-            <button className="next-btn" onClick={handleNextQuestion}>
+          {/* next button — sticky at bottom on mobile */}
+          <div className="sticky bottom-4">
+            <button
+              onClick={handleNextQuestion}
+              className="w-full rounded-lg bg-blue-500 py-3.5 text-sm font-medium text-white shadow-md active:scale-[0.99]"
+            >
               {currentQuestionIndex >= questions.length - 1
-                ? `🏁 ${translate.driving.quiz.finishQuiz}`
-                : `➡️ ${translate.driving.quiz.nextQuestion}`}
+                ? `${translate.driving.quiz.finishQuiz}`
+                : `${translate.driving.quiz.nextQuestion} ←`}
             </button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -52,8 +52,8 @@ const EditWordForm = ({ word, onUpdateWord, onClose, translate }) => {
   };
 
   return (
-    <div className="edit-word-overlay">
-      <div className="edit-word-form">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/50 p-5 z-[1000] animate-overlayFadeIn cursor-pointer">
+      <div className="bg-white border-2 border-[#e9ecef] rounded-[15px] p-[30px] max-[480px]:px-5 max-[480px]:py-[25px] max-w-[500px] w-full max-h-[90vh] overflow-y-auto shadow-[0_10px_40px_rgba(0,0,0,0.2)] hover:border-[#2a7ae4] hover:shadow-[0_12px_50px_rgba(42,122,228,0.15)] transition-all duration-300 cursor-default animate-formSlideIn">
         <div className="form-header">
           <h4>✏️{translate?.editWordForm.title}</h4>
           <button
