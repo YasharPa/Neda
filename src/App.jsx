@@ -8,6 +8,7 @@ import VocabularyPage from "./pages/VocabularyPage";
 import DrivingPage from "./pages/DrivingPage";
 import SentenceCompletionPage from "./pages/SentenceCompletionPage";
 import AuthPage from "./pages/AuthPage";
+import SignsPage from "./pages/SignsPage";
 import he from "./locales/hebrew.json";
 import fa from "./locales/persian.json";
 import { useAuth } from "./hooks/useAuth";
@@ -140,6 +141,10 @@ export default function App() {
                     language={lang}
                   />
                 }
+              />
+              <Route
+                path="/practice/driving/sings"
+                element={<SignsPage translate={translate} language={lang} />}
               />
             </Routes>
           </main>

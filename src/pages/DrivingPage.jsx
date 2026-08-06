@@ -66,13 +66,11 @@ const DrivingPage = ({ translate, language = "he" }) => {
             className="quiz-option main-quiz"
             onClick={() => setShowQuiz(true)}
           >
-            <div className="quiz-icon">🏆</div>
             <div className="quiz-content">
               <h3>{translate.driving.quizTypes.adaptive}</h3>
               <p>{translate.driving.quizTypes.adaptiveDesc}</p>
               <div className="quiz-info">
                 <span className="quiz-count">
-                  📊{" "}
                   {questionCount === 0
                     ? `${translate?.driving?.quizSettings?.allQuestions}`
                     : `${questionCount} ${translate?.driving?.quizSettings?.questions}`}
@@ -85,7 +83,6 @@ const DrivingPage = ({ translate, language = "he" }) => {
           </div>
 
           <div className="quiz-option practice-quiz coming-soon">
-            <div className="quiz-icon">📚</div>
             <div className="quiz-content">
               <h3>{translate.driving.quizTypes.practice}</h3>
               <p>{translate.driving.quizTypes.practiceDesc}</p>
