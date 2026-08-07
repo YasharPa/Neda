@@ -1,5 +1,4 @@
 import TopicCard from "../components/TopicCard";
-import "../styles/PracticePage.css";
 
 export default function PracticePage({ translate }) {
   const topics = [
@@ -26,11 +25,14 @@ export default function PracticePage({ translate }) {
   ];
 
   return (
-    <div className="p-[20px] text-center">
-      <h1 className="text-center mb-8 text-[#333] text-3xl">
-        {translate?.choosePracticeType}
-      </h1>
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4 mt-5">
+    <div className="w-full flex flex-col gap-10 animate-slide-up pb-10 px-4 md:px-0">
+      <div className="glass-card p-8 text-center border-brand-200 dark:border-brand-900/50">
+        <h1 className="text-3xl md:text-4xl font-bold text-slate-800 dark:text-slate-100 m-0">
+          {translate?.choosePracticeType}
+        </h1>
+      </div>
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {topics.map((topic, index) => (
           <TopicCard key={index} {...topic} />
         ))}

@@ -15,20 +15,8 @@ import WordCard from "../components/WordCard";
 import AddWordForm from "../components/AddWordForm";
 import EditWordForm from "../components/EditWordForm";
 import FilterBar from "../components/FilterBar";
-import "../styles/VocabularyPage.css";
 
 // ─── DroppableZone ────────────────────────────────────────────────────────────
-
-/**
- * DroppableZone component creates a designated area where draggable items (WordCards) can be dropped.
- * It handles its own styling based on whether an item is currently being dragged over it.
- *
- * @param {Object} props
- * @param {string} props.id - Unique identifier for the drop zone (e.g., "easy", "medium", "hard", "unclassified").
- * @param {string} props.title - The visible title of the zone.
- * @param {React.ReactNode} props.children - The WordCard components rendered inside this zone.
- * @param {Object} props.translate - Translation object for localization (UI texts).
- */
 
 const DroppableZone = ({
   id,
@@ -41,33 +29,33 @@ const DroppableZone = ({
   const { setNodeRef, isOver } = useDroppable({ id });
 
   return (
-    <div className="mb-[30px]">
+    <div className="mb-8">
       <div
-        className={`text-[1.2em] md:text-[1.4em] font-semibold py-3 px-4 md:py-[15px] md:px-[20px] rounded-lg mb-[15px] flex items-center gap-2.5 ${className}`}
+        className={`text-lg md:text-xl font-bold py-4 px-6 rounded-2xl mb-4 flex items-center gap-3 shadow-sm ${className}`}
       >
         {title}
       </div>
       <div
         ref={setNodeRef}
         className={`
-          min-h-[120px] rounded-xl transition-all duration-200 p-1
+          min-h-[120px] rounded-2xl transition-all duration-300 p-2
           ${
             isOver
-              ? "ring-2 ring-[#2a7ae4] ring-offset-2 bg-blue-50/40 scale-[1.005]"
+              ? "ring-2 ring-brand-500 ring-offset-2 ring-offset-slate-50 dark:ring-offset-dark-bg bg-brand-50/50 dark:bg-brand-900/20 scale-[1.01]"
               : ""
           }
         `}
       >
         {children.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-[15px] md:gap-[20px] px-1">
+          <div className="grid grid-cols-1 md:grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4 md:gap-5">
             {children}
           </div>
         ) : (
           <div
-            className={`bg-white border-2 border-dashed rounded-xl p-[40px] text-center text-[1.1em] leading-[1.5] transition-all duration-150 ${
+            className={`glass-card border-2 border-dashed rounded-2xl p-10 text-center text-lg leading-relaxed transition-all duration-300 ${
               isOver
-                ? "border-[#2a7ae4] border-solid text-[#2a7ae4] bg-blue-50/60"
-                : ""
+                ? "border-brand-500 text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-900/30"
+                : "border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400"
             }`}
           >
             {isOver ? translate.dropZone.message : emptyMessage}
@@ -79,15 +67,6 @@ const DroppableZone = ({
 };
 
 // ─── VocabularyPage ───────────────────────────────────────────────────────────
-/**
- * VocabularyPage is the main container component for the vocabulary learning section.
- * It orchestrates the Drag-and-Drop context, word filtering, progress tracking,
- * and handles interactions for adding, editing, and categorizing words.
- *
- * @param {Object} props
- * @param {Object} props.translate - Translation object for UI localization across the page.
- * @returns {JSX.Element} The fully composed vocabulary page.
- */
 
 const VocabularyPage = ({ translate }) => {
   const {
@@ -106,7 +85,7 @@ const VocabularyPage = ({ translate }) => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingWord, setEditingWord] = useState(null);
   const [activeWord, setActiveWord] = useState(null);
-  const [filter, setFilter] = useState("all"); // "all" | null | "easy" | "medium" | "hard"
+  const [filter, setFilter] = useState("all"); 
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -114,24 +93,20 @@ const VocabularyPage = ({ translate }) => {
     }),
     useSensor(TouchSensor, {
       activationConstraint: { delay: 250, tolerance: 6 },
-    }),
+    })
   );
 
-  // ─── Drag handlers ──────────────────────────────────────────────────────────
-
-  /** Stores the currently dragged word in state for the DragOverlay */
   const handleDragStart = ({ active }) => {
     const dragged = words.find((w) => w.id === active.id);
     setActiveWord(dragged ?? null);
   };
 
-  /** Handles the logic when a word is dropped into a specific DroppableZone */
   const handleDragEnd = async ({ active, over }) => {
     setActiveWord(null);
     if (!over) return;
 
     const wordId = active.id;
-    const newDifficulty = over.id; // "easy" | "medium" | "hard" | "unclassified"
+    const newDifficulty = over.id; 
     const currentWord = words.find((w) => w.id === wordId);
 
     if (currentWord?.difficulty === newDifficulty) return;
@@ -140,7 +115,6 @@ const VocabularyPage = ({ translate }) => {
     await updateWordDifficulty(wordId, difficultyValue);
   };
 
-  // ─── Word actions ────────────────────────────────────────────────────────────
   const handleAddWord = async (d) => {
     const ok = await addWord(d);
     if (ok) setShowAddForm(false);
@@ -155,20 +129,10 @@ const VocabularyPage = ({ translate }) => {
   };
   const handleDeleteWord = (id) => deleteWord(id);
 
-  // ─── Filtered word lists ─────────────────────────────────────────────────────
-  const filteredUnclassified =
-    filter === "all" || filter === null ? getUnclassifiedWords() : [];
-
-  const filteredEasy =
-    filter === "all" || filter === "easy" ? getWordsByDifficulty("easy") : [];
-
-  const filteredMedium =
-    filter === "all" || filter === "medium"
-      ? getWordsByDifficulty("medium")
-      : [];
-
-  const filteredHard =
-    filter === "all" || filter === "hard" ? getWordsByDifficulty("hard") : [];
+  const filteredUnclassified = filter === "all" || filter === null ? getUnclassifiedWords() : [];
+  const filteredEasy = filter === "all" || filter === "easy" ? getWordsByDifficulty("easy") : [];
+  const filteredMedium = filter === "all" || filter === "medium" ? getWordsByDifficulty("medium") : [];
+  const filteredHard = filter === "all" || filter === "hard" ? getWordsByDifficulty("hard") : [];
 
   const counts = {
     total: words.length,
@@ -177,8 +141,6 @@ const VocabularyPage = ({ translate }) => {
     medium: getWordsByDifficulty("medium").length,
     hard: getWordsByDifficulty("hard").length,
   };
-
-  // ─── Word card renderer (שימוש חוזר) ────────────────────────────────────────
 
   const renderCard = (word, showButtons = false) => (
     <WordCard
@@ -200,48 +162,53 @@ const VocabularyPage = ({ translate }) => {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <div className="max-w-7xl mx-auto p-[20px] bg-[#f8f9fa] min-h-screen md:p-5">
+      <div className="w-full flex flex-col gap-6 animate-slide-up pb-10">
+        
         {/* ── header ── */}
-        <div className="bg-white rounded-xl p-[25px] mb-[25px] shadow-[0_2px_10px_rgba(0,0,0,0.1)] flex flex-col md:flex-row justify-center md:justify-between items-center flex-wrap gap-[20px] text-center md:text-right">
-          <div className="header-content">
-            <h1 className="m-0 mb-2 text-[#2c3e50] font-bold text-[1.6em] sm:text-[1.8em] md:text-[2.2em]">
-              {translate.vocabulary.learningWords}
+        <div className="glass-card p-6 md:p-8 flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-right border-brand-200 dark:border-brand-900/50">
+          <div>
+            <h1 className="m-0 text-2xl md:text-3xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-3">
+              <span className="text-brand-500">📖</span> {translate.vocabulary.learningWords}
             </h1>
           </div>
-          <div className="flex gap-[12px]">
-            <button
-              className="bg-[#2a7ae4] text-white border-none rounded-lg py-3 px-5 text-[1em] font-semibold cursor-pointer transition-all duration-300 flex items-center gap-2 hover:bg-[#164a9e]  hover:shadow-[0_4px_12px_rgba(42,122,228,0.3)]"
-              onClick={() => setShowAddForm(!showAddForm)}
-            >
-              {showAddForm
-                ? ` ${translate?.vocabulary.close}`
-                : ` ${translate?.vocabulary.addWord}`}
-            </button>
-          </div>
+          <button
+            className="bg-brand-600 text-white rounded-xl py-3 px-6 font-bold transition-all duration-300 hover:bg-brand-500 shadow-md shadow-brand-500/20 hover:shadow-brand-500/40 w-full md:w-auto"
+            onClick={() => setShowAddForm(!showAddForm)}
+          >
+            {showAddForm ? translate?.vocabulary.close : translate?.vocabulary.addWord}
+          </button>
         </div>
 
         {showAddForm && (
-          <AddWordForm
-            onAddWord={handleAddWord}
-            onClose={() => setShowAddForm(false)}
-          />
+          <div className="animate-formSlideIn">
+            <AddWordForm
+              onAddWord={handleAddWord}
+              onClose={() => setShowAddForm(false)}
+            />
+          </div>
         )}
 
         {editingWord && (
-          <EditWordForm
-            word={editingWord}
-            onUpdateWord={handleUpdateWord}
-            onClose={() => setEditingWord(null)}
-            translate={translate}
-          />
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm animate-overlayFadeIn p-4">
+            <div className="w-full max-w-2xl animate-formSlideIn">
+              <EditWordForm
+                word={editingWord}
+                onUpdateWord={handleUpdateWord}
+                onClose={() => setEditingWord(null)}
+                translate={translate}
+              />
+            </div>
+          </div>
         )}
 
         {/* ── פס התקדמות ── */}
-        <ProgressBar
-          translate={translate}
-          stats={stats}
-          percentage={getProgressPercentage()}
-        />
+        <div className="glass-card p-6">
+          <ProgressBar
+            translate={translate}
+            stats={stats}
+            percentage={getProgressPercentage()}
+          />
+        </div>
 
         {/* ── פילטר ── */}
         <FilterBar
@@ -252,63 +219,64 @@ const VocabularyPage = ({ translate }) => {
         />
 
         {/* ── אזורי Drop ── */}
+        <div className="mt-4 flex flex-col gap-8">
+          {/* לא מסווג */}
+          {(filter === "all" || filter === null) && (
+            <DroppableZone
+              id="unclassified"
+              title={`${translate.vocabulary.wordClassificationTitle} (${counts.unclassified})`}
+              className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700"
+              emptyMessage={`${translate.vocabulary.emptyMessage}`}
+              translate={translate}
+            >
+              {filteredUnclassified.map((w) => renderCard(w, true))}
+            </DroppableZone>
+          )}
 
-        {/* לא מסווג */}
-        {(filter === "all" || filter === null) && (
-          <DroppableZone
-            id="unclassified"
-            title={`${translate.vocabulary.wordClassificationTitle} (${counts.unclassified})`}
-            className="unclassified"
-            emptyMessage={`${translate.vocabulary.emptyMessage}`}
-            translate={translate}
-          >
-            {filteredUnclassified.map((w) => renderCard(w, true))}
-          </DroppableZone>
-        )}
+          {/* easy */}
+          {(filter === "all" || filter === "easy") && (
+            <DroppableZone
+              id="easy"
+              title={`${translate?.vocabulary.easyWords} (${counts.easy})`}
+              className="bg-emerald-500 dark:bg-emerald-600 text-white"
+              emptyMessage={`${translate.vocabulary.emptyWordsOfEasyWords}`}
+              translate={translate}
+            >
+              {filteredEasy.map((w) => renderCard(w))}
+            </DroppableZone>
+          )}
 
-        {/* easy */}
-        {(filter === "all" || filter === "easy") && (
-          <DroppableZone
-            id="easy"
-            title={`${translate?.vocabulary.easyWords} (${counts.easy})`}
-            className="bg-[linear-gradient(135deg,#27ae60,#229954)] text-white"
-            emptyMessage={`${translate.vocabulary.emptyWordsOfEasyWords}`}
-            translate={translate}
-          >
-            {filteredEasy.map((w) => renderCard(w))}
-          </DroppableZone>
-        )}
+          {/* medium */}
+          {(filter === "all" || filter === "medium") && (
+            <DroppableZone
+              id="medium"
+              title={`${translate?.vocabulary.mediumWords} (${counts.medium})`}
+              className="bg-orange-500 dark:bg-orange-600 text-white"
+              emptyMessage={` ${translate?.vocabulary.emptyWordsOfMediumWords}`}
+              translate={translate}
+            >
+              {filteredMedium.map((w) => renderCard(w))}
+            </DroppableZone>
+          )}
 
-        {/* medium */}
-        {(filter === "all" || filter === "medium") && (
-          <DroppableZone
-            id="medium"
-            title={`${translate?.vocabulary.mediumWords} (${counts.medium})`}
-            className="bg-[linear-gradient(135deg,#f39c12,#e67e22)] text-white"
-            emptyMessage={` ${translate?.vocabulary.emptyWordsOfMediumWords}`}
-            translate={translate}
-          >
-            {filteredMedium.map((w) => renderCard(w))}
-          </DroppableZone>
-        )}
-
-        {/* hard */}
-        {(filter === "all" || filter === "hard") && (
-          <DroppableZone
-            id="hard"
-            title={`${translate?.vocabulary.hardWords} (${counts.hard})`}
-            className="bg-[linear-gradient(135deg,#e74c3c,#c0392b)] text-white"
-            emptyMessage={`${translate.vocabulary.emptyWordsOfHardWords}`}
-            translate={translate}
-          >
-            {filteredHard.map((w) => renderCard(w))}
-          </DroppableZone>
-        )}
+          {/* hard */}
+          {(filter === "all" || filter === "hard") && (
+            <DroppableZone
+              id="hard"
+              title={`${translate?.vocabulary.hardWords} (${counts.hard})`}
+              className="bg-red-500 dark:bg-red-600 text-white"
+              emptyMessage={`${translate.vocabulary.emptyWordsOfHardWords}`}
+              translate={translate}
+            >
+              {filteredHard.map((w) => renderCard(w))}
+            </DroppableZone>
+          )}
+        </div>
       </div>
 
       <DragOverlay dropAnimation={{ duration: 180, easing: "ease" }}>
         {activeWord ? (
-          <div className="rotate-[1deg] scale-[1.04] opacity-95 shadow-2xl pointer-events-none">
+          <div className="rotate-[2deg] scale-[1.05] opacity-95 shadow-2xl pointer-events-none">
             <WordCard word={activeWord} translate={translate} />
           </div>
         ) : null}

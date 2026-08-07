@@ -75,59 +75,54 @@ export default function HomePage({
     },
   ];
 
-  const topicCardHeader =
-    "flex flex-col sm:flex-row items-center text-center sm:text-start relative mb-4";
-  const topicCardSubHeader = "m-0 text-[1.3rem] text-[#333]";
-  const topicCardEnhanced =
-    "block bg-white relative overflow-hidden rounded-2xl p-6 sm:p-8 text-inherit no-underline border border-black/5 shadow-[0_4px_20px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(0,0,0,0.15)] before:content-[''] before:absolute before:inset-x-0 before:top-0 before:h-1 before:bg-gradient-to-r before:from-[#4caf50] before:via-[#2196f3] before:to-[#ff9800]";
-
-  const topicDescription = "text-[#666] mb-4 leading-[1.6]";
-  const topicProgressText = "text-sm text-[#666] mb-2";
-  const topicProgressBar = "h-1.5 bg-gray-100 rounded overflow-hidden";
-  const topicProgressFillBase =
-    "h-full rounded-sm transition-all duration-300 ease-in-out";
-
   return (
-    <div className="max-w-[1200px] mx-auto p-8 min-h-[calc(100vh-200px)] md:p-4">
-      <section className="mb-12">
-        <div className="flex flex-col md:flex-row gap-4 md:gap-6 mb-8">
+    <div className="w-full flex flex-col gap-10 animate-slide-up">
+      {/* אזור סטטיסטיקה עילי */}
+      <section>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           {stats.map((stat, i) => (
-            <div
-              key={i}
-              className="bg-white p-6 text-center flex-1  rounded-xl border border-black/10 shadow-[0_4px_6px_rgba(0,0,0,0.05)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(0,0,0,0.1)]"
-            >
-              <div className="text-[2rem] font-bold text-[#2a7ae4] mb-1">
-                {loading ? "..." : stat.value}
+            <div key={i} className="glass-card p-6 flex flex-col items-center justify-center text-center">
+              <div className="text-3xl md:text-4xl font-bold text-brand-600 dark:text-brand-400 mb-2">
+                {loading ? (
+                  <span className="inline-block w-8 h-8 border-4 border-brand-200 border-t-brand-600 rounded-full animate-spin"></span>
+                ) : (
+                  stat.value
+                )}
               </div>
-              <div className="text-[#666] text-[0.9rem]">{stat.title}</div>
+              <div className="text-slate-600 dark:text-dark-muted font-medium">
+                {stat.title}
+              </div>
             </div>
           ))}
         </div>
       </section>
-      {/* נושאי לימוד */}
-      <section className="mb-12">
-        <h2 className="text-center mb-8 text-[#333] text-3xl">
+
+      {/* אזור בחירת נושא */}
+      <section>
+        <h2 className="text-center text-2xl md:text-3xl font-bold text-slate-800 dark:text-slate-100 mb-8">
           {translate?.chooseSubject || "בחר נושא ללמידה"}
         </h2>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-[repeat(auto-fit,minmax(300px,1fr))] md:gap-8">
-          <Link to="/practice/driving" className={topicCardEnhanced}>
-            <div className={topicCardHeader}>
-              <h3 className={topicCardSubHeader}>
-                {translate?.topics?.driving?.title || "תיאוריה לנהיגה"}
-              </h3>
-            </div>
-            <p className={topicDescription}>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* כרטיסיית נהיגה */}
+          <Link to="/practice/driving" className="glass-card-interactive flex flex-col p-6 group">
+            <div className="w-full h-2 bg-gradient-to-r from-orange-400 to-red-500 absolute top-0 left-0"></div>
+            <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-3 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
+              {translate?.topics?.driving?.title || "תיאוריה לנהיגה"}
+            </h3>
+            <p className="text-slate-600 dark:text-dark-muted flex-grow mb-6">
               {translate?.topics?.driving?.description}
             </p>
+            
             {drivingStats?.overallPercentage > 0 && (
-              <div className="mt-4">
-                <div className={topicProgressText}>
-                  {translate?.progressBar?.currrentScore}
-                  {drivingStats.overallPercentage}%
+              <div className="mt-auto">
+                <div className="flex justify-between text-sm font-medium text-slate-600 dark:text-dark-muted mb-2">
+                  <span>{translate?.progressBar?.currrentScore}</span>
+                  <span className="text-brand-600 dark:text-brand-400">{drivingStats.overallPercentage}%</span>
                 </div>
-                <div className={topicProgressBar}>
+                <div className="h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
                   <div
-                    className={`${topicProgressFillBase} bg-gradient-to-r from-[#ff9800] to-[#ff5722]`}
+                    className="h-full bg-gradient-to-r from-orange-400 to-red-500 rounded-full transition-all duration-1000 ease-out"
                     style={{ width: `${drivingStats.overallPercentage}%` }}
                   ></div>
                 </div>
@@ -135,74 +130,66 @@ export default function HomePage({
             )}
           </Link>
 
-          <Link to="/practice/vocabulary" className={topicCardEnhanced}>
-            <div className={topicCardHeader}>
-              <h3 className={topicCardSubHeader}>
-                {translate?.topics?.vocabulary?.title || "למידת מילים"}
-              </h3>
-            </div>
-            <p className={topicDescription}>
-              {translate?.topics?.vocabulary?.description ||
-                "למד מילים חדשות והרחב את אוצר המילים שלך"}
+          {/* כרטיסיית אוצר מילים */}
+          <Link to="/practice/vocabulary" className="glass-card-interactive flex flex-col p-6 group">
+            <div className="w-full h-2 bg-gradient-to-r from-emerald-400 to-green-500 absolute top-0 left-0"></div>
+            <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-3 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
+              {translate?.topics?.vocabulary?.title || "למידת מילים"}
+            </h3>
+            <p className="text-slate-600 dark:text-dark-muted flex-grow mb-6">
+              {translate?.topics?.vocabulary?.description || "למד מילים חדשות והרחב את אוצר המילים שלך"}
             </p>
+            
             {statistics?.total > 0 && (
-              <div className="mt-4">
-                <div className={topicProgressText}>
-                  {translate?.progressBar?.classified || "סווגו"}:{" "}
-                  {statistics.classified}/{statistics.total}
+              <div className="mt-auto">
+                <div className="flex justify-between text-sm font-medium text-slate-600 dark:text-dark-muted mb-2">
+                  <span>{translate?.progressBar?.classified || "סווגו"}:</span>
+                  <span className="text-brand-600 dark:text-brand-400">{statistics.classified} / {statistics.total}</span>
                 </div>
-                <div className={topicProgressBar}>
+                <div className="h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
                   <div
-                    className={`${topicProgressFillBase} bg-gradient-to-r from-[#4caf50] to-[#8bc34a]`}
-                    style={{
-                      width: `${
-                        (statistics.classified / statistics.total) * 100
-                      }%`,
-                    }}
+                    className="h-full bg-gradient-to-r from-emerald-400 to-green-500 rounded-full transition-all duration-1000 ease-out"
+                    style={{ width: `${(statistics.classified / statistics.total) * 100}%` }}
                   ></div>
                 </div>
               </div>
             )}
           </Link>
 
-          <Link
-            to="/practice/sentence-completion"
-            className={`${topicCardEnhanced} opacity-70 relative`}
-          >
-            <div className={topicCardHeader}>
-              <h3 className={topicCardSubHeader}>
+          {/* כרטיסיית השלמת משפטים (בקרוב) */}
+          <Link to="/practice/sentence-completion" className="glass-card-interactive flex flex-col p-6 group opacity-80 cursor-default" onClick={(e) => e.preventDefault()}>
+            <div className="w-full h-2 bg-gradient-to-r from-brand-400 to-brand-600 absolute top-0 left-0"></div>
+            <div className="flex justify-between items-start mb-3">
+              <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">
                 {translate?.topics?.sentenceCompletion?.title || "השלמת משפטים"}
               </h3>
-              <span className="absolute -top-2 bg-[#ff6b35] text-white py-[0.3rem] px-[0.8rem] rounded-xl text-[0.8rem] font-bold">
+              <span className="bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 px-3 py-1 text-xs font-bold rounded-full">
                 {translate?.comingSoon || "בקרוב..."}
               </span>
             </div>
-            <p className={topicDescription}>
-              {translate?.topics?.sentenceCompletion?.description ||
-                "השלם את המילה החסרה במשפט"}
+            <p className="text-slate-600 dark:text-dark-muted flex-grow">
+              {translate?.topics?.sentenceCompletion?.description || "השלם את המילה החסרה במשפט"}
             </p>
           </Link>
         </div>
       </section>
-      {/* קישור לסטטיסטיקות מפורטות */}
-      {!loading &&
-        (statistics?.total > 0 || drivingStats?.totalQuestions) > 0 && (
-          <section className="text-center mt-8">
-            <Link
-              to="/stats"
-              className="group inline-flex items-center gap-2 bg-[#2a7ae4] text-white py-4 px-8 rounded-[25px] no-underline font-semibold transition-all duration-300 shadow-[0_4px_15px_rgba(42,122,228,0.3)] hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(42,122,228,0.4)] hover:bg-[#1e6ad1]"
-            >
-              <span className="stats-link-text">
-                {language === "he"
-                  ? "צפה בסטטיסטיקות מפורטות"
-                  : "مشاهده آمار دقیق"}
-              </span>
-              <span className="text-[1.2rem] transition-transform duration-300 group-hover:-translate-x-[3px]">
-                ←
-              </span>
-            </Link>
-          </section>
-        )}
+
+      {/* כפתור לסטטיסטיקות מפורטות */}
+      {!loading && (statistics?.total > 0 || drivingStats?.totalQuestions > 0) && (
+        <section className="flex justify-center mt-4">
+          <Link
+            to="/stats"
+            className="group flex items-center gap-3 bg-brand-600 hover:bg-brand-700 text-white px-8 py-4 rounded-full font-medium transition-all shadow-lg shadow-brand-500/30 hover:shadow-brand-500/50 hover:-translate-y-1"
+          >
+            <span>
+              {language === "he" ? "צפה בסטטיסטיקות מפורטות" : "مشاهده آمار دقیق"}
+            </span>
+            <span className="text-xl transition-transform group-hover:-translate-x-1">
+              ←
+            </span>
+          </Link>
+        </section>
+      )}
     </div>
   );
 }
