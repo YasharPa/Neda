@@ -102,16 +102,6 @@ export default function App() {
             </button>
           </div>
 
-          <div className="fixed bottom-6 right-6 z-[1000]">
-            <SettingsMenu 
-              isDark={isDark} 
-              toggleTheme={toggleTheme} 
-              fontSize={fontSize} 
-              setFontSize={setFontSize}
-              translate={translate}
-            />
-          </div>
-
           <header className="bg-gradient-to-l from-brand-700 to-brand-500 text-white px-6 py-6 shadow-md rounded-b-3xl mb-6 mx-2 mt-2">
             <div className="max-w-5xl mx-auto flex flex-col items-center">
               <h1 className="text-2xl font-bold mb-4">
@@ -130,9 +120,11 @@ export default function App() {
               </nav>
 
               <button
-                className="absolute top-6 left-6 px-4 py-2 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200"
+                className="absolute top-5 left-5 flex items-center gap-2 px-3.5 py-2 text-sm font-medium text-white/95 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl backdrop-blur-md transition-all duration-300 shadow-sm hover:shadow"
                 onClick={handleSignOutChange}
+                aria-label={translate?.signOut}
               >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="rotate-180"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                 {translate?.signOut}
               </button>
             </div>
@@ -151,8 +143,22 @@ export default function App() {
             </Routes>
           </main>
 
-          <footer className="mt-auto py-6 text-center text-slate-500 dark:text-dark-muted text-sm border-t border-slate-200 dark:border-dark-border">
-            <p>© 2026 {translate.allRightsReserved}</p>
+          <footer className="mt-auto py-6 border-t border-slate-200 dark:border-dark-border">
+            <div className="max-w-5xl mx-auto px-4 md:px-6 w-full flex items-center justify-between">
+              <div className="flex-1 flex justify-start relative z-50">
+                <SettingsMenu 
+                  isDark={isDark} 
+                  toggleTheme={toggleTheme} 
+                  fontSize={fontSize} 
+                  setFontSize={setFontSize}
+                  translate={translate}
+                />
+              </div>
+              <div className="flex-[2] text-center text-slate-500 dark:text-dark-muted text-sm">
+                <p>© 2026 {translate.allRightsReserved}</p>
+              </div>
+              <div className="flex-1"></div>
+            </div>
           </footer>
         </>
       )}
