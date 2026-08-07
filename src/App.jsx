@@ -38,6 +38,12 @@ export default function App() {
     localStorage.setItem("fontSize", fontSize);
   }, [fontSize]);
 
+  // שחרור נעילת גלילה ואיפוס מיקום למעלה בכל מעבר דף
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    document.body.style.overflow = 'unset';
+  }, [location.pathname]);
+
   const loadStats = async () => {
     try {
       const { data: stats, error } = await vocabularyAPI.getStats();

@@ -4,7 +4,7 @@ import SignCard from "../components/SignCard";
 import SignModal from "../components/SignModal";
 import LoadingSpinner from "../components/LoadingSpinner";
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 24;
 
 const SignsPage = ({ translate, language = "he" }) => {
   const [signs, setSigns] = useState([]);
@@ -14,7 +14,6 @@ const SignsPage = ({ translate, language = "he" }) => {
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState(null);
   const pageRef = useRef(0);
-  const sentinelRef = useRef(null);
 
   const fetchSigns = useCallback(async (pageIndex) => {
     const from = pageIndex * PAGE_SIZE;
@@ -38,27 +37,26 @@ const SignsPage = ({ translate, language = "he" }) => {
       .finally(() => setLoading(false));
   }, [fetchSigns]);
 
-  useEffect(() => {
-    const el = sentinelRef.current;
-    if (!el || !hasMore) return;
+  const observerRef = useRef(null);
+  const sentinelRef = useCallback((node) => {
+    if (loading) return;
+    if (observerRef.current) observerRef.current.disconnect();
+    
+    if (!node) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !loadingMore) {
-          const nextPage = pageRef.current + 1;
-          pageRef.current = nextPage;
-          setLoadingMore(true);
-          fetchSigns(nextPage)
-            .catch(() => setError("שגיאה בטעינת תמרורים נוספים"))
-            .finally(() => setLoadingMore(false));
-        }
-      },
-      { threshold: 0.1 },
-    );
+    observerRef.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && hasMore && !loadingMore) {
+        setLoadingMore(true);
+        const nextPage = pageRef.current + 1;
+        pageRef.current = nextPage;
+        fetchSigns(nextPage)
+          .catch(() => setError("שגיאה בטעינת תמרורים נוספים"))
+          .finally(() => setLoadingMore(false));
+      }
+    }, { threshold: 0.1, rootMargin: '200px' });
 
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [hasMore, loadingMore, fetchSigns]);
+    observerRef.current.observe(node);
+  }, [loading, loadingMore, hasMore, fetchSigns]);
 
   const handleRetry = () => {
     setError(null);
@@ -115,10 +113,15 @@ const SignsPage = ({ translate, language = "he" }) => {
 
       <div
         ref={sentinelRef}
-        className="flex justify-center items-center py-8 min-h-[60px]"
+        className="flex justify-center items-center py-8 min-h-[100px] w-full"
       >
         {loadingMore && (
-          <div className="w-6 h-6 border-2 border-gray-200 border-t-blue-500 rounded-full animate-spin" />
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-10 h-10 border-4 border-slate-200 dark:border-slate-800 border-t-brand-500 dark:border-t-brand-400 rounded-full animate-spin"></div>
+            <span className="text-sm font-medium text-slate-500 dark:text-slate-400 animate-pulse">
+              טוען עוד תמרורים...
+            </span>
+          </div>
         )}
       </div>
 
