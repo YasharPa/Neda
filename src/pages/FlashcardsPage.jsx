@@ -7,6 +7,8 @@ import { flashcardsAPI } from "../lib/supabaseClient";
 import Flashcard from "../components/Flashcard";
 import Speaker from "../components/Speaker";
 import LoadingSpinner from "../components/LoadingSpinner";
+import { OptionButton, SettingRow } from "../components/SetupOptions";
+import { shuffleArray } from "../lib/shuffle";
 
 const CARD_COUNTS = [10, 20, "all"];
 const WORD_FILTERS = ["all", "unclassified", "easy", "medium", "hard"];
@@ -30,15 +32,6 @@ const RATING_HOVER = {
   known: "hover:bg-emerald-500 dark:hover:bg-emerald-600",
 };
 
-const shuffleArray = (array) => {
-  const copy = [...array];
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy;
-};
-
 const wordToCard = (word) => ({
   id: `w-${word.id}`,
   kind: "word",
@@ -57,29 +50,6 @@ const signToCard = (sign) => ({
   persian: sign.persian_name,
   category: sign.category,
 });
-
-// ─── OptionButton ─────────────────────────────────────────────────────────────
-
-const OptionButton = ({ active, onClick, children }) => (
-  <button
-    type="button"
-    onClick={onClick}
-    className={`px-4 py-2 rounded-xl font-medium border-2 transition-all duration-200 ${
-      active
-        ? "bg-brand-600 border-brand-600 text-white shadow-md shadow-brand-500/20"
-        : "bg-white/60 dark:bg-dark-surface/60 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-brand-400"
-    }`}
-  >
-    {children}
-  </button>
-);
-
-const SettingRow = ({ label, children }) => (
-  <div className="flex flex-col gap-3">
-    <span className="font-bold text-slate-700 dark:text-slate-200">{label}</span>
-    <div className="flex flex-wrap gap-2">{children}</div>
-  </div>
-);
 
 // ─── FlashcardsPage ───────────────────────────────────────────────────────────
 

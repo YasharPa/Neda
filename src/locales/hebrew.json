@@ -65,7 +65,13 @@
     "cardsReviewed": "כרטיסיות שנסקרו",
     "knownPercentage": "אחוז ידיעה",
     "noFlashcardSessions": "עדיין לא תרגלת עם כרטיסיות",
-    "startFlashcards": "התחל לתרגל כרטיסיות"
+    "startFlashcards": "התחל לתרגל כרטיסיות",
+    "sentenceStats": "סטטיסטיקות השלמת משפטים",
+    "sentenceSessions": "סבבי תרגול",
+    "sentencesAnswered": "משפטים שנענו",
+    "sentenceAccuracy": "אחוז הצלחה",
+    "noSentenceSessions": "עדיין לא תרגלת השלמת משפטים",
+    "startSentences": "התחל לתרגל השלמת משפטים"
   },
   "vocabulary": {
     "message": "טוען מילים מהשרת...",
@@ -225,5 +231,37 @@
     "saveError": "לא ניתן היה לשמור את הסטטיסטיקה של הסבב",
     "loadError": "שגיאה בטעינת התמרורים",
     "ratingUpdatesDifficulty": "הדירוג שלך מעדכן את רמת הקושי של המילה"
+  },
+  "sentenceCompletion": {
+    "description": "בחר את המילה שמשלימה את המשפט ולמד דקדוק ומילים שימושיות",
+    "setupTitle": "הגדרות תרגול",
+    "difficulty": "רמת קושי",
+    "topic": "נושא",
+    "allTopics": "כל הנושאים",
+    "topics": {
+      "everyday": "יומיום",
+      "verbs": "פעלים וזמנים",
+      "prepositions": "מילות יחס",
+      "grammar": "מין, מספר וסמיכות",
+      "questions": "מילות שאלה"
+    },
+    "questionCount": "כמה שאלות?",
+    "all": "הכל",
+    "start": "התחל",
+    "available": "משפטים זמינים",
+    "noQuestions": "אין משפטים שמתאימים לבחירה",
+    "question": "שאלה",
+    "of": "מתוך",
+    "correctLabel": "נכונות",
+    "translation": "תרגום לפרסית",
+    "finish": "סיים וראה תוצאות",
+    "endSession": "סיים",
+    "summaryTitle": "סיימת את הסבב!",
+    "mistakes": "משפטים לחזרה",
+    "repeatMistakes": "תרגל שוב את הטעויות",
+    "newSession": "סבב חדש",
+    "saveError": "לא ניתן היה לשמור את הסטטיסטיקה של הסבב",
+    "loadError": "שגיאה בטעינת המשפטים",
+    "keyboardHint": "מקשים 1–4 לבחירה · Enter לשאלה הבאה"
   }
 }

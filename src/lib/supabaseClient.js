@@ -596,12 +596,51 @@ export const sentenceCompletionAPI = {
   // פונקציות API רלוונטיות אם יש צורך
   async getData() {
     try {
-      const { data } = await supabase.from("sentencecompletion").select("*");
+      const { data, error } = await supabase
+        .from("sentencecompletion")
+        .select("*")
+        .order("id", { ascending: true });
 
+      if (error) throw error;
       return { data: data || [], error: null };
     } catch (error) {
       console.error("Error fetching sentence completion questions:", error);
       return { data: [], error };
+    }
+  },
+
+  async saveSession({ total, correct }, userID) {
+    try {
+      const { data, error } = await supabase
+        .from("sentence_sessions")
+        .insert([{ user_id: userID, total, correct }])
+        .select();
+
+      if (error) throw error;
+      return { data, error: null };
+    } catch (error) {
+      console.error("Error saving sentence session:", error);
+      return { data: null, error };
+    }
+  },
+
+  async getStats() {
+    try {
+      const { data, error } = await supabase
+        .from("sentence_sessions")
+        .select("total, correct");
+
+      if (error) throw error;
+
+      const sessions = data.length;
+      const answered = data.reduce((sum, s) => sum + s.total, 0);
+      const correct = data.reduce((sum, s) => sum + s.correct, 0);
+      const percentage = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+
+      return { data: { sessions, answered, correct, percentage }, error: null };
+    } catch (error) {
+      console.error("Error fetching sentence stats:", error);
+      return { data: null, error };
     }
   },
 };

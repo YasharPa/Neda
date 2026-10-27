@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useVocabulary } from "../hooks/useVocabulary";
-import { drivingAPI, flashcardsAPI } from "../lib/supabaseClient";
+import { drivingAPI, flashcardsAPI, sentenceCompletionAPI } from "../lib/supabaseClient";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 const StatsPage = ({ translate }) => {
@@ -9,6 +9,7 @@ const StatsPage = ({ translate }) => {
   const [drivingStats, setDrivingStats] = useState(null);
   const [recentResults, setRecentResults] = useState([]);
   const [flashcardStats, setFlashcardStats] = useState(null);
+  const [sentenceStats, setSentenceStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -26,6 +27,11 @@ const StatsPage = ({ translate }) => {
 
       if (flashcards) {
         setFlashcardStats(flashcards);
+      }
+
+      const { data: sentences } = await sentenceCompletionAPI.getStats();
+      if (sentences) {
+        setSentenceStats(sentences);
       }
 
       if (!statsError && categoryStats) {
@@ -192,6 +198,36 @@ const StatsPage = ({ translate }) => {
             <p className="text-slate-500 dark:text-slate-400 m-0">{translate?.statistics.noFlashcardSessions}</p>
             <Link to="/practice/flashcards" className="px-6 py-3 bg-brand-600 hover:bg-brand-500 text-white rounded-xl font-medium transition-all shadow-md shadow-brand-500/20">
               {translate?.statistics.startFlashcards}
+            </Link>
+          </div>
+        )}
+      </div>
+
+      {/* סטטיסטיקות השלמת משפטים */}
+      <div className="flex flex-col gap-6">
+        <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2 m-0 border-b-2 border-slate-200 dark:border-slate-800 pb-2">
+          <span className="text-brand-500">✏️</span> {translate?.statistics.sentenceStats}
+        </h2>
+        {sentenceStats?.sessions > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="glass-card p-5 text-center flex flex-col items-center gap-2 border-t-4 border-t-purple-500">
+              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{sentenceStats.sessions}</div>
+              <div className="text-xs font-semibold text-slate-600 dark:text-slate-400">{translate?.statistics.sentenceSessions}</div>
+            </div>
+            <div className="glass-card p-5 text-center flex flex-col items-center gap-2 border-t-4 border-t-blue-500">
+              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{sentenceStats.answered}</div>
+              <div className="text-xs font-semibold text-slate-600 dark:text-slate-400">{translate?.statistics.sentencesAnswered}</div>
+            </div>
+            <div className="glass-card p-5 text-center flex flex-col items-center gap-2 border-t-4 border-t-emerald-500">
+              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{sentenceStats.percentage}%</div>
+              <div className="text-xs font-semibold text-slate-600 dark:text-slate-400">{translate?.statistics.sentenceAccuracy}</div>
+            </div>
+          </div>
+        ) : (
+          <div className="glass-card p-8 text-center flex flex-col items-center gap-4 border-dashed border-2 border-slate-300 dark:border-slate-700">
+            <p className="text-slate-500 dark:text-slate-400 m-0">{translate?.statistics.noSentenceSessions}</p>
+            <Link to="/practice/sentence-completion" className="px-6 py-3 bg-brand-600 hover:bg-brand-500 text-white rounded-xl font-medium transition-all shadow-md shadow-brand-500/20">
+              {translate?.statistics.startSentences}
             </Link>
           </div>
         )}
