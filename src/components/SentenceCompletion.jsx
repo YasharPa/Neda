@@ -278,15 +278,18 @@ export default function SentenceCompletion({ translate, language }) {
               }
 
               return (
-                <button
-                  key={option.key}
-                  className={btnClass}
-                  onClick={() => handleSelect(option.key)}
-                  disabled={selected !== null}
-                >
-                  <span className="hidden md:inline text-sm opacity-50">{index + 1}</span>
-                  <span className="flex-1">{option.answer}</span>
-                </button>
+                <div key={option.key} className="flex items-center gap-2">
+                  <button
+                    className={btnClass}
+                    onClick={() => handleSelect(option.key)}
+                    disabled={selected !== null}
+                  >
+                    <span className="hidden md:inline text-sm opacity-50">{index + 1}</span>
+                    <span className="flex-1">{option.answer}</span>
+                  </button>
+                  {/* הקראת התשובה – לשמוע את ההבדל בין זכר לנקבה */}
+                  <Speaker text={option.answer} lang="he-IL" size="small" />
+                </div>
               );
             })}
           </div>

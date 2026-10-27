@@ -1,8 +1,32 @@
 import { useState, useEffect } from "react";
 
-export default function Speaker({ text, lang = "he-IL" }) {
+// קצב הקראה מעט איטי מהרגיל, כדי שיהיה קל לשמוע את ההגייה
+const SPEECH_RATE = 0.85;
+
+// בחירת קול עברי – עדיפות לקול של Google אם קיים במכשיר
+const findVoice = (lang) => {
+  const prefix = lang.slice(0, 2);
+  const voices = window.speechSynthesis
+    .getVoices()
+    .filter((v) => v.lang.startsWith(prefix) || (prefix === "he" && v.lang.startsWith("iw")));
+  return voices.find((v) => /google/i.test(v.name)) || voices[0] || null;
+};
+
+// גיבוי: הקראה דרך Google Translate כשאין במכשיר קול עברי
+const playGoogleTTS = (text, lang, onEnd) => {
+  const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${lang.slice(0, 2)}&q=${encodeURIComponent(text)}`;
+  const audio = new Audio(url);
+  audio.playbackRate = SPEECH_RATE;
+  audio.onended = onEnd;
+  audio.onerror = onEnd;
+  return audio.play().catch(onEnd);
+};
+
+export default function Speaker({ text, lang = "he-IL", size = "medium" }) {
   const [speaking, setSpeaking] = useState(false);
   const [disabled, setDisabled] = useState(false);
+  const [voice, setVoice] = useState(null);
+
   useEffect(() => {
     if (lang === "fa-IR") {
       setDisabled(true);
@@ -11,18 +35,37 @@ export default function Speaker({ text, lang = "he-IL" }) {
     }
   }, [lang]);
 
+  // רשימת הקולות נטענת אצל חלק מהדפדפנים רק אחרי voiceschanged
+  useEffect(() => {
+    if (!("speechSynthesis" in window)) return;
+    const updateVoice = () => setVoice(findVoice(lang));
+    updateVoice();
+    window.speechSynthesis.addEventListener("voiceschanged", updateVoice);
+    return () => window.speechSynthesis.removeEventListener("voiceschanged", updateVoice);
+  }, [lang]);
+
   const handleSpeak = (event) => {
     if (!text || lang === "fa-IR") return;
     event.stopPropagation();
-    speechSynthesis.cancel();
+    const done = () => setSpeaking(false);
 
+    if (!voice) {
+      setSpeaking(true);
+      playGoogleTTS(text, lang, done);
+      return;
+    }
+
+    window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = lang;
+    utterance.voice = voice;
+    utterance.rate = SPEECH_RATE;
 
     utterance.onstart = () => setSpeaking(true);
-    utterance.onend = () => setSpeaking(false);
+    utterance.onend = done;
+    utterance.onerror = done;
 
-    speechSynthesis.speak(utterance);
+    window.speechSynthesis.speak(utterance);
   };
 
   const btnClasses = disabled 
@@ -35,7 +78,7 @@ export default function Speaker({ text, lang = "he-IL" }) {
     <button
       onClick={handleSpeak}
       disabled={disabled}
-      className={`w-10 h-10 flex items-center justify-center rounded-full border border-slate-200 dark:border-slate-700 transition-all duration-300 ${btnClasses}`}
+      className={`${size === "small" ? "w-8 h-8" : "w-10 h-10"} shrink-0 flex items-center justify-center rounded-full border border-slate-200 dark:border-slate-700 transition-all duration-300 ${btnClasses}`}
       aria-label="הקרא טקסט"
     >
       {speaking ? (

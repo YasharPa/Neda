@@ -243,7 +243,8 @@
       "verbs": "פעלים וזמנים",
       "prepositions": "מילות יחס",
       "grammar": "מין, מספר וסמיכות",
-      "questions": "מילות שאלה"
+      "questions": "מילות שאלה",
+      "gender": "זכר ונקבה (עם ניקוד)"
     },
     "questionCount": "כמה שאלות?",
     "all": "הכל",
