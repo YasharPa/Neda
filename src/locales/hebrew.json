@@ -59,7 +59,13 @@
     "lastResults": "תוצאות אחרונות",
     "startPracticing": "התחל לתרגל נהיגה",
     "noRecentResults": "עדיין לא התחלת לתרגל נהיגה",
-    "pleasePractice": "כשתתחיל לענות על שאלות בחינת הנהיגה, הסטטיסטיקות יופיעו כאן"
+    "pleasePractice": "כשתתחיל לענות על שאלות בחינת הנהיגה, הסטטיסטיקות יופיעו כאן",
+    "flashcardStats": "סטטיסטיקות כרטיסיות",
+    "flashcardSessions": "סבבי כרטיסיות",
+    "cardsReviewed": "כרטיסיות שנסקרו",
+    "knownPercentage": "אחוז ידיעה",
+    "noFlashcardSessions": "עדיין לא תרגלת עם כרטיסיות",
+    "startFlashcards": "התחל לתרגל כרטיסיות"
   },
   "vocabulary": {
     "message": "טוען מילים מהשרת...",
@@ -152,6 +158,10 @@
     "vocabulary": {
       "title": "למידת מילים",
       "description": "למד מילים חדשות והרחב את אוצר המילים שלך"
+    },
+    "flashcards": {
+      "title": "כרטיסיות לימוד",
+      "description": "הפוך כרטיסיות ובדוק את עצמך במילים ובתמרורים"
     }
   },
   "infoSection": {
@@ -176,5 +186,44 @@
     "tryAgainLater": "אנא נסה שוב מאוחר יותר",
     "loadingError": "שגיאה בטעינה",
     "tryAgain": "נסה שוב"
+  },
+  "flashcards": {
+    "title": "כרטיסיות לימוד",
+    "description": "הפוך כרטיסיות ובדוק את עצמך במילים ובתמרורים",
+    "setupTitle": "הגדרות תרגול",
+    "deck": "מה ללמוד?",
+    "deckWords": "המילים שלי",
+    "deckSigns": "תמרורים",
+    "wordsFilter": "אילו מילים?",
+    "frontSide": "מה יופיע קודם?",
+    "frontHebrew": "עברית",
+    "frontPersian": "פרסית",
+    "category": "קטגוריה",
+    "allCategories": "כל הקטגוריות",
+    "cardCount": "כמה כרטיסיות?",
+    "all": "הכל",
+    "shuffle": "ערבב כרטיסיות",
+    "start": "התחל",
+    "available": "כרטיסיות זמינות",
+    "noCards": "אין כרטיסיות שמתאימות לבחירה",
+    "noWords": "עדיין אין לך מילים. הוסף מילים בדף לימוד המילים",
+    "goToVocabulary": "לדף לימוד המילים",
+    "tapToFlip": "הקש להפיכה",
+    "flip": "הפוך כרטיס",
+    "swipeHint": "החלק ימינה אם ידעת, שמאלה אם לא · מקשים 1/2/3",
+    "keyboardHint": "רווח להפיכת הכרטיס",
+    "unknown": "לא ידעתי",
+    "partial": "חלקית",
+    "known": "ידעתי",
+    "card": "כרטיס",
+    "of": "מתוך",
+    "inQueue": "נותרו בתור",
+    "endSession": "סיים",
+    "summaryTitle": "כל הכבוד! סיימת את הסבב",
+    "repeatMissed": "תרגל שוב את מה שפספסתי",
+    "newSession": "סבב חדש",
+    "saveError": "לא ניתן היה לשמור את הסטטיסטיקה של הסבב",
+    "loadError": "שגיאה בטעינת התמרורים",
+    "ratingUpdatesDifficulty": "הדירוג שלך מעדכן את רמת הקושי של המילה"
   }
 }

@@ -9,6 +9,7 @@ import DrivingPage from "./pages/DrivingPage";
 import SentenceCompletionPage from "./pages/SentenceCompletionPage";
 import AuthPage from "./pages/AuthPage";
 import SignsPage from "./pages/SignsPage";
+import FlashcardsPage from "./pages/FlashcardsPage";
 import he from "./locales/hebrew.json";
 import fa from "./locales/persian.json";
 import { useAuth } from "./hooks/useAuth";
@@ -139,6 +140,7 @@ export default function App() {
               <Route path="/practice/vocabulary" element={<VocabularyPage translate={translate} />} />
               <Route path="/practice/driving" element={<DrivingPage translate={translate} language={lang} />} />
               <Route path="/practice/sentence-completion" element={<SentenceCompletionPage translate={translate} language={lang} />} />
+              <Route path="/practice/flashcards" element={<FlashcardsPage translate={translate} language={lang} />} />
               <Route path="/practice/driving/signs" element={<SignsPage translate={translate} language={lang} />} />
             </Routes>
           </main>

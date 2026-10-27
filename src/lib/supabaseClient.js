@@ -605,3 +605,83 @@ export const sentenceCompletionAPI = {
     }
   },
 };
+
+export const flashcardsAPI = {
+  async getSigns() {
+    try {
+      const { data, error } = await supabase
+        .from("road_signs")
+        .select("sign_code, image_url, hebrew_name, persian_name, category");
+
+      if (error) throw error;
+      return { data: data || [], error: null };
+    } catch (error) {
+      console.error("Error fetching road signs:", error);
+      return { data: [], error };
+    }
+  },
+
+  async saveSession({ deckType, known, partial, unknown }, userID) {
+    try {
+      const { data, error } = await supabase
+        .from("flashcard_sessions")
+        .insert([
+          {
+            user_id: userID,
+            deck_type: deckType,
+            total_cards: known + partial + unknown,
+            known,
+            partial,
+            unknown,
+          },
+        ])
+        .select();
+
+      if (error) throw error;
+      return { data, error: null };
+    } catch (error) {
+      console.error("Error saving flashcard session:", error);
+      return { data: null, error };
+    }
+  },
+
+  async getSessions(limit = 50) {
+    try {
+      const { data, error } = await supabase
+        .from("flashcard_sessions")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(limit);
+
+      if (error) throw error;
+      return { data: data || [], error: null };
+    } catch (error) {
+      console.error("Error fetching flashcard sessions:", error);
+      return { data: [], error };
+    }
+  },
+
+  async getStats() {
+    try {
+      const { data, error } = await supabase
+        .from("flashcard_sessions")
+        .select("total_cards, known");
+
+      if (error) throw error;
+
+      const sessions = data.length;
+      const cardsReviewed = data.reduce((sum, s) => sum + s.total_cards, 0);
+      const known = data.reduce((sum, s) => sum + s.known, 0);
+      const knownPercentage =
+        cardsReviewed > 0 ? Math.round((known / cardsReviewed) * 100) : 0;
+
+      return {
+        data: { sessions, cardsReviewed, known, knownPercentage },
+        error: null,
+      };
+    } catch (error) {
+      console.error("Error fetching flashcard stats:", error);
+      return { data: null, error };
+    }
+  },
+};

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { drivingAPI } from "../lib/supabaseClient";
+import { drivingAPI, flashcardsAPI } from "../lib/supabaseClient";
 
 export default function HomePage({
   translate,
@@ -9,6 +9,7 @@ export default function HomePage({
   user,
 }) {
   const [drivingStats, setDrivingStats] = useState(null);
+  const [flashcardStats, setFlashcardStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,6 +22,8 @@ export default function HomePage({
     try {
       const { data: categoryStats } = await drivingAPI.getCategoryStats();
       const { data: recentResults } = await drivingAPI.getRecentResults(100);
+      const { data: flashcards } = await flashcardsAPI.getStats();
+      if (flashcards) setFlashcardStats(flashcards);
 
       if (categoryStats) {
         const totalQuestions = categoryStats.reduce(
@@ -53,7 +56,8 @@ export default function HomePage({
   const getPracticeSessionsCount = () => {
     const drivingPractice = drivingStats?.practiceSessionsCount || 0;
     const vocabularyPractice = statistics?.classified || 0;
-    return drivingPractice + vocabularyPractice;
+    const flashcardPractice = flashcardStats?.sessions || 0;
+    return drivingPractice + vocabularyPractice + flashcardPractice;
   };
 
   const getWordsLearned = () => {
@@ -156,6 +160,32 @@ export default function HomePage({
             )}
           </Link>
 
+          {/* כרטיסיית כרטיסיות לימוד */}
+          <Link to="/practice/flashcards" className="glass-card-interactive flex flex-col p-6 group">
+            <div className="w-full h-2 bg-gradient-to-r from-purple-400 to-fuchsia-500 absolute top-0 left-0"></div>
+            <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-3 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
+              {translate?.topics?.flashcards?.title}
+            </h3>
+            <p className="text-slate-600 dark:text-dark-muted flex-grow mb-6">
+              {translate?.topics?.flashcards?.description}
+            </p>
+
+            {flashcardStats?.cardsReviewed > 0 && (
+              <div className="mt-auto">
+                <div className="flex justify-between text-sm font-medium text-slate-600 dark:text-dark-muted mb-2">
+                  <span>{translate?.statistics?.knownPercentage}:</span>
+                  <span className="text-brand-600 dark:text-brand-400">{flashcardStats.knownPercentage}%</span>
+                </div>
+                <div className="h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-purple-400 to-fuchsia-500 rounded-full transition-all duration-1000 ease-out"
+                    style={{ width: `${flashcardStats.knownPercentage}%` }}
+                  ></div>
+                </div>
+              </div>
+            )}
+          </Link>
+
           {/* כרטיסיית השלמת משפטים (בקרוב) */}
           <Link to="/practice/sentence-completion" className="glass-card-interactive flex flex-col p-6 group opacity-80 cursor-default" onClick={(e) => e.preventDefault()}>
             <div className="w-full h-2 bg-gradient-to-r from-brand-400 to-brand-600 absolute top-0 left-0"></div>
@@ -175,7 +205,7 @@ export default function HomePage({
       </section>
 
       {/* כפתור לסטטיסטיקות מפורטות */}
-      {!loading && (statistics?.total > 0 || drivingStats?.totalQuestions > 0) && (
+      {!loading && (statistics?.total > 0 || drivingStats?.totalQuestions > 0 || flashcardStats?.sessions > 0) && (
         <section className="flex justify-center mt-4">
           <Link
             to="/stats"

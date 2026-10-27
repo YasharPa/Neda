@@ -22,6 +22,11 @@ export default function PracticePage({ translate }) {
       description: `${translate.topics.vocabulary.description}`,
       link: "/practice/vocabulary",
     },
+    {
+      title: `${translate.topics.flashcards.title}`,
+      description: `${translate.topics.flashcards.description}`,
+      link: "/practice/flashcards",
+    },
   ];
 
   return (
@@ -32,7 +37,7 @@ export default function PracticePage({ translate }) {
         </h1>
       </div>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {topics.map((topic, index) => (
           <TopicCard key={index} {...topic} />
         ))}
