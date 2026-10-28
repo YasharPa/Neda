@@ -5,10 +5,8 @@ const SWIPE_THRESHOLD = 100;
 // מרחק מינימלי שמבדיל בין הקשה לגרירה
 const DRAG_START = 8;
 
-const faceStyle = {
-  backfaceVisibility: "hidden",
-  WebkitBackfaceVisibility: "hidden",
-};
+// צד של כרטיס שמוסתר כשהוא פונה אחורה בסיבוב התלת־ממדי
+const FACE_CLASSES = "absolute inset-0 [backface-visibility:hidden] [-webkit-backface-visibility:hidden]";
 
 const Flashcard = ({ front, back, isFlipped, onFlip, onSwipe, tapHint }) => {
   const [dragX, setDragX] = useState(0);
@@ -65,15 +63,13 @@ const Flashcard = ({ front, back, isFlipped, onFlip, onSwipe, tapHint }) => {
 
   return (
     <div
-      className="w-full max-w-md mx-auto select-none"
-      style={{ perspective: "1200px", touchAction: "pan-y" }}
+      className="w-full max-w-md mx-auto select-none [perspective:1200px] touch-pan-y"
     >
       <div
-        className="relative h-80 md:h-96 cursor-pointer rounded-3xl"
-        style={{
-          transform: `translateX(${dragX}px) rotate(${dragX / 25}deg)`,
-          transition: isDragging ? "none" : "transform 0.3s ease-out",
-        }}
+        className={`relative h-80 md:h-96 cursor-pointer rounded-3xl ${
+          isDragging ? "transition-none" : "transition-transform duration-300 ease-out"
+        }`}
+        style={{ transform: `translateX(${dragX}px) rotate(${dragX / 25}deg)` }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
@@ -81,16 +77,13 @@ const Flashcard = ({ front, back, isFlipped, onFlip, onSwipe, tapHint }) => {
         onClick={handleClick}
       >
         <div
-          className="relative w-full h-full transition-transform duration-500"
-          style={{
-            transformStyle: "preserve-3d",
-            transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
-          }}
+          className={`relative w-full h-full transition-transform duration-500 [transform-style:preserve-3d] ${
+            isFlipped ? "[transform:rotateY(180deg)]" : "[transform:rotateY(0deg)]"
+          }`}
         >
           {/* צד קדמי */}
           <div
-            className="absolute inset-0 glass-card !rounded-3xl border-2 border-brand-200 dark:border-brand-900/50 flex flex-col items-center justify-center p-6 text-center"
-            style={faceStyle}
+            className={`${FACE_CLASSES} glass-card !rounded-3xl border-2 border-brand-200 dark:border-brand-900/50 flex flex-col items-center justify-center p-6 text-center`}
           >
             {front}
             {tapHint && (
@@ -102,8 +95,7 @@ const Flashcard = ({ front, back, isFlipped, onFlip, onSwipe, tapHint }) => {
 
           {/* צד אחורי */}
           <div
-            className="absolute inset-0 glass-card !rounded-3xl border-2 border-emerald-200 dark:border-emerald-900/50 flex flex-col items-center justify-center p-6 text-center overflow-hidden"
-            style={{ ...faceStyle, transform: "rotateY(180deg)" }}
+            className={`${FACE_CLASSES} [transform:rotateY(180deg)] glass-card !rounded-3xl border-2 border-emerald-200 dark:border-emerald-900/50 flex flex-col items-center justify-center p-6 text-center overflow-hidden`}
           >
             <div
               className="absolute inset-0 pointer-events-none rounded-3xl"

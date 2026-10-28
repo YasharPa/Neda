@@ -339,10 +339,9 @@ const DrivingQuiz = ({
                   ? currentQuestion.image_alt_he
                   : currentQuestion.image_alt_fa
               }
-              className="w-full object-contain"
-              style={{ maxHeight: "220px" }}
+              className="w-full object-contain max-h-[220px]"
               onError={(e) => {
-                e.target.style.display = "none";
+                e.target.classList.add("hidden");
               }}
             />
           </div>
