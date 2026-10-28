@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { supabase } from "../lib/supabaseClient";
+import { signsAPI } from "../lib/supabaseClient";
 import SignCard from "../components/SignCard";
 import SignModal from "../components/SignModal";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -19,10 +19,7 @@ const SignsPage = ({ translate, language = "he" }) => {
     const from = pageIndex * PAGE_SIZE;
     const to = from + PAGE_SIZE - 1;
 
-    const { data, error } = await supabase
-      .from("road_signs")
-      .select("*")
-      .range(from, to);
+    const { data, error } = await signsAPI.getPage(from, to);
 
     if (error) throw error;
 

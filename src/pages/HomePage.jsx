@@ -21,11 +21,18 @@ export default function HomePage({
 
   const fetchDrivingStats = async () => {
     try {
-      const { data: categoryStats } = await drivingAPI.getCategoryStats();
-      const { data: recentResults } = await drivingAPI.getRecentResults(100);
-      const { data: flashcards } = await flashcardsAPI.getStats();
+      const [
+        { data: categoryStats },
+        { data: recentResults },
+        { data: flashcards },
+        { data: sentences },
+      ] = await Promise.all([
+        drivingAPI.getCategoryStats(),
+        drivingAPI.getRecentResults(100),
+        flashcardsAPI.getStats(),
+        sentenceCompletionAPI.getStats(),
+      ]);
       if (flashcards) setFlashcardStats(flashcards);
-      const { data: sentences } = await sentenceCompletionAPI.getStats();
       if (sentences) setSentenceStats(sentences);
 
       if (categoryStats) {
@@ -58,10 +65,9 @@ export default function HomePage({
 
   const getPracticeSessionsCount = () => {
     const drivingPractice = drivingStats?.practiceSessionsCount || 0;
-    const vocabularyPractice = statistics?.classified || 0;
     const flashcardPractice = flashcardStats?.sessions || 0;
     const sentencePractice = sentenceStats?.sessions || 0;
-    return drivingPractice + vocabularyPractice + flashcardPractice + sentencePractice;
+    return drivingPractice + flashcardPractice + sentencePractice;
   };
 
   const getWordsLearned = () => {

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { drivingAPI } from "../lib/supabaseClient";
 import LoadingSpinner from "./LoadingSpinner";
+import { shuffleArray } from "../lib/shuffle";
 import Speaker from "./Speaker";
 
 const LETTERS = ["א", "ב", "ג", "ד"];
@@ -31,15 +32,6 @@ const DrivingQuiz = ({
   useEffect(() => {
     loadQuestions();
   }, []);
-
-  const shuffleArray = (array) => {
-    const shuffled = [...array];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
-  };
 
   const loadQuestions = async () => {
     setLoading(true);

@@ -3,12 +3,13 @@ import { Link } from "react-router-dom";
 import { useVocabulary } from "../hooks/useVocabulary";
 import { useFlashcards } from "../hooks/useFlashcards";
 import { useAuth } from "../hooks/useAuth";
-import { flashcardsAPI } from "../lib/supabaseClient";
+import { flashcardsAPI, signsAPI } from "../lib/supabaseClient";
 import Flashcard from "../components/Flashcard";
 import Speaker from "../components/Speaker";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { OptionButton, SettingRow } from "../components/SetupOptions";
 import { shuffleArray } from "../lib/shuffle";
+import { shouldIgnoreShortcut } from "../lib/keyboard";
 
 const CARD_COUNTS = [10, 20, "all"];
 const WORD_FILTERS = ["all", "unclassified", "easy", "medium", "hard"];
@@ -93,8 +94,8 @@ const FlashcardsPage = ({ translate, language = "he" }) => {
     if (deckType !== "signs" || signs.length > 0) return;
     setSignsLoading(true);
     setSignsError(null);
-    flashcardsAPI
-      .getSigns()
+    signsAPI
+      .getAll()
       .then(({ data, error }) => {
         if (error) setSignsError(t.loadError);
         else setSigns(data);
@@ -159,7 +160,7 @@ const FlashcardsPage = ({ translate, language = "he" }) => {
   useEffect(() => {
     if (!current) return;
     const handleKey = (e) => {
-      if (["INPUT", "SELECT", "TEXTAREA", "BUTTON"].includes(e.target.tagName)) return;
+      if (shouldIgnoreShortcut(e)) return;
       if (e.key === " ") {
         e.preventDefault();
         setIsFlipped((f) => !f);

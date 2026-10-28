@@ -15,27 +15,33 @@ const Flashcard = ({ front, back, isFlipped, onFlip, onSwipe, tapHint }) => {
   const [isDragging, setIsDragging] = useState(false);
   const startXRef = useRef(null);
   const draggedRef = useRef(false);
+  // המרחק העדכני – state עלול להתעדכן באיחור בהחלקה מהירה
+  const dxRef = useRef(0);
 
   const handlePointerDown = (e) => {
     startXRef.current = e.clientX;
     draggedRef.current = false;
+    dxRef.current = 0;
+    // לוכדים את המצביע כבר בנגיעה, כדי שגם החלקה מהירה שיוצאת מהכרטיס תיספר
+    if (isFlipped) e.currentTarget.setPointerCapture(e.pointerId);
   };
 
   const handlePointerMove = (e) => {
     if (startXRef.current === null || !isFlipped) return;
     const dx = e.clientX - startXRef.current;
+    dxRef.current = dx;
 
     if (!draggedRef.current && Math.abs(dx) > DRAG_START) {
       draggedRef.current = true;
       setIsDragging(true);
-      e.currentTarget.setPointerCapture(e.pointerId);
     }
     if (draggedRef.current) setDragX(dx);
   };
 
   const handlePointerUp = () => {
-    if (draggedRef.current && Math.abs(dragX) > SWIPE_THRESHOLD) {
-      onSwipe?.(dragX > 0 ? "right" : "left");
+    const dx = dxRef.current;
+    if (draggedRef.current && Math.abs(dx) > SWIPE_THRESHOLD) {
+      onSwipe?.(dx > 0 ? "right" : "left");
     }
     startXRef.current = null;
     setIsDragging(false);
@@ -51,13 +57,6 @@ const Flashcard = ({ front, back, isFlipped, onFlip, onSwipe, tapHint }) => {
     onFlip();
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter" && e.target === e.currentTarget) {
-      e.preventDefault();
-      onFlip();
-    }
-  };
-
   const swipeProgress = Math.min(Math.abs(dragX) / SWIPE_THRESHOLD, 1);
   const swipeTint =
     dragX > 0
@@ -70,10 +69,7 @@ const Flashcard = ({ front, back, isFlipped, onFlip, onSwipe, tapHint }) => {
       style={{ perspective: "1200px", touchAction: "pan-y" }}
     >
       <div
-        role="button"
-        tabIndex={0}
-        aria-pressed={isFlipped}
-        className="relative h-80 md:h-96 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-brand-500 rounded-3xl"
+        className="relative h-80 md:h-96 cursor-pointer rounded-3xl"
         style={{
           transform: `translateX(${dragX}px) rotate(${dragX / 25}deg)`,
           transition: isDragging ? "none" : "transform 0.3s ease-out",
@@ -83,7 +79,6 @@ const Flashcard = ({ front, back, isFlipped, onFlip, onSwipe, tapHint }) => {
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
         onClick={handleClick}
-        onKeyDown={handleKeyDown}
       >
         <div
           className="relative w-full h-full transition-transform duration-500"

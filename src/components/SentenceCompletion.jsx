@@ -3,6 +3,7 @@ import { useSentceCompleation } from "../hooks/useSentcesCompletion";
 import { useAuth } from "../hooks/useAuth";
 import { sentenceCompletionAPI } from "../lib/supabaseClient";
 import { shuffleArray } from "../lib/shuffle";
+import { shouldIgnoreShortcut } from "../lib/keyboard";
 import LoadingSpinner from "./LoadingSpinner";
 import Speaker from "./Speaker";
 import { OptionButton, SettingRow } from "./SetupOptions";
@@ -131,7 +132,7 @@ export default function SentenceCompletion({ translate, language }) {
   useEffect(() => {
     if (!currentQuestion || finished) return;
     const handleKey = (e) => {
-      if (["INPUT", "SELECT", "TEXTAREA", "BUTTON"].includes(e.target.tagName)) return;
+      if (shouldIgnoreShortcut(e)) return;
       const index = Number(e.key) - 1;
       if (selected === null && index >= 0 && index < currentQuestion.options.length) {
         handleSelect(currentQuestion.options[index].key);

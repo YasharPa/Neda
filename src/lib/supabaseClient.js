@@ -626,15 +626,13 @@ export const sentenceCompletionAPI = {
 
   async getStats() {
     try {
-      const { data, error } = await supabase
-        .from("sentence_sessions")
-        .select("total, correct");
+      const { data, error } = await supabase.rpc("get_sentence_stats").single();
 
       if (error) throw error;
 
-      const sessions = data.length;
-      const answered = data.reduce((sum, s) => sum + s.total, 0);
-      const correct = data.reduce((sum, s) => sum + s.correct, 0);
+      const sessions = Number(data.sessions);
+      const answered = Number(data.answered);
+      const correct = Number(data.correct);
       const percentage = answered > 0 ? Math.round((correct / answered) * 100) : 0;
 
       return { data: { sessions, answered, correct, percentage }, error: null };
@@ -645,8 +643,23 @@ export const sentenceCompletionAPI = {
   },
 };
 
-export const flashcardsAPI = {
-  async getSigns() {
+export const signsAPI = {
+  async getPage(from, to) {
+    try {
+      const { data, error } = await supabase
+        .from("road_signs")
+        .select("*")
+        .range(from, to);
+
+      if (error) throw error;
+      return { data: data || [], error: null };
+    } catch (error) {
+      console.error("Error fetching road signs page:", error);
+      return { data: [], error };
+    }
+  },
+
+  async getAll() {
     try {
       const { data, error } = await supabase
         .from("road_signs")
@@ -659,7 +672,9 @@ export const flashcardsAPI = {
       return { data: [], error };
     }
   },
+};
 
+export const flashcardsAPI = {
   async saveSession({ deckType, known, partial, unknown }, userID) {
     try {
       const { data, error } = await supabase
@@ -684,33 +699,15 @@ export const flashcardsAPI = {
     }
   },
 
-  async getSessions(limit = 50) {
-    try {
-      const { data, error } = await supabase
-        .from("flashcard_sessions")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(limit);
-
-      if (error) throw error;
-      return { data: data || [], error: null };
-    } catch (error) {
-      console.error("Error fetching flashcard sessions:", error);
-      return { data: [], error };
-    }
-  },
-
   async getStats() {
     try {
-      const { data, error } = await supabase
-        .from("flashcard_sessions")
-        .select("total_cards, known");
+      const { data, error } = await supabase.rpc("get_flashcard_stats").single();
 
       if (error) throw error;
 
-      const sessions = data.length;
-      const cardsReviewed = data.reduce((sum, s) => sum + s.total_cards, 0);
-      const known = data.reduce((sum, s) => sum + s.known, 0);
+      const sessions = Number(data.sessions);
+      const cardsReviewed = Number(data.cards_reviewed);
+      const known = Number(data.known);
       const knownPercentage =
         cardsReviewed > 0 ? Math.round((known / cardsReviewed) * 100) : 0;
 

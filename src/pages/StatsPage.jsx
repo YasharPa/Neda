@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import PracticeStatsSection from "../components/PracticeStatsSection";
 import { useVocabulary } from "../hooks/useVocabulary";
 import { drivingAPI, flashcardsAPI, sentenceCompletionAPI } from "../lib/supabaseClient";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -19,17 +19,22 @@ const StatsPage = ({ translate }) => {
   const fetchDrivingStats = async () => {
     setLoading(true);
     try {
-      const { data: categoryStats, error: statsError } =
-        await drivingAPI.getCategoryStats();
-      const { data: results, error: resultsError } =
-        await drivingAPI.getRecentResults(20);
-      const { data: flashcards } = await flashcardsAPI.getStats();
+      const [
+        { data: categoryStats, error: statsError },
+        { data: results, error: resultsError },
+        { data: flashcards },
+        { data: sentences },
+      ] = await Promise.all([
+        drivingAPI.getCategoryStats(),
+        drivingAPI.getRecentResults(20),
+        flashcardsAPI.getStats(),
+        sentenceCompletionAPI.getStats(),
+      ]);
 
       if (flashcards) {
         setFlashcardStats(flashcards);
       }
 
-      const { data: sentences } = await sentenceCompletionAPI.getStats();
       if (sentences) {
         setSentenceStats(sentences);
       }
@@ -174,64 +179,34 @@ const StatsPage = ({ translate }) => {
       </div>
 
       {/* סטטיסטיקות כרטיסיות */}
-      <div className="flex flex-col gap-6">
-        <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2 m-0 border-b-2 border-slate-200 dark:border-slate-800 pb-2">
-          <span className="text-brand-500">🃏</span> {translate?.statistics.flashcardStats}
-        </h2>
-        {flashcardStats?.sessions > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="glass-card p-5 text-center flex flex-col items-center gap-2 border-t-4 border-t-purple-500">
-              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{flashcardStats.sessions}</div>
-              <div className="text-xs font-semibold text-slate-600 dark:text-slate-400">{translate?.statistics.flashcardSessions}</div>
-            </div>
-            <div className="glass-card p-5 text-center flex flex-col items-center gap-2 border-t-4 border-t-blue-500">
-              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{flashcardStats.cardsReviewed}</div>
-              <div className="text-xs font-semibold text-slate-600 dark:text-slate-400">{translate?.statistics.cardsReviewed}</div>
-            </div>
-            <div className="glass-card p-5 text-center flex flex-col items-center gap-2 border-t-4 border-t-emerald-500">
-              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{flashcardStats.knownPercentage}%</div>
-              <div className="text-xs font-semibold text-slate-600 dark:text-slate-400">{translate?.statistics.knownPercentage}</div>
-            </div>
-          </div>
-        ) : (
-          <div className="glass-card p-8 text-center flex flex-col items-center gap-4 border-dashed border-2 border-slate-300 dark:border-slate-700">
-            <p className="text-slate-500 dark:text-slate-400 m-0">{translate?.statistics.noFlashcardSessions}</p>
-            <Link to="/practice/flashcards" className="px-6 py-3 bg-brand-600 hover:bg-brand-500 text-white rounded-xl font-medium transition-all shadow-md shadow-brand-500/20">
-              {translate?.statistics.startFlashcards}
-            </Link>
-          </div>
-        )}
-      </div>
+      <PracticeStatsSection
+        icon="🃏"
+        title={translate?.statistics.flashcardStats}
+        hasData={flashcardStats?.sessions > 0}
+        tiles={[
+          { value: flashcardStats?.sessions, label: translate?.statistics.flashcardSessions, borderClass: "border-t-purple-500" },
+          { value: flashcardStats?.cardsReviewed, label: translate?.statistics.cardsReviewed, borderClass: "border-t-blue-500" },
+          { value: `${flashcardStats?.knownPercentage}%`, label: translate?.statistics.knownPercentage, borderClass: "border-t-emerald-500" },
+        ]}
+        emptyText={translate?.statistics.noFlashcardSessions}
+        ctaTo="/practice/flashcards"
+        ctaText={translate?.statistics.startFlashcards}
+      />
 
       {/* סטטיסטיקות השלמת משפטים */}
-      <div className="flex flex-col gap-6">
-        <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2 m-0 border-b-2 border-slate-200 dark:border-slate-800 pb-2">
-          <span className="text-brand-500">✏️</span> {translate?.statistics.sentenceStats}
-        </h2>
-        {sentenceStats?.sessions > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="glass-card p-5 text-center flex flex-col items-center gap-2 border-t-4 border-t-purple-500">
-              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{sentenceStats.sessions}</div>
-              <div className="text-xs font-semibold text-slate-600 dark:text-slate-400">{translate?.statistics.sentenceSessions}</div>
-            </div>
-            <div className="glass-card p-5 text-center flex flex-col items-center gap-2 border-t-4 border-t-blue-500">
-              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{sentenceStats.answered}</div>
-              <div className="text-xs font-semibold text-slate-600 dark:text-slate-400">{translate?.statistics.sentencesAnswered}</div>
-            </div>
-            <div className="glass-card p-5 text-center flex flex-col items-center gap-2 border-t-4 border-t-emerald-500">
-              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{sentenceStats.percentage}%</div>
-              <div className="text-xs font-semibold text-slate-600 dark:text-slate-400">{translate?.statistics.sentenceAccuracy}</div>
-            </div>
-          </div>
-        ) : (
-          <div className="glass-card p-8 text-center flex flex-col items-center gap-4 border-dashed border-2 border-slate-300 dark:border-slate-700">
-            <p className="text-slate-500 dark:text-slate-400 m-0">{translate?.statistics.noSentenceSessions}</p>
-            <Link to="/practice/sentence-completion" className="px-6 py-3 bg-brand-600 hover:bg-brand-500 text-white rounded-xl font-medium transition-all shadow-md shadow-brand-500/20">
-              {translate?.statistics.startSentences}
-            </Link>
-          </div>
-        )}
-      </div>
+      <PracticeStatsSection
+        icon="✏️"
+        title={translate?.statistics.sentenceStats}
+        hasData={sentenceStats?.sessions > 0}
+        tiles={[
+          { value: sentenceStats?.sessions, label: translate?.statistics.sentenceSessions, borderClass: "border-t-purple-500" },
+          { value: sentenceStats?.answered, label: translate?.statistics.sentencesAnswered, borderClass: "border-t-blue-500" },
+          { value: `${sentenceStats?.percentage}%`, label: translate?.statistics.sentenceAccuracy, borderClass: "border-t-emerald-500" },
+        ]}
+        emptyText={translate?.statistics.noSentenceSessions}
+        ctaTo="/practice/sentence-completion"
+        ctaText={translate?.statistics.startSentences}
+      />
 
       {/* סטטיסטיקות נהיגה */}
       {drivingStats && drivingStats.length > 0 && (
