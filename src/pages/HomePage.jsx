@@ -247,6 +247,17 @@ export default function HomePage({
               </div>
             )}
           </Link>
+
+          {/* כרטיסיית כתיבה נכונה (הכתבה) */}
+          <Link to="/practice/spelling" className="glass-card-interactive flex flex-col p-6 group">
+            <div className="w-full h-2 bg-gradient-to-r from-sky-400 to-brand-600 absolute top-0 left-0"></div>
+            <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-3 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
+              {translate?.topics?.spelling?.title || "כתיבה נכונה"}
+            </h3>
+            <p className="text-slate-600 dark:text-dark-muted flex-grow">
+              {translate?.topics?.spelling?.description || "הקשב והקלד הודעות יומיומיות בעברית"}
+            </p>
+          </Link>
         </div>
       </section>
 

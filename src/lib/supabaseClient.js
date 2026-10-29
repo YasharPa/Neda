@@ -722,3 +722,26 @@ export const flashcardsAPI = {
     }
   },
 };
+
+export const writingAPI = {
+  // משפטים להודעות יומיומיות לתרגול הכתבה, אפשר לסנן לפי קטגוריה
+  async getPhrases(category = null) {
+    try {
+      let query = supabase
+        .from("messaging_phrases")
+        .select("id, text_he, text_fa, category, difficulty")
+        .eq("is_active", true);
+
+      if (category) {
+        query = query.eq("category", category);
+      }
+
+      const { data, error } = await query;
+      if (error) throw error;
+      return { data: data || [], error: null };
+    } catch (error) {
+      console.error("Error fetching messaging phrases:", error);
+      return { data: [], error };
+    }
+  },
+};
