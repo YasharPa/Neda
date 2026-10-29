@@ -56,8 +56,8 @@ export function useVocabulary() {
     }
   };
 
-  // עדכון רמת קושי של מילה
-  const updateWordDifficulty = async (wordId, difficulty) => {
+  // עדכון רמת קושי של מילה. refreshStats: false מאפשר לרענן את הסטטיסטיקות פעם אחת בסוף
+  const updateWordDifficulty = async (wordId, difficulty, { refreshStats = true } = {}) => {
     setUpdating(wordId);
     try {
       const { error } = await vocabularyAPI.updateDifficulty(
@@ -78,7 +78,7 @@ export function useVocabulary() {
       );
 
       // עדכון סטטיסטיקות
-      await updateStats();
+      if (refreshStats) await updateStats();
       return true;
     } catch (error) {
       console.error("Error updating word difficulty:", error);
@@ -188,6 +188,7 @@ export function useVocabulary() {
 
     // Actions
     fetchWords,
+    refreshStats: updateStats,
     updateWordDifficulty,
     addWord,
     deleteWord,

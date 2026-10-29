@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
+import PracticeStatsSection from "../components/PracticeStatsSection";
 import { useVocabulary } from "../hooks/useVocabulary";
-import { drivingAPI } from "../lib/supabaseClient";
+import { drivingAPI, flashcardsAPI, sentenceCompletionAPI } from "../lib/supabaseClient";
 import LoadingSpinner from "../components/LoadingSpinner";
 import LoginPrompt from "../components/LoginPrompt";
 import { useAuth } from "../hooks/useAuth";
@@ -10,6 +11,8 @@ const StatsPage = ({ translate, onLogin }) => {
   const { stats: vocabularyStats, words } = useVocabulary();
   const [drivingStats, setDrivingStats] = useState(null);
   const [recentResults, setRecentResults] = useState([]);
+  const [flashcardStats, setFlashcardStats] = useState(null);
+  const [sentenceStats, setSentenceStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -24,10 +27,25 @@ const StatsPage = ({ translate, onLogin }) => {
   const fetchDrivingStats = async () => {
     setLoading(true);
     try {
-      const { data: categoryStats, error: statsError } =
-        await drivingAPI.getCategoryStats();
-      const { data: results, error: resultsError } =
-        await drivingAPI.getRecentResults(20);
+      const [
+        { data: categoryStats, error: statsError },
+        { data: results, error: resultsError },
+        { data: flashcards },
+        { data: sentences },
+      ] = await Promise.all([
+        drivingAPI.getCategoryStats(),
+        drivingAPI.getRecentResults(20),
+        flashcardsAPI.getStats(),
+        sentenceCompletionAPI.getStats(),
+      ]);
+
+      if (flashcards) {
+        setFlashcardStats(flashcards);
+      }
+
+      if (sentences) {
+        setSentenceStats(sentences);
+      }
 
       if (!statsError && categoryStats) {
         setDrivingStats(categoryStats);
@@ -180,6 +198,36 @@ const StatsPage = ({ translate, onLogin }) => {
           </div>
         </div>
       </div>
+
+      {/* סטטיסטיקות כרטיסיות */}
+      <PracticeStatsSection
+        icon="🃏"
+        title={translate?.statistics.flashcardStats}
+        hasData={flashcardStats?.sessions > 0}
+        tiles={[
+          { value: flashcardStats?.sessions, label: translate?.statistics.flashcardSessions, borderClass: "border-t-purple-500" },
+          { value: flashcardStats?.cardsReviewed, label: translate?.statistics.cardsReviewed, borderClass: "border-t-blue-500" },
+          { value: `${flashcardStats?.knownPercentage}%`, label: translate?.statistics.knownPercentage, borderClass: "border-t-emerald-500" },
+        ]}
+        emptyText={translate?.statistics.noFlashcardSessions}
+        ctaTo="/practice/flashcards"
+        ctaText={translate?.statistics.startFlashcards}
+      />
+
+      {/* סטטיסטיקות השלמת משפטים */}
+      <PracticeStatsSection
+        icon="✏️"
+        title={translate?.statistics.sentenceStats}
+        hasData={sentenceStats?.sessions > 0}
+        tiles={[
+          { value: sentenceStats?.sessions, label: translate?.statistics.sentenceSessions, borderClass: "border-t-purple-500" },
+          { value: sentenceStats?.answered, label: translate?.statistics.sentencesAnswered, borderClass: "border-t-blue-500" },
+          { value: `${sentenceStats?.percentage}%`, label: translate?.statistics.sentenceAccuracy, borderClass: "border-t-emerald-500" },
+        ]}
+        emptyText={translate?.statistics.noSentenceSessions}
+        ctaTo="/practice/sentence-completion"
+        ctaText={translate?.statistics.startSentences}
+      />
 
       {/* סטטיסטיקות נהיגה */}
       {drivingStats && drivingStats.length > 0 && (

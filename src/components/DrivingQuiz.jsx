@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { drivingAPI } from "../lib/supabaseClient";
 import LoadingSpinner from "./LoadingSpinner";
+import { shuffleArray } from "../lib/shuffle";
 import Speaker from "./Speaker";
 import { useAuth } from "../hooks/useAuth";
 
@@ -33,15 +34,6 @@ const DrivingQuiz = ({
   useEffect(() => {
     loadQuestions();
   }, []);
-
-  const shuffleArray = (array) => {
-    const shuffled = [...array];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
-  };
 
   const loadQuestions = async () => {
     setLoading(true);
@@ -357,10 +349,9 @@ const DrivingQuiz = ({
                   ? currentQuestion.image_alt_he
                   : currentQuestion.image_alt_fa
               }
-              className="w-full object-contain"
-              style={{ maxHeight: "220px" }}
+              className="w-full object-contain max-h-[220px]"
               onError={(e) => {
-                e.target.style.display = "none";
+                e.target.classList.add("hidden");
               }}
             />
           </div>

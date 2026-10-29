@@ -596,12 +596,129 @@ export const sentenceCompletionAPI = {
   // פונקציות API רלוונטיות אם יש צורך
   async getData() {
     try {
-      const { data } = await supabase.from("sentencecompletion").select("*");
+      const { data, error } = await supabase
+        .from("sentencecompletion")
+        .select("*")
+        .order("id", { ascending: true });
 
+      if (error) throw error;
       return { data: data || [], error: null };
     } catch (error) {
       console.error("Error fetching sentence completion questions:", error);
       return { data: [], error };
+    }
+  },
+
+  async saveSession({ total, correct }, userID) {
+    try {
+      const { data, error } = await supabase
+        .from("sentence_sessions")
+        .insert([{ user_id: userID, total, correct }])
+        .select();
+
+      if (error) throw error;
+      return { data, error: null };
+    } catch (error) {
+      console.error("Error saving sentence session:", error);
+      return { data: null, error };
+    }
+  },
+
+  async getStats() {
+    try {
+      const { data, error } = await supabase.rpc("get_sentence_stats").single();
+
+      if (error) throw error;
+
+      const sessions = Number(data.sessions);
+      const answered = Number(data.answered);
+      const correct = Number(data.correct);
+      const percentage = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+
+      return { data: { sessions, answered, correct, percentage }, error: null };
+    } catch (error) {
+      console.error("Error fetching sentence stats:", error);
+      return { data: null, error };
+    }
+  },
+};
+
+export const signsAPI = {
+  async getPage(from, to) {
+    try {
+      const { data, error } = await supabase
+        .from("road_signs")
+        .select("*")
+        .range(from, to);
+
+      if (error) throw error;
+      return { data: data || [], error: null };
+    } catch (error) {
+      console.error("Error fetching road signs page:", error);
+      return { data: [], error };
+    }
+  },
+
+  async getAll() {
+    try {
+      const { data, error } = await supabase
+        .from("road_signs")
+        .select("sign_code, image_url, hebrew_name, persian_name, category")
+        .order("sign_code", { ascending: true });
+
+      if (error) throw error;
+      return { data: data || [], error: null };
+    } catch (error) {
+      console.error("Error fetching road signs:", error);
+      return { data: [], error };
+    }
+  },
+};
+
+export const flashcardsAPI = {
+  async saveSession({ deckType, known, partial, unknown }, userID) {
+    try {
+      const { data, error } = await supabase
+        .from("flashcard_sessions")
+        .insert([
+          {
+            user_id: userID,
+            deck_type: deckType,
+            total_cards: known + partial + unknown,
+            known,
+            partial,
+            unknown,
+          },
+        ])
+        .select();
+
+      if (error) throw error;
+      return { data, error: null };
+    } catch (error) {
+      console.error("Error saving flashcard session:", error);
+      return { data: null, error };
+    }
+  },
+
+  async getStats() {
+    try {
+      const { data, error } = await supabase.rpc("get_flashcard_stats").single();
+
+      if (error) throw error;
+
+      const sessions = Number(data.sessions);
+      const cardsReviewed = Number(data.cards_reviewed);
+      const known = Number(data.known);
+      const knownPercentage =
+        cardsReviewed > 0 ? Math.round((known / cardsReviewed) * 100) : 0;
+
+      return {
+        data: { sessions, cardsReviewed, known, knownPercentage },
+        error: null,
+      };
+    } catch (error) {
+      console.error("Error fetching flashcard stats:", error);
+      return { data: null, error };
     }
   },
 };

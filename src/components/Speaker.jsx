@@ -1,28 +1,119 @@
-import { useState, useEffect } from "react";
+import { useRef, useState, useSyncExternalStore } from "react";
 
-export default function Speaker({ text, lang = "he-IL" }) {
+// קצב הקראה מעט איטי מהרגיל, כדי שיהיה קל לשמוע את ההגייה
+const SPEECH_RATE = 0.85;
+// מגבלת האורך של שירות ההקראה של Google Translate
+const GOOGLE_TTS_MAX_LENGTH = 200;
+
+const hasSpeechSynthesis = typeof window !== "undefined" && "speechSynthesis" in window;
+
+// ─── קולות: מטמון משותף לכל הרמקולים באפליקציה ──────────────────────────────
+
+const voiceCache = new Map();
+const voiceListeners = new Set();
+let voicesVersion = 0;
+
+if (hasSpeechSynthesis) {
+  // רשימת הקולות נטענת אצל חלק מהדפדפנים רק אחרי voiceschanged
+  window.speechSynthesis.addEventListener("voiceschanged", () => {
+    voiceCache.clear();
+    voicesVersion += 1;
+    voiceListeners.forEach((listener) => listener());
+  });
+}
+
+const subscribeToVoices = (listener) => {
+  voiceListeners.add(listener);
+  return () => voiceListeners.delete(listener);
+};
+
+const getVoicesVersion = () => voicesVersion;
+
+// בחירת קול לשפה – עדיפות לקול של Google אם קיים במכשיר
+const findVoice = (lang) => {
+  if (!hasSpeechSynthesis) return null;
+  if (voiceCache.has(lang)) return voiceCache.get(lang);
+
+  const prefix = lang.slice(0, 2);
+  const voices = window.speechSynthesis
+    .getVoices()
+    .filter((v) => v.lang.startsWith(prefix) || (prefix === "he" && v.lang.startsWith("iw")));
+  const voice = voices.find((v) => /google/i.test(v.name)) || voices[0] || null;
+
+  // שומרים גם "אין קול" – המטמון מתרוקן ב-voiceschanged אם קולות נטענים מאוחר יותר
+  voiceCache.set(lang, voice);
+  return voice;
+};
+
+const useVoice = (lang) => {
+  useSyncExternalStore(subscribeToVoices, getVoicesVersion);
+  return findVoice(lang);
+};
+
+// ─── ניגון: רק הקראה אחת בכל רגע ─────────────────────────────────────────────
+
+let currentAudio = null;
+let finishCurrent = null;
+
+const stopAll = () => {
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio = null;
+  }
+  if (hasSpeechSynthesis) window.speechSynthesis.cancel();
+  finishCurrent?.();
+  finishCurrent = null;
+};
+
+// גיבוי: הקראה דרך Google Translate כשאין במכשיר קול עברי
+const playGoogleTTS = (text, lang, onEnd) => {
+  if (text.length > GOOGLE_TTS_MAX_LENGTH) {
+    onEnd();
+    return;
+  }
+  const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${lang.slice(0, 2)}&q=${encodeURIComponent(text)}`;
+  const audio = new Audio(url);
+  currentAudio = audio;
+  audio.playbackRate = SPEECH_RATE;
+  audio.onended = onEnd;
+  audio.onerror = onEnd;
+  audio.play().catch(onEnd);
+};
+
+export default function Speaker({ text, lang = "he-IL", size = "medium" }) {
   const [speaking, setSpeaking] = useState(false);
-  const [disabled, setDisabled] = useState(false);
-  useEffect(() => {
-    if (lang === "fa-IR") {
-      setDisabled(true);
-    } else {
-      setDisabled(false);
-    }
-  }, [lang]);
+  const playIdRef = useRef(0);
+  const voice = useVoice(lang);
+  const disabled = lang === "fa-IR";
 
   const handleSpeak = (event) => {
-    if (!text || lang === "fa-IR") return;
+    if (!text || disabled) return;
     event.stopPropagation();
-    speechSynthesis.cancel();
+    // אחרי לחיצת עכבר/מגע משחררים את הפוקוס, כדי שקיצורי המקלדת ימשיכו לעבוד
+    if (event.detail > 0) event.currentTarget.blur();
+    stopAll();
+
+    // רק סיום של ההקראה האחרונה מכבה את המצב – ביטול של הקראה קודמת לא
+    const playId = ++playIdRef.current;
+    const done = () => {
+      if (playIdRef.current === playId) setSpeaking(false);
+    };
+    finishCurrent = done;
+    setSpeaking(true);
+
+    if (!voice) {
+      playGoogleTTS(text, lang, done);
+      return;
+    }
 
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = lang;
+    utterance.voice = voice;
+    utterance.rate = SPEECH_RATE;
+    utterance.onend = done;
+    utterance.onerror = done;
 
-    utterance.onstart = () => setSpeaking(true);
-    utterance.onend = () => setSpeaking(false);
-
-    speechSynthesis.speak(utterance);
+    window.speechSynthesis.speak(utterance);
   };
 
   const btnClasses = disabled 
@@ -34,8 +125,10 @@ export default function Speaker({ text, lang = "he-IL" }) {
   return (
     <button
       onClick={handleSpeak}
+      // לחיצה על הרמקול לא מתחילה גרירה של כרטיס
+      onPointerDown={(e) => e.stopPropagation()}
       disabled={disabled}
-      className={`w-10 h-10 flex items-center justify-center rounded-full border border-slate-200 dark:border-slate-700 transition-all duration-300 ${btnClasses}`}
+      className={`${size === "small" ? "w-8 h-8" : "w-10 h-10"} shrink-0 flex items-center justify-center rounded-full border border-slate-200 dark:border-slate-700 transition-all duration-300 ${btnClasses}`}
       aria-label="הקרא טקסט"
     >
       {speaking ? (

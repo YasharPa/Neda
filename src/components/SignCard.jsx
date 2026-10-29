@@ -21,7 +21,7 @@ const SignCard = ({ sign, onClick, language = "he" }) => {
           className="w-full h-full object-contain transition-transform duration-200 group-hover:scale-110"
           loading="lazy"
           onError={(e) => {
-            e.target.style.display = "none";
+            e.target.classList.add("hidden");
           }}
         />
       </div>
