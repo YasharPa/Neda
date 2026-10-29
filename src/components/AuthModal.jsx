@@ -1,8 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { primaryBtnClasses } from "../lib/buttonClasses";
 
-const AuthPage = ({ translate }) => {
+const inputClasses =
+  "w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-dark-surface border-2 border-slate-200 dark:border-slate-700 hover:border-brand-400 focus:border-brand-500 outline-none transition-all text-slate-800 dark:text-dark-text placeholder:text-slate-400 disabled:opacity-70 disabled:cursor-not-allowed";
+
+const labelClasses = "font-semibold text-slate-700 dark:text-slate-300 text-sm";
+
+const messageBaseClass =
+  "p-4 rounded-xl mb-6 flex items-center gap-3 text-sm animate-slide-down border";
+
+const AuthModal = ({ translate, onClose }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,7 +21,36 @@ const AuthPage = ({ translate }) => {
   const [message, setMessage] = useState(null);
 
   const { signIn, signUp } = useAuth();
-  const navigate = useNavigate();
+  const switchTimerRef = useRef(null);
+  const mouseDownOnBackdropRef = useRef(false);
+
+  // נעילת גלילה וסגירה עם Escape
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = "unset";
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onClose]);
+
+  // ביטול הטיימר של המעבר להתחברות בסגירת החלון
+  useEffect(() => () => clearTimeout(switchTimerRef.current), []);
+
+  // סגירה רק אם הלחיצה התחילה והסתיימה על הרקע (לא בגרירת סימון טקסט)
+  const handleBackdropMouseDown = (e) => {
+    mouseDownOnBackdropRef.current = e.target === e.currentTarget;
+  };
+
+  const handleBackdropClick = (e) => {
+    if (mouseDownOnBackdropRef.current && e.target === e.currentTarget) {
+      onClose();
+    }
+    mouseDownOnBackdropRef.current = false;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,7 +69,7 @@ const AuthPage = ({ translate }) => {
               : error.message,
           );
         } else if (data.user) {
-          navigate("/");
+          onClose();
         }
       } else {
         if (password !== confirmPassword) {
@@ -65,7 +102,8 @@ const AuthPage = ({ translate }) => {
             translate?.auth?.success?.checkEmail ||
               "נרשמת בהצלחה! אנא בדוק את האימייל שלך.",
           );
-          setTimeout(() => {
+          clearTimeout(switchTimerRef.current);
+          switchTimerRef.current = setTimeout(() => {
             setIsLogin(true);
             setMessage(translate?.auth?.success?.canLogin || "כעת תוכל להתחבר");
           }, 3000);
@@ -82,6 +120,7 @@ const AuthPage = ({ translate }) => {
   };
 
   const toggleMode = () => {
+    clearTimeout(switchTimerRef.current);
     setIsLogin(!isLogin);
     setError(null);
     setMessage(null);
@@ -91,20 +130,35 @@ const AuthPage = ({ translate }) => {
     setFullName("");
   };
 
-  const messageBaseClass =
-    "p-4 rounded-xl mb-6 flex items-center gap-3 text-[0.9rem] animate-slide-down border";
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#f4f8fe] p-4 sm:p-8">
-      <div className="bg-white rounded-[20px] p-8 sm:p-12 shadow-[0_20px_40px_rgba(42,122,228,0.08)] max-w-[450px] w-full animate-slide-up">
+    <div
+      className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 animate-overlayFadeIn"
+      onMouseDown={handleBackdropMouseDown}
+      onClick={handleBackdropClick}
+    >
+      <div
+        dir="rtl"
+        className="relative glass-card !rounded-3xl !bg-white dark:!bg-dark-bg w-full max-w-md max-h-[90vh] overflow-y-auto p-6 sm:p-10 shadow-2xl animate-formSlideIn"
+      >
+        <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-brand-400 to-brand-600"></div>
+
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label={translate?.auth?.close || "סגור"}
+          className="absolute top-3 left-3 w-8 h-8 rounded-full flex items-center justify-center bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 transition-colors"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+
         {/* כותרת */}
         <div className="text-center mb-8">
-          <h1 className="text-[2rem] text-slate-800 mb-2 font-bold leading-tight">
+          <h2 className="text-3xl text-slate-800 dark:text-slate-100 mb-2 font-bold leading-tight">
             {isLogin
               ? translate?.auth?.login || "התחברות"
               : translate?.auth?.signup || "הרשמה"}
-          </h1>
-          <p className="text-[0.95rem] text-slate-500 m-0">
+          </h2>
+          <p className="text-slate-500 dark:text-dark-muted m-0">
             {isLogin
               ? translate?.auth?.welcomeBack || "ברוך שובך! התחבר כדי להמשיך"
               : translate?.auth?.createAccount || "צור חשבון חדש והתחל ללמוד"}
@@ -114,7 +168,7 @@ const AuthPage = ({ translate }) => {
         {/* הודעות שגיאה / הצלחה */}
         {error && (
           <div
-            className={`${messageBaseClass} bg-red-50 text-red-500 border-red-200`}
+            className={`${messageBaseClass} bg-red-50 text-red-600 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-900/50`}
           >
             <span className="text-lg">⚠️</span>
             <span>{error}</span>
@@ -123,7 +177,7 @@ const AuthPage = ({ translate }) => {
 
         {message && (
           <div
-            className={`${messageBaseClass} bg-green-50 text-green-500 border-green-200`}
+            className={`${messageBaseClass} bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-900/50`}
           >
             <span className="text-lg">✅</span>
             <span>{message}</span>
@@ -133,10 +187,7 @@ const AuthPage = ({ translate }) => {
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           {!isLogin && (
             <div className="flex flex-col gap-2">
-              <label
-                className="font-semibold text-slate-700 text-[0.9rem]"
-                htmlFor="fullName"
-              >
+              <label className={labelClasses} htmlFor="fullName">
                 {translate?.auth?.fields?.fullName || "שם מלא"}
               </label>
               <input
@@ -144,7 +195,7 @@ const AuthPage = ({ translate }) => {
                 id="fullName"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="p-[0.85rem] border-2 border-slate-200 rounded-[10px] text-base transition-all duration-200 focus:outline-none focus:border-[#2a7ae4] focus:ring-4 focus:ring-[#2a7ae4]/15 disabled:bg-slate-50 disabled:cursor-not-allowed"
+                className={inputClasses}
                 placeholder={
                   translate?.auth?.placeholders?.fullName || "הזן את שמך המלא"
                 }
@@ -155,10 +206,7 @@ const AuthPage = ({ translate }) => {
           )}
 
           <div className="flex flex-col gap-2">
-            <label
-              className="font-semibold text-slate-700 text-[0.9rem]"
-              htmlFor="email"
-            >
+            <label className={labelClasses} htmlFor="email">
               {translate?.auth?.fields?.email || "אימייל"}
             </label>
             <input
@@ -166,7 +214,7 @@ const AuthPage = ({ translate }) => {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="p-[0.85rem] border-2 border-slate-200 rounded-[10px] text-base transition-all duration-200 focus:outline-none focus:border-[#2a7ae4] focus:ring-4 focus:ring-[#2a7ae4]/15 disabled:bg-slate-50 disabled:cursor-not-allowed"
+              className={inputClasses}
               placeholder={
                 translate?.auth?.placeholders?.email || "example@email.com"
               }
@@ -176,10 +224,7 @@ const AuthPage = ({ translate }) => {
           </div>
 
           <div className="flex flex-col gap-2">
-            <label
-              className="font-semibold text-slate-700 text-[0.9rem]"
-              htmlFor="password"
-            >
+            <label className={labelClasses} htmlFor="password">
               {translate?.auth?.fields?.password || "סיסמה"}
             </label>
             <input
@@ -187,7 +232,7 @@ const AuthPage = ({ translate }) => {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="p-[0.85rem] border-2 border-slate-200 rounded-[10px] text-base transition-all duration-200 focus:outline-none focus:border-[#2a7ae4] focus:ring-4 focus:ring-[#2a7ae4]/15 disabled:bg-slate-50 disabled:cursor-not-allowed"
+              className={inputClasses}
               placeholder={
                 translate?.auth?.placeholders?.password || "הזן סיסמה"
               }
@@ -199,10 +244,7 @@ const AuthPage = ({ translate }) => {
 
           {!isLogin && (
             <div className="flex flex-col gap-2">
-              <label
-                className="font-semibold text-slate-700 text-[0.9rem]"
-                htmlFor="confirmPassword"
-              >
+              <label className={labelClasses} htmlFor="confirmPassword">
                 {translate?.auth?.fields?.confirmPassword || "אימות סיסמה"}
               </label>
               <input
@@ -210,7 +252,7 @@ const AuthPage = ({ translate }) => {
                 id="confirmPassword"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="p-[0.85rem] border-2 border-slate-200 rounded-[10px] text-base transition-all duration-200 focus:outline-none focus:border-[#2a7ae4] focus:ring-4 focus:ring-[#2a7ae4]/15 disabled:bg-slate-50 disabled:cursor-not-allowed"
+                className={inputClasses}
                 placeholder={
                   translate?.auth?.placeholders?.confirmPassword ||
                   "הזן את הסיסמה שוב"
@@ -225,7 +267,7 @@ const AuthPage = ({ translate }) => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full p-4 mt-2 bg-[#2a7ae4] text-white rounded-[10px] text-base font-semibold flex items-center justify-center gap-2 transition-all duration-300 enabled:hover:-translate-y-0.5 enabled:hover:bg-[#1c65c9] enabled:hover:shadow-[0_8px_20px_rgba(42,122,228,0.35)] enabled:active:translate-y-0 disabled:opacity-70 disabled:cursor-not-allowed"
+            className={`w-full py-3.5 mt-2 flex items-center justify-center gap-2 ${primaryBtnClasses}`}
           >
             {loading ? (
               <>
@@ -241,8 +283,8 @@ const AuthPage = ({ translate }) => {
         </form>
 
         {/* החלפה בין מצבים */}
-        <div className="text-center mt-6 pt-6 border-t border-slate-200">
-          <p className="text-slate-500 text-[0.9rem] m-0">
+        <div className="text-center mt-6 pt-6 border-t border-slate-200 dark:border-dark-border">
+          <p className="text-slate-500 dark:text-dark-muted text-sm m-0">
             {isLogin
               ? translate?.auth?.noAccount || "אין לך חשבון?"
               : translate?.auth?.hasAccount || "כבר יש לך חשבון?"}
@@ -250,7 +292,7 @@ const AuthPage = ({ translate }) => {
               type="button"
               onClick={toggleMode}
               disabled={loading}
-              className="text-[#2a7ae4] font-semibold text-[0.9rem] mr-2 transition-colors duration-200 hover:enabled:text-[#1c65c9] hover:enabled:underline disabled:opacity-50 disabled:cursor-not-allowed"
+              className="text-brand-600 dark:text-brand-400 font-semibold text-sm mr-2 transition-colors hover:enabled:text-brand-500 hover:enabled:underline disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLogin
                 ? translate?.auth?.signupLink || "הירשם כאן"
@@ -264,8 +306,13 @@ const AuthPage = ({ translate }) => {
             <button
               type="button"
               disabled={loading}
-              onClick={() => alert("פיצ'ר איפוס סיסמה יתווסף בקרוב")}
-              className="text-slate-500 text-[0.85rem] hover:enabled:text-[#2a7ae4] hover:enabled:underline transition-colors duration-200 disabled:opacity-50"
+              onClick={() =>
+                alert(
+                  translate?.auth?.forgotPasswordSoon ||
+                    "פיצ'ר איפוס סיסמה יתווסף בקרוב",
+                )
+              }
+              className="text-slate-500 dark:text-dark-muted text-sm hover:enabled:text-brand-600 dark:hover:enabled:text-brand-400 hover:enabled:underline transition-colors disabled:opacity-50"
             >
               {translate?.auth?.forgotPassword || "שכחת סיסמה?"}
             </button>
@@ -276,4 +323,4 @@ const AuthPage = ({ translate }) => {
   );
 };
 
-export default AuthPage;
+export default AuthModal;

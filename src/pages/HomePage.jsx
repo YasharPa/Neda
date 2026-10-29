@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { drivingAPI, flashcardsAPI, sentenceCompletionAPI } from "../lib/supabaseClient";
+import { primaryBtnClasses } from "../lib/buttonClasses";
 
 export default function HomePage({
   translate,
   statistics,
   language = "he",
   user,
+  onLogin,
 }) {
   const [drivingStats, setDrivingStats] = useState(null);
   const [flashcardStats, setFlashcardStats] = useState(null);
@@ -16,6 +18,10 @@ export default function HomePage({
   useEffect(() => {
     if (user) {
       fetchDrivingStats();
+    } else {
+      // אורח - אין סטטיסטיקות לטעון
+      setDrivingStats(null);
+      setLoading(false);
     }
   }, [user]);
 
@@ -89,7 +95,26 @@ export default function HomePage({
 
   return (
     <div className="w-full flex flex-col gap-10 animate-slide-up">
-      {/* אזור סטטיסטיקה עילי */}
+      {/* אזור סטטיסטיקה עילי - לאורח מוצג באנר התחברות */}
+      {!user ? (
+        <section className="relative overflow-hidden glass-card p-5 md:p-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-right">
+          <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-brand-400 to-brand-600"></div>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 shrink-0 rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+            </div>
+            <p className="m-0 font-medium text-slate-700 dark:text-slate-200">
+              {translate?.guest?.homeBanner}
+            </p>
+          </div>
+          <button
+            onClick={onLogin}
+            className={`shrink-0 px-6 py-2.5 hover:-translate-y-0.5 active:scale-[0.98] ${primaryBtnClasses}`}
+          >
+            {translate?.auth?.signIn}
+          </button>
+        </section>
+      ) : (
       <section>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           {stats.map((stat, i) => (
@@ -108,6 +133,7 @@ export default function HomePage({
           ))}
         </div>
       </section>
+      )}
 
       {/* אזור בחירת נושא */}
       <section>
@@ -223,7 +249,7 @@ export default function HomePage({
       </section>
 
       {/* כפתור לסטטיסטיקות מפורטות */}
-      {!loading && (statistics?.total > 0 || drivingStats?.totalQuestions > 0 || flashcardStats?.sessions > 0 || sentenceStats?.sessions > 0) && (
+      {user && !loading && (statistics?.total > 0 || drivingStats?.totalQuestions > 0 || flashcardStats?.sessions > 0 || sentenceStats?.sessions > 0) && (
         <section className="flex justify-center mt-4">
           <Link
             to="/stats"

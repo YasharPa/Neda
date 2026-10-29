@@ -265,5 +265,53 @@
     "saveError": "לא ניתן היה לשמור את הסטטיסטיקה של הסבב",
     "loadError": "שגיאה בטעינת המשפטים",
     "keyboardHint": "מקשים 1–4 לבחירה · Enter לשאלה הבאה"
+  },
+  "auth": {
+    "signIn": "התחבר",
+    "login": "התחברות",
+    "signup": "הרשמה",
+    "welcomeBack": "ברוך שובך! התחבר כדי להמשיך",
+    "createAccount": "צור חשבון חדש והתחל ללמוד",
+    "loading": "מעבד...",
+    "loginButton": "התחבר",
+    "signupButton": "הירשם",
+    "noAccount": "אין לך חשבון?",
+    "hasAccount": "כבר יש לך חשבון?",
+    "signupLink": "הירשם כאן",
+    "loginLink": "התחבר כאן",
+    "forgotPassword": "שכחת סיסמה?",
+    "forgotPasswordSoon": "פיצ'ר איפוס סיסמה יתווסף בקרוב",
+    "close": "סגור",
+    "fields": {
+      "fullName": "שם מלא",
+      "email": "אימייל",
+      "password": "סיסמה",
+      "confirmPassword": "אימות סיסמה"
+    },
+    "placeholders": {
+      "fullName": "הזן את שמך המלא",
+      "email": "example@email.com",
+      "password": "הזן סיסמה",
+      "confirmPassword": "הזן את הסיסמה שוב"
+    },
+    "errors": {
+      "invalidCredentials": "אימייל או סיסמה שגויים",
+      "passwordMismatch": "הסיסמאות לא תואמות",
+      "passwordTooShort": "הסיסמה חייבת להכיל לפחות 6 תווים",
+      "emailExists": "האימייל כבר רשום במערכת",
+      "general": "אירעה שגיאה, נסה שוב"
+    },
+    "success": {
+      "checkEmail": "נרשמת בהצלחה! אנא בדוק את האימייל שלך.",
+      "canLogin": "כעת תוכל להתחבר"
+    }
+  },
+  "guest": {
+    "welcome": "ברוכים הבאים, אורח",
+    "loginRequiredTitle": "נדרשת התחברות",
+    "statsLoginMessage": "כדי לראות סטטיסטיקות ולעקוב אחר ההתקדמות שלך, יש להתחבר לחשבון",
+    "vocabLoginMessage": "כדי לבנות רשימת מילים אישית ולשמור אותה, יש להתחבר לחשבון",
+    "homeBanner": "אתה גולש כאורח — התחבר כדי לשמור את ההתקדמות שלך",
+    "progressNotSaved": "אתה גולש כאורח — התשובות לא נשמרות בסטטיסטיקות"
   }
 }

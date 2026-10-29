@@ -15,6 +15,8 @@ import WordCard from "../components/WordCard";
 import AddWordForm from "../components/AddWordForm";
 import EditWordForm from "../components/EditWordForm";
 import FilterBar from "../components/FilterBar";
+import LoginPrompt from "../components/LoginPrompt";
+import { useAuth } from "../hooks/useAuth";
 
 // ─── DroppableZone ────────────────────────────────────────────────────────────
 
@@ -68,7 +70,8 @@ const DroppableZone = ({
 
 // ─── VocabularyPage ───────────────────────────────────────────────────────────
 
-const VocabularyPage = ({ translate }) => {
+const VocabularyPage = ({ translate, onLogin }) => {
+  const { user } = useAuth();
   const {
     words,
     updating,
@@ -141,6 +144,19 @@ const VocabularyPage = ({ translate }) => {
     medium: getWordsByDifficulty("medium").length,
     hard: getWordsByDifficulty("hard").length,
   };
+
+  // אורח - רשימת המילים אישית ונשמרת רק למשתמש מחובר
+  if (!user) {
+    return (
+      <div className="w-full animate-slide-up">
+        <LoginPrompt
+          translate={translate}
+          message={translate?.guest?.vocabLoginMessage}
+          onLogin={onLogin}
+        />
+      </div>
+    );
+  }
 
   const renderCard = (word, showButtons = false) => (
     <WordCard
