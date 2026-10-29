@@ -2,18 +2,20 @@ import { useState, useEffect, useContext } from "react";
 import { vocabularyAPI } from "../lib/supabaseClient";
 import { AuthContext } from "../context/AuthContext";
 
+const EMPTY_STATS = {
+  total: 0,
+  classified: 0,
+  easy: 0,
+  medium: 0,
+  hard: 0,
+  unclassified: 0,
+};
+
 export function useVocabulary() {
   const [words, setWords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(null);
-  const [stats, setStats] = useState({
-    total: 0,
-    classified: 0,
-    easy: 0,
-    medium: 0,
-    hard: 0,
-    unclassified: 0,
-  });
+  const [stats, setStats] = useState(EMPTY_STATS);
 
   const { user } = useContext(AuthContext);
   // טעינת מילים ראשונית
@@ -22,6 +24,8 @@ export function useVocabulary() {
       fetchWords();
     } else {
       setWords([]);
+      setStats(EMPTY_STATS);
+      setLoading(false);
     }
   }, [user]);
 
@@ -86,7 +90,7 @@ export function useVocabulary() {
 
   // הוספת מילה חדשה
   const addWord = async (wordData) => {
-    console.log("User ID being sent:", user?.id);
+    if (!user) return false;
     try {
       const { data, error } = await vocabularyAPI.add(wordData, user.id);
 

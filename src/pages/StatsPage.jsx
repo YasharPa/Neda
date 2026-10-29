@@ -2,16 +2,24 @@ import { useState, useEffect } from "react";
 import { useVocabulary } from "../hooks/useVocabulary";
 import { drivingAPI } from "../lib/supabaseClient";
 import LoadingSpinner from "../components/LoadingSpinner";
+import LoginPrompt from "../components/LoginPrompt";
+import { useAuth } from "../hooks/useAuth";
 
-const StatsPage = ({ translate }) => {
+const StatsPage = ({ translate, onLogin }) => {
+  const { user } = useAuth();
   const { stats: vocabularyStats, words } = useVocabulary();
   const [drivingStats, setDrivingStats] = useState(null);
   const [recentResults, setRecentResults] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchDrivingStats();
-  }, []);
+    if (user) {
+      fetchDrivingStats();
+    } else {
+      setDrivingStats(null);
+      setRecentResults([]);
+    }
+  }, [user]);
 
   const fetchDrivingStats = async () => {
     setLoading(true);
@@ -65,6 +73,19 @@ const StatsPage = ({ translate }) => {
       return wordDate >= oneWeekAgo;
     }).length;
   };
+
+  // אורח - אין סטטיסטיקות, מציגים הודעת התחברות
+  if (!user) {
+    return (
+      <div className="w-full animate-slide-up">
+        <LoginPrompt
+          translate={translate}
+          message={translate?.guest?.statsLoginMessage}
+          onLogin={onLogin}
+        />
+      </div>
+    );
+  }
 
   if (loading) {
     return <LoadingSpinner translate={translate} />;
