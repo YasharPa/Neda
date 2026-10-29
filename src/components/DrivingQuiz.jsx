@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { drivingAPI } from "../lib/supabaseClient";
 import LoadingSpinner from "./LoadingSpinner";
 import Speaker from "./Speaker";
+import { useAuth } from "../hooks/useAuth";
 
 const LETTERS = ["א", "ב", "ג", "ד"];
 
@@ -11,6 +12,7 @@ const DrivingQuiz = ({
   maxQuestions = 30,
   onBack,
 }) => {
+  const { user } = useAuth();
   const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
@@ -94,16 +96,19 @@ const DrivingQuiz = ({
     const responseTime = startTime ? Date.now() - startTime : null;
     const category = currentQuestion.category;
 
-    try {
-      await drivingAPI.saveQuizResult(
-        sessionId,
-        currentQuestion.id,
-        answerIndex,
-        isCorrect,
-        responseTime,
-      );
-    } catch {
-      /* add erorr handaling here */
+    // שמירת תוצאה לסטטיסטיקות רק למשתמש מחובר
+    if (user) {
+      try {
+        await drivingAPI.saveQuizResult(
+          sessionId,
+          currentQuestion.id,
+          answerIndex,
+          isCorrect,
+          responseTime,
+        );
+      } catch {
+        /* add erorr handaling here */
+      }
     }
 
     const newAnswer = {
@@ -329,6 +334,11 @@ const DrivingQuiz = ({
             style={{ width: `${progress}%` }}
           />
         </div>
+        {!user && (
+          <p className="mt-2 mb-0 text-xs text-slate-500 dark:text-dark-muted">
+            {translate?.guest?.progressNotSaved}
+          </p>
+        )}
       </div>
 
       {/* ── Question card ── */}

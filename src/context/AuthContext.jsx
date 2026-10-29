@@ -10,11 +10,18 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const getInitialSession = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
-      setIsLoading(false);
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        setUser(session?.user ?? null);
+      } catch (error) {
+        // כשל בטעינת הסשן - ממשיכים כאורח במקום להיתקע בטעינה
+        console.error("Error loading session:", error);
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     getInitialSession();
