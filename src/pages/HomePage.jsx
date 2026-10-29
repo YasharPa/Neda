@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { drivingAPI } from "../lib/supabaseClient";
+import { drivingAPI, flashcardsAPI, sentenceCompletionAPI } from "../lib/supabaseClient";
 import { primaryBtnClasses } from "../lib/buttonClasses";
 
 export default function HomePage({
@@ -11,6 +11,8 @@ export default function HomePage({
   onLogin,
 }) {
   const [drivingStats, setDrivingStats] = useState(null);
+  const [flashcardStats, setFlashcardStats] = useState(null);
+  const [sentenceStats, setSentenceStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -19,14 +21,25 @@ export default function HomePage({
     } else {
       // אורח - אין סטטיסטיקות לטעון
       setDrivingStats(null);
+      setFlashcardStats(null);
+      setSentenceStats(null);
       setLoading(false);
     }
   }, [user]);
 
   const fetchDrivingStats = async () => {
     try {
-      const { data: categoryStats } = await drivingAPI.getCategoryStats();
-      const { data: recentResults } = await drivingAPI.getRecentResults(100);
+      const [
+        { data: categoryStats },
+        { data: flashcards },
+        { data: sentences },
+      ] = await Promise.all([
+        drivingAPI.getCategoryStats(),
+        flashcardsAPI.getStats(),
+        sentenceCompletionAPI.getStats(),
+      ]);
+      if (flashcards) setFlashcardStats(flashcards);
+      if (sentences) setSentenceStats(sentences);
 
       if (categoryStats) {
         const totalQuestions = categoryStats.reduce(
@@ -46,7 +59,6 @@ export default function HomePage({
           totalQuestions,
           totalCorrect,
           overallPercentage,
-          practiceSessionsCount: recentResults ? recentResults.length : 0,
         });
       }
     } catch (error) {
@@ -56,10 +68,12 @@ export default function HomePage({
     }
   };
 
-  const getPracticeSessionsCount = () => {
-    const drivingPractice = drivingStats?.practiceSessionsCount || 0;
-    const vocabularyPractice = statistics?.classified || 0;
-    return drivingPractice + vocabularyPractice;
+  // פריטים שתורגלו: שאלות נהיגה + כרטיסיות שנסקרו + משפטים שנענו
+  const getItemsPracticedCount = () => {
+    const drivingPractice = drivingStats?.totalQuestions || 0;
+    const flashcardPractice = flashcardStats?.cardsReviewed || 0;
+    const sentencePractice = sentenceStats?.answered || 0;
+    return drivingPractice + flashcardPractice + sentencePractice;
   };
 
   const getWordsLearned = () => {
@@ -69,7 +83,7 @@ export default function HomePage({
   const stats = [
     {
       title: translate?.statistics?.totalPracticeSessions || "תרגילים שבוצעו",
-      value: getPracticeSessionsCount(),
+      value: getItemsPracticedCount(),
     },
     {
       title: translate?.statistics?.totalWordsLearned || "מילים שנלמדו",
@@ -77,7 +91,7 @@ export default function HomePage({
     },
     {
       title: translate?.statistics?.completedSentences || "שאלות נענו",
-      value: 0,
+      value: sentenceStats?.answered || 0,
     },
   ];
 
@@ -182,15 +196,56 @@ export default function HomePage({
             )}
           </Link>
 
+          {/* כרטיסיית כרטיסיות לימוד */}
+          <Link to="/practice/flashcards" className="glass-card-interactive flex flex-col p-6 group">
+            <div className="w-full h-2 bg-gradient-to-r from-purple-400 to-fuchsia-500 absolute top-0 left-0"></div>
+            <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-3 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
+              {translate?.topics?.flashcards?.title}
+            </h3>
+            <p className="text-slate-600 dark:text-dark-muted flex-grow mb-6">
+              {translate?.topics?.flashcards?.description}
+            </p>
+
+            {flashcardStats?.cardsReviewed > 0 && (
+              <div className="mt-auto">
+                <div className="flex justify-between text-sm font-medium text-slate-600 dark:text-dark-muted mb-2">
+                  <span>{translate?.statistics?.knownPercentage}:</span>
+                  <span className="text-brand-600 dark:text-brand-400">{flashcardStats.knownPercentage}%</span>
+                </div>
+                <div className="h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-purple-400 to-fuchsia-500 rounded-full transition-all duration-1000 ease-out"
+                    style={{ width: `${flashcardStats.knownPercentage}%` }}
+                  ></div>
+                </div>
+              </div>
+            )}
+          </Link>
+
           {/* כרטיסיית השלמת משפטים */}
           <Link to="/practice/sentence-completion" className="glass-card-interactive flex flex-col p-6 group">
             <div className="w-full h-2 bg-gradient-to-r from-brand-400 to-brand-600 absolute top-0 left-0"></div>
             <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-3 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
               {translate?.topics?.sentenceCompletion?.title || "השלמת משפטים"}
             </h3>
-            <p className="text-slate-600 dark:text-dark-muted flex-grow">
+            <p className="text-slate-600 dark:text-dark-muted flex-grow mb-6">
               {translate?.topics?.sentenceCompletion?.description || "השלם את המילה החסרה במשפט"}
             </p>
+
+            {sentenceStats?.answered > 0 && (
+              <div className="mt-auto">
+                <div className="flex justify-between text-sm font-medium text-slate-600 dark:text-dark-muted mb-2">
+                  <span>{translate?.statistics?.sentenceAccuracy}:</span>
+                  <span className="text-brand-600 dark:text-brand-400">{sentenceStats.percentage}%</span>
+                </div>
+                <div className="h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-brand-400 to-brand-600 rounded-full transition-all duration-1000 ease-out"
+                    style={{ width: `${sentenceStats.percentage}%` }}
+                  ></div>
+                </div>
+              </div>
+            )}
           </Link>
 
           {/* כרטיסיית כתיבה נכונה (הכתבה) */}
@@ -207,7 +262,7 @@ export default function HomePage({
       </section>
 
       {/* כפתור לסטטיסטיקות מפורטות */}
-      {user && !loading && (statistics?.total > 0 || drivingStats?.totalQuestions > 0) && (
+      {user && !loading && (statistics?.total > 0 || drivingStats?.totalQuestions > 0 || flashcardStats?.sessions > 0 || sentenceStats?.sessions > 0) && (
         <section className="flex justify-center mt-4">
           <Link
             to="/stats"

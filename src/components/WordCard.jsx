@@ -20,13 +20,6 @@ const WordCard = ({
     data: { word },
   });
 
-  const dragStyle = {
-    opacity: isDragging ? 0.6 : 1,
-    cursor: isDragging ? "grabbing" : "grab",
-    userSelect: "none",
-    touchAction: "none",
-  };
-
   const currentDiff = word.difficulty ? DIFFICULTY_CLASSES[word.difficulty] : { bg: "bg-white dark:bg-dark-surface", border: "border-slate-200 dark:border-slate-700", text: "text-slate-800 dark:text-slate-100" };
 
   const handleDifficultyClick = (e, difficulty) => {
@@ -67,12 +60,11 @@ const WordCard = ({
   return (
     <div
       className={`relative border-2 rounded-2xl p-5 mb-4 
-        shadow-sm transition-all duration-300
-        ${isDragging ? "scale-105 shadow-2xl rotate-2" : "hover:-translate-y-1 hover:shadow-md"}
+        shadow-sm transition-all duration-300 select-none touch-none
+        ${isDragging ? "scale-105 shadow-2xl rotate-2 opacity-60 cursor-grabbing" : "hover:-translate-y-1 hover:shadow-md cursor-grab"}
         ${isUpdating ? "opacity-70 pointer-events-none" : ""}
         ${currentDiff.bg} ${currentDiff.border}`}
       ref={setNodeRef}
-      style={dragStyle}
       {...attributes}
       {...listeners}
     >
