@@ -7,6 +7,7 @@ import { flashcardsAPI, signsAPI } from "../lib/supabaseClient";
 import Flashcard from "../components/Flashcard";
 import Speaker from "../components/Speaker";
 import LoadingSpinner from "../components/LoadingSpinner";
+import LoginPrompt from "../components/LoginPrompt";
 import { OptionButton, SettingRow } from "../components/SetupOptions";
 import { shuffleArray } from "../lib/shuffle";
 import { shouldIgnoreShortcut } from "../lib/keyboard";
@@ -54,7 +55,7 @@ const signToCard = (sign) => ({
 
 // ─── FlashcardsPage ───────────────────────────────────────────────────────────
 
-const FlashcardsPage = ({ translate, language = "he" }) => {
+const FlashcardsPage = ({ translate, language = "he", onLogin }) => {
   const t = translate.flashcards;
   const { user } = useAuth();
   const { words, loading: wordsLoading, updateWordDifficulty, refreshStats } = useVocabulary();
@@ -72,7 +73,8 @@ const FlashcardsPage = ({ translate, language = "he" }) => {
     reset,
   } = useFlashcards();
 
-  const [deckType, setDeckType] = useState("words");
+  // לאורח אין מילים אישיות, ולכן מתחילים מחפיסת התמרורים
+  const [deckType, setDeckType] = useState(user ? "words" : "signs");
   const [wordFilter, setWordFilter] = useState("all");
   const [frontSide, setFrontSide] = useState("hebrew");
   const [signCategory, setSignCategory] = useState("all");
@@ -171,7 +173,8 @@ const FlashcardsPage = ({ translate, language = "he" }) => {
     if (deckType === "words") {
       Promise.allSettled(pendingUpdatesRef.current).then(() => refreshStats());
     }
-    if (isRetryRef.current) return;
+    // סבב חוזר, או אורח – לא נשמר בסטטיסטיקה
+    if (isRetryRef.current || !user) return;
     flashcardsAPI
       .saveSession({ deckType, ...summary }, user?.id)
       .then(({ error }) => setSaveError(Boolean(error)));
@@ -347,6 +350,11 @@ const FlashcardsPage = ({ translate, language = "he" }) => {
             style={{ width: `${progress}%` }}
           />
         </div>
+        {!user && (
+          <p className="m-0 -mt-4 text-xs text-slate-500 dark:text-dark-muted">
+            {translate?.guest?.progressNotSaved}
+          </p>
+        )}
 
         <Flashcard
           key={`${current.id}-${remaining}`}
@@ -475,7 +483,14 @@ const FlashcardsPage = ({ translate, language = "he" }) => {
         )}
       </div>
 
-      {isLoading ? (
+      {deckType === "words" && !user ? (
+        // המילים אישיות – לאורח מוצגת בקשת התחברות
+        <LoginPrompt
+          translate={translate}
+          message={translate?.guest?.flashcardsLoginMessage}
+          onLogin={onLogin}
+        />
+      ) : isLoading ? (
         <LoadingSpinner translate={translate} size="small" />
       ) : signsError && deckType === "signs" ? (
         <div className="flex flex-col items-center gap-3">

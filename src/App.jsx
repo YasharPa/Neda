@@ -169,7 +169,7 @@ export default function App() {
               <Route path="/practice/vocabulary" element={<VocabularyPage translate={translate} onLogin={openAuthModal} />} />
               <Route path="/practice/driving" element={<DrivingPage translate={translate} language={lang} />} />
               <Route path="/practice/sentence-completion" element={<SentenceCompletionPage translate={translate} language={lang} />} />
-              <Route path="/practice/flashcards" element={<FlashcardsPage translate={translate} language={lang} />} />
+              <Route path="/practice/flashcards" element={<FlashcardsPage translate={translate} language={lang} onLogin={openAuthModal} />} />
               <Route path="/practice/driving/signs" element={<SignsPage translate={translate} language={lang} />} />
               {/* נתיבים לא קיימים (כולל /auth הישן) חוזרים לדף הבית */}
               <Route path="*" element={<Navigate to="/" replace />} />

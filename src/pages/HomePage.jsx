@@ -21,6 +21,8 @@ export default function HomePage({
     } else {
       // אורח - אין סטטיסטיקות לטעון
       setDrivingStats(null);
+      setFlashcardStats(null);
+      setSentenceStats(null);
       setLoading(false);
     }
   }, [user]);

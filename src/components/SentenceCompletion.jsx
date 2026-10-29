@@ -124,7 +124,8 @@ export default function SentenceCompletion({ translate, language }) {
 
   // שמירת הסבב בסיומו
   useEffect(() => {
-    if (!finished || savedRef.current || isRetryRef.current) return;
+    // סבב חוזר, או אורח – לא נשמר בסטטיסטיקה
+    if (!finished || savedRef.current || isRetryRef.current || !user) return;
     savedRef.current = true;
     sentenceCompletionAPI
       .saveSession({ total: answers.length, correct: correctCount }, user?.id)
@@ -247,6 +248,11 @@ export default function SentenceCompletion({ translate, language }) {
             style={{ width: `${progress}%` }}
           />
         </div>
+        {!user && (
+          <p className="m-0 -mt-4 text-xs text-slate-500 dark:text-dark-muted">
+            {translate?.guest?.progressNotSaved}
+          </p>
+        )}
 
         <div className="glass-card p-6 md:p-10 flex flex-col gap-8">
           <div className="flex flex-col items-center gap-3">
