@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useVocabulary } from "../hooks/useVocabulary";
 import { useFlashcards } from "../hooks/useFlashcards";
@@ -57,7 +57,7 @@ const signToCard = (sign) => ({
 const FlashcardsPage = ({ translate, language = "he" }) => {
   const t = translate.flashcards;
   const { user } = useAuth();
-  const { words, loading: wordsLoading, updateWordDifficulty } = useVocabulary();
+  const { words, loading: wordsLoading, updateWordDifficulty, refreshStats } = useVocabulary();
   const {
     current,
     remaining,
@@ -86,12 +86,15 @@ const FlashcardsPage = ({ translate, language = "he" }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [saveError, setSaveError] = useState(false);
   const savedRef = useRef(false);
+  // סבב חוזר על טעויות לא נשמר כסבב חדש בסטטיסטיקה
+  const isRetryRef = useRef(false);
+  // עדכוני רמת קושי שעדיין בדרך, ומספר העדכונים שנכשלו
+  const pendingUpdatesRef = useRef([]);
+  const [failedSaves, setFailedSaves] = useState(0);
 
   const inSession = totalCards > 0;
 
-  // טעינת תמרורים רק כשבוחרים בחפיסת תמרורים
-  useEffect(() => {
-    if (deckType !== "signs" || signs.length > 0) return;
+  const loadSigns = useCallback(() => {
     setSignsLoading(true);
     setSignsError(null);
     signsAPI
@@ -101,7 +104,12 @@ const FlashcardsPage = ({ translate, language = "he" }) => {
         else setSigns(data);
       })
       .finally(() => setSignsLoading(false));
-  }, [deckType, signs.length, t.loadError]);
+  }, [t.loadError]);
+
+  // טעינת תמרורים רק כשבוחרים בחפיסת תמרורים
+  useEffect(() => {
+    if (deckType === "signs" && signs.length === 0) loadSigns();
+  }, [deckType, signs.length, loadSigns]);
 
   const signCategories = useMemo(
     () => [...new Set(signs.map((s) => s.category).filter(Boolean))],
@@ -122,8 +130,11 @@ const FlashcardsPage = ({ translate, language = "he" }) => {
       .map(signToCard);
   }, [deckType, words, wordFilter, signs, signCategory]);
 
-  const startSession = (cards) => {
+  const startSession = (cards, { isRetry = false } = {}) => {
     savedRef.current = false;
+    isRetryRef.current = isRetry;
+    pendingUpdatesRef.current = [];
+    setFailedSaves(0);
     setSaveError(false);
     setIsFlipped(false);
     start(cards);
@@ -139,7 +150,12 @@ const FlashcardsPage = ({ translate, language = "he" }) => {
     const { card, isFirst } = rate(rating);
     setIsFlipped(false);
     if (card?.kind === "word" && isFirst) {
-      updateWordDifficulty(card.wordId, RATING_TO_DIFFICULTY[rating]);
+      const update = updateWordDifficulty(card.wordId, RATING_TO_DIFFICULTY[rating], {
+        refreshStats: false,
+      }).then((ok) => {
+        if (!ok) setFailedSaves((n) => n + 1);
+      });
+      pendingUpdatesRef.current.push(update);
     }
   };
 
@@ -151,10 +167,15 @@ const FlashcardsPage = ({ translate, language = "he" }) => {
       reset();
       return;
     }
+    // רענון סטטיסטיקות המילים פעם אחת, אחרי שכל העדכונים הסתיימו
+    if (deckType === "words") {
+      Promise.allSettled(pendingUpdatesRef.current).then(() => refreshStats());
+    }
+    if (isRetryRef.current) return;
     flashcardsAPI
       .saveSession({ deckType, ...summary }, user?.id)
       .then(({ error }) => setSaveError(Boolean(error)));
-  }, [isFinished, reviewed, summary, deckType, user, reset]);
+  }, [isFinished, reviewed, summary, deckType, user, reset, refreshStats]);
 
   // קיצורי מקלדת: רווח להפיכה, 1/2/3 לדירוג
   useEffect(() => {
@@ -212,7 +233,7 @@ const FlashcardsPage = ({ translate, language = "he" }) => {
 
   const renderBack = (card) => {
     if (card.kind === "sign") {
-      const name = language === "he" ? card.hebrew : card.persian;
+      // השם בעברית תמיד מוצג ומוקרא; בממשק פרסי מתווסף התרגום
       return (
         <div className="relative flex flex-col items-center gap-3">
           <img
@@ -225,9 +246,12 @@ const FlashcardsPage = ({ translate, language = "he" }) => {
             {card.code}
           </span>
           <div className="text-xl md:text-2xl font-bold text-slate-800 dark:text-slate-100 leading-snug">
-            {name}
+            {card.hebrew}
           </div>
-          {language === "he" && <Speaker text={name} lang="he-IL" />}
+          {language !== "he" && card.persian && (
+            <div className="text-base text-slate-500 dark:text-slate-400">{card.persian}</div>
+          )}
+          <Speaker text={card.hebrew} lang="he-IL" />
         </div>
       );
     }
@@ -268,12 +292,19 @@ const FlashcardsPage = ({ translate, language = "he" }) => {
             ))}
           </div>
           {saveError && <p className="text-sm text-red-600 dark:text-red-400 m-0">{t.saveError}</p>}
+          {failedSaves > 0 && (
+            <p className="text-sm text-red-600 dark:text-red-400 m-0">
+              {failedSaves} {t.ratingsNotSaved}
+            </p>
+          )}
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           {missedCards.length > 0 && (
             <button
-              onClick={() => startSession(shuffle ? shuffleArray(missedCards) : missedCards)}
+              onClick={() =>
+                startSession(shuffle ? shuffleArray(missedCards) : missedCards, { isRetry: true })
+              }
               className="bg-brand-600 text-white rounded-xl py-3 px-6 font-bold transition-all duration-300 hover:bg-brand-500 shadow-md shadow-brand-500/20"
             >
               {t.repeatMissed} ({missedCards.length})
@@ -447,7 +478,15 @@ const FlashcardsPage = ({ translate, language = "he" }) => {
       {isLoading ? (
         <LoadingSpinner translate={translate} size="small" />
       ) : signsError && deckType === "signs" ? (
-        <p className="text-center text-red-600 dark:text-red-400">{signsError}</p>
+        <div className="flex flex-col items-center gap-3">
+          <p className="m-0 text-center text-red-600 dark:text-red-400">{signsError}</p>
+          <button
+            onClick={loadSigns}
+            className="bg-brand-600 text-white rounded-xl py-2 px-6 font-bold hover:bg-brand-500 transition-colors"
+          >
+            {translate.errors.tryAgain}
+          </button>
+        </div>
       ) : deckType === "words" && words.length === 0 ? (
         <div className="glass-card p-8 text-center flex flex-col items-center gap-4">
           <p className="m-0 text-slate-600 dark:text-dark-muted">{t.noWords}</p>

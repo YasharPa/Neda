@@ -38,7 +38,7 @@
   },
   "statistics": {
     "totalWordsLearned": "کلمات یادگرفته شده",
-    "totalPracticeSessions": "جلسات تمرین انجام شده",
+    "totalPracticeSessions": "تمرین‌های انجام‌شده",
     "overallStatistics": "آمار کلی",
     "completedSentences": "جملات تکمیل شده",
     "generalStats": "آمار کلی",
@@ -241,7 +241,8 @@
     "newSession": "دور جدید",
     "saveError": "ذخیره آمار این دور ممکن نشد",
     "loadError": "خطا در بارگذاری تابلوها",
-    "ratingUpdatesDifficulty": "امتیاز تو سطح سختی کلمه را به‌روز می‌کند"
+    "ratingUpdatesDifficulty": "امتیاز تو سطح سختی کلمه را به‌روز می‌کند",
+    "ratingsNotSaved": "امتیاز ذخیره نشد – بعداً دوباره امتحان کن"
   },
   "sentenceCompletion": {
     "description": "کلمه‌ای را انتخاب کن که جمله را کامل می‌کند و دستور زبان و کلمات کاربردی یاد بگیر",

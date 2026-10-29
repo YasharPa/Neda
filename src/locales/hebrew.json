@@ -230,7 +230,8 @@
     "newSession": "סבב חדש",
     "saveError": "לא ניתן היה לשמור את הסטטיסטיקה של הסבב",
     "loadError": "שגיאה בטעינת התמרורים",
-    "ratingUpdatesDifficulty": "הדירוג שלך מעדכן את רמת הקושי של המילה"
+    "ratingUpdatesDifficulty": "הדירוג שלך מעדכן את רמת הקושי של המילה",
+    "ratingsNotSaved": "דירוגים לא נשמרו – נסה שוב מאוחר יותר"
   },
   "sentenceCompletion": {
     "description": "בחר את המילה שמשלימה את המשפט ולמד דקדוק ומילים שימושיות",

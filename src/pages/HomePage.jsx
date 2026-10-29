@@ -23,12 +23,10 @@ export default function HomePage({
     try {
       const [
         { data: categoryStats },
-        { data: recentResults },
         { data: flashcards },
         { data: sentences },
       ] = await Promise.all([
         drivingAPI.getCategoryStats(),
-        drivingAPI.getRecentResults(100),
         flashcardsAPI.getStats(),
         sentenceCompletionAPI.getStats(),
       ]);
@@ -53,7 +51,6 @@ export default function HomePage({
           totalQuestions,
           totalCorrect,
           overallPercentage,
-          practiceSessionsCount: recentResults ? recentResults.length : 0,
         });
       }
     } catch (error) {
@@ -63,10 +60,11 @@ export default function HomePage({
     }
   };
 
-  const getPracticeSessionsCount = () => {
-    const drivingPractice = drivingStats?.practiceSessionsCount || 0;
-    const flashcardPractice = flashcardStats?.sessions || 0;
-    const sentencePractice = sentenceStats?.sessions || 0;
+  // פריטים שתורגלו: שאלות נהיגה + כרטיסיות שנסקרו + משפטים שנענו
+  const getItemsPracticedCount = () => {
+    const drivingPractice = drivingStats?.totalQuestions || 0;
+    const flashcardPractice = flashcardStats?.cardsReviewed || 0;
+    const sentencePractice = sentenceStats?.answered || 0;
     return drivingPractice + flashcardPractice + sentencePractice;
   };
 
@@ -77,7 +75,7 @@ export default function HomePage({
   const stats = [
     {
       title: translate?.statistics?.totalPracticeSessions || "תרגילים שבוצעו",
-      value: getPracticeSessionsCount(),
+      value: getItemsPracticedCount(),
     },
     {
       title: translate?.statistics?.totalWordsLearned || "מילים שנלמדו",

@@ -16,6 +16,7 @@ export default function PracticePage({ translate }) {
       title: `${translate.topics.spelling.title}`,
       description: `${translate.topics.spelling.description}`,
       link: "/practice/spelling",
+      comingSoonLabel: translate.comingSoon,
     },
     {
       title: `${translate.topics.vocabulary.title}`,

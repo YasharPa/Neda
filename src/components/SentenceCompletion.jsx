@@ -49,6 +49,8 @@ export default function SentenceCompletion({ translate, language }) {
   const [finished, setFinished] = useState(false);
   const [saveError, setSaveError] = useState(false);
   const savedRef = useRef(false);
+  // סבב חוזר על טעויות לא נשמר כסבב חדש בסטטיסטיקה
+  const isRetryRef = useRef(false);
 
   const topics = useMemo(
     () => [...new Set(questions.map((q) => q.topic).filter(Boolean))],
@@ -68,7 +70,7 @@ export default function SentenceCompletion({ translate, language }) {
   const correctCount = answers.filter((a) => a.isCorrect).length;
   const mistakes = answers.filter((a) => !a.isCorrect).map((a) => a.question);
 
-  const startRound = (list) => {
+  const startRound = (list, { isRetry = false } = {}) => {
     // גם סדר התשובות מתערבב, כדי שלא יזכרו מיקום
     setRound(list.map((q) => ({ ...q, options: shuffleArray(q.options) })));
     setCurrent(0);
@@ -77,6 +79,7 @@ export default function SentenceCompletion({ translate, language }) {
     setFinished(false);
     setSaveError(false);
     savedRef.current = false;
+    isRetryRef.current = isRetry;
   };
 
   const handleStart = () => {
@@ -121,7 +124,7 @@ export default function SentenceCompletion({ translate, language }) {
 
   // שמירת הסבב בסיומו
   useEffect(() => {
-    if (!finished || savedRef.current) return;
+    if (!finished || savedRef.current || isRetryRef.current) return;
     savedRef.current = true;
     sentenceCompletionAPI
       .saveSession({ total: answers.length, correct: correctCount }, user?.id)
@@ -200,7 +203,7 @@ export default function SentenceCompletion({ translate, language }) {
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           {mistakes.length > 0 && (
             <button
-              onClick={() => startRound(shuffleArray(mistakes))}
+              onClick={() => startRound(shuffleArray(mistakes), { isRetry: true })}
               className="bg-brand-600 text-white rounded-xl py-3 px-6 font-bold transition-all duration-300 hover:bg-brand-500 shadow-md shadow-brand-500/20"
             >
               {t.repeatMistakes} ({mistakes.length})

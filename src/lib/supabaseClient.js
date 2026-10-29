@@ -663,7 +663,8 @@ export const signsAPI = {
     try {
       const { data, error } = await supabase
         .from("road_signs")
-        .select("sign_code, image_url, hebrew_name, persian_name, category");
+        .select("sign_code, image_url, hebrew_name, persian_name, category")
+        .order("sign_code", { ascending: true });
 
       if (error) throw error;
       return { data: data || [], error: null };

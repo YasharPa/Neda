@@ -1,4 +1,4 @@
-import { useState, useSyncExternalStore } from "react";
+import { useRef, useState, useSyncExternalStore } from "react";
 
 // קצב הקראה מעט איטי מהרגיל, כדי שיהיה קל לשמוע את ההגייה
 const SPEECH_RATE = 0.85;
@@ -40,7 +40,8 @@ const findVoice = (lang) => {
     .filter((v) => v.lang.startsWith(prefix) || (prefix === "he" && v.lang.startsWith("iw")));
   const voice = voices.find((v) => /google/i.test(v.name)) || voices[0] || null;
 
-  if (voices.length > 0) voiceCache.set(lang, voice);
+  // שומרים גם "אין קול" – המטמון מתרוקן ב-voiceschanged אם קולות נטענים מאוחר יותר
+  voiceCache.set(lang, voice);
   return voice;
 };
 
@@ -81,6 +82,7 @@ const playGoogleTTS = (text, lang, onEnd) => {
 
 export default function Speaker({ text, lang = "he-IL", size = "medium" }) {
   const [speaking, setSpeaking] = useState(false);
+  const playIdRef = useRef(0);
   const voice = useVoice(lang);
   const disabled = lang === "fa-IR";
 
@@ -91,7 +93,11 @@ export default function Speaker({ text, lang = "he-IL", size = "medium" }) {
     if (event.detail > 0) event.currentTarget.blur();
     stopAll();
 
-    const done = () => setSpeaking(false);
+    // רק סיום של ההקראה האחרונה מכבה את המצב – ביטול של הקראה קודמת לא
+    const playId = ++playIdRef.current;
+    const done = () => {
+      if (playIdRef.current === playId) setSpeaking(false);
+    };
     finishCurrent = done;
     setSpeaking(true);
 
