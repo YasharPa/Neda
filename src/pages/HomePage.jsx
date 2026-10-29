@@ -182,19 +182,25 @@ export default function HomePage({
             )}
           </Link>
 
-          {/* כרטיסיית השלמת משפטים (בקרוב) */}
-          <Link to="/practice/sentence-completion" className="glass-card-interactive flex flex-col p-6 group opacity-80 cursor-default" onClick={(e) => e.preventDefault()}>
+          {/* כרטיסיית השלמת משפטים */}
+          <Link to="/practice/sentence-completion" className="glass-card-interactive flex flex-col p-6 group">
             <div className="w-full h-2 bg-gradient-to-r from-brand-400 to-brand-600 absolute top-0 left-0"></div>
-            <div className="flex justify-between items-start mb-3">
-              <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">
-                {translate?.topics?.sentenceCompletion?.title || "השלמת משפטים"}
-              </h3>
-              <span className="bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 px-3 py-1 text-xs font-bold rounded-full">
-                {translate?.comingSoon || "בקרוב..."}
-              </span>
-            </div>
+            <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-3 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
+              {translate?.topics?.sentenceCompletion?.title || "השלמת משפטים"}
+            </h3>
             <p className="text-slate-600 dark:text-dark-muted flex-grow">
               {translate?.topics?.sentenceCompletion?.description || "השלם את המילה החסרה במשפט"}
+            </p>
+          </Link>
+
+          {/* כרטיסיית כתיבה נכונה (הכתבה) */}
+          <Link to="/practice/spelling" className="glass-card-interactive flex flex-col p-6 group">
+            <div className="w-full h-2 bg-gradient-to-r from-sky-400 to-brand-600 absolute top-0 left-0"></div>
+            <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-3 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
+              {translate?.topics?.spelling?.title || "כתיבה נכונה"}
+            </h3>
+            <p className="text-slate-600 dark:text-dark-muted flex-grow">
+              {translate?.topics?.spelling?.description || "הקשב והקלד הודעות יומיומיות בעברית"}
             </p>
           </Link>
         </div>

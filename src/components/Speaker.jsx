@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export default function Speaker({ text, lang = "he-IL" }) {
+export default function Speaker({ text, lang = "he-IL", rate = 1, label }) {
   const [speaking, setSpeaking] = useState(false);
   const [disabled, setDisabled] = useState(false);
   useEffect(() => {
@@ -18,6 +18,7 @@ export default function Speaker({ text, lang = "he-IL" }) {
 
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = lang;
+    utterance.rate = rate;
 
     utterance.onstart = () => setSpeaking(true);
     utterance.onend = () => setSpeaking(false);
@@ -36,7 +37,8 @@ export default function Speaker({ text, lang = "he-IL" }) {
       onClick={handleSpeak}
       disabled={disabled}
       className={`w-10 h-10 flex items-center justify-center rounded-full border border-slate-200 dark:border-slate-700 transition-all duration-300 ${btnClasses}`}
-      aria-label="הקרא טקסט"
+      aria-label={label || "הקרא טקסט"}
+      title={label}
     >
       {speaking ? (
         <svg
