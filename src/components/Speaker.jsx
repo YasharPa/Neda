@@ -66,7 +66,7 @@ const stopAll = () => {
 };
 
 // גיבוי: הקראה דרך Google Translate כשאין במכשיר קול עברי
-const playGoogleTTS = (text, lang, onEnd) => {
+const playGoogleTTS = (text, lang, rate, onEnd) => {
   if (text.length > GOOGLE_TTS_MAX_LENGTH) {
     onEnd();
     return;
@@ -74,13 +74,13 @@ const playGoogleTTS = (text, lang, onEnd) => {
   const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${lang.slice(0, 2)}&q=${encodeURIComponent(text)}`;
   const audio = new Audio(url);
   currentAudio = audio;
-  audio.playbackRate = SPEECH_RATE;
+  audio.playbackRate = rate;
   audio.onended = onEnd;
   audio.onerror = onEnd;
   audio.play().catch(onEnd);
 };
 
-export default function Speaker({ text, lang = "he-IL", size = "medium" }) {
+export default function Speaker({ text, lang = "he-IL", size = "medium", rate = SPEECH_RATE, label }) {
   const [speaking, setSpeaking] = useState(false);
   const playIdRef = useRef(0);
   const voice = useVoice(lang);
@@ -102,14 +102,14 @@ export default function Speaker({ text, lang = "he-IL", size = "medium" }) {
     setSpeaking(true);
 
     if (!voice) {
-      playGoogleTTS(text, lang, done);
+      playGoogleTTS(text, lang, rate, done);
       return;
     }
 
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = lang;
     utterance.voice = voice;
-    utterance.rate = SPEECH_RATE;
+    utterance.rate = rate;
     utterance.onend = done;
     utterance.onerror = done;
 
@@ -129,7 +129,8 @@ export default function Speaker({ text, lang = "he-IL", size = "medium" }) {
       onPointerDown={(e) => e.stopPropagation()}
       disabled={disabled}
       className={`${size === "small" ? "w-8 h-8" : "w-10 h-10"} shrink-0 flex items-center justify-center rounded-full border border-slate-200 dark:border-slate-700 transition-all duration-300 ${btnClasses}`}
-      aria-label="הקרא טקסט"
+      aria-label={label || "הקרא טקסט"}
+      title={label}
     >
       {speaking ? (
         <svg
