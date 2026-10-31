@@ -27,8 +27,15 @@ export function AuthProvider({ children }) {
     getInitialSession();
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      const nextUser = session?.user ?? null;
+      // רענון טוקן או חזרה ללשונית מחזירים אובייקט חדש לאותו משתמש –
+      // שומרים את הקיים כדי שאפקטים התלויים ב-user לא יטענו הכל מחדש
+      setUser((prev) =>
+        event !== "USER_UPDATED" && prev && nextUser && prev.id === nextUser.id
+          ? prev
+          : nextUser,
+      );
     });
 
     return () => subscription.unsubscribe();

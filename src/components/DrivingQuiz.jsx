@@ -22,7 +22,7 @@ const DrivingQuiz = ({
   const [quizComplete, setQuizComplete] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [sessionId] = useState(() => crypto.randomUUID());
+  const [sessionId, setSessionId] = useState(() => crypto.randomUUID());
   const [startTime, setStartTime] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [stats, setStats] = useState({
@@ -78,7 +78,7 @@ const DrivingQuiz = ({
     setStartTime(Date.now());
   };
 
-  const handleAnswerSelect = async (answerIndex) => {
+  const handleAnswerSelect = (answerIndex) => {
     if (selectedAnswer !== null || !currentQuestion) return;
 
     setSelectedAnswer(answerIndex);
@@ -88,19 +88,15 @@ const DrivingQuiz = ({
     const responseTime = startTime ? Date.now() - startTime : null;
     const category = currentQuestion.category;
 
-    // שמירת תוצאה לסטטיסטיקות רק למשתמש מחובר
+    // שמירת תוצאה לסטטיסטיקות רק למשתמש מחובר, ברקע – הניקוד המקומי לא מחכה לרשת
     if (user) {
-      try {
-        await drivingAPI.saveQuizResult(
-          sessionId,
-          currentQuestion.id,
-          answerIndex,
-          isCorrect,
-          responseTime,
-        );
-      } catch {
-        /* add erorr handaling here */
-      }
+      drivingAPI.saveQuizResult(
+        sessionId,
+        currentQuestion.id,
+        answerIndex,
+        isCorrect,
+        responseTime,
+      );
     }
 
     const newAnswer = {
@@ -142,6 +138,8 @@ const DrivingQuiz = ({
     setError(null);
     setCurrentQuestionIndex(0);
     setStats({ correct: 0, incorrect: 0, byCategory: {} });
+    // כל סבב חדש נשמר תחת מזהה סשן משלו
+    setSessionId(crypto.randomUUID());
     loadQuestions();
   };
 
@@ -205,7 +203,7 @@ const DrivingQuiz = ({
             {translate.driving.quiz.quizComplete}
           </h2>
           <p className="mb-4 text-sm text-gray-500">
-            {questions.length} שאלות הושלמו
+            {questions.length} {translate?.driving?.quiz?.questionsCompleted}
           </p>
           <span className="block text-5xl font-medium text-green-700">
             {successRate}%
@@ -219,7 +217,7 @@ const DrivingQuiz = ({
         {Object.keys(stats.byCategory).length > 0 && (
           <div className="rounded-xl border border-gray-200 bg-white p-5">
             <h3 className="mb-4 text-base font-medium text-gray-800">
-              פירוט לפי נושאים
+              {translate?.driving?.quiz?.categoryBreakdown}
             </h3>
             <div className="space-y-3">
               {Object.entries(stats.byCategory).map(([category, catStats]) => {

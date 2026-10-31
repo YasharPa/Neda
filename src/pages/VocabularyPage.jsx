@@ -200,6 +200,7 @@ const VocabularyPage = ({ translate, onLogin }) => {
             <AddWordForm
               onAddWord={handleAddWord}
               onClose={() => setShowAddForm(false)}
+              translate={translate}
             />
           </div>
         )}

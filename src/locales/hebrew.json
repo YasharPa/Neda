@@ -91,6 +91,22 @@
     "emptyWordsOfMediumWords": "עדיין לא סווגת מילים כבינוניות. המילים הבינוניות יופיעו כאן",
     "emptyWordsOfHardWords": "עדיין לא סווגת מילים כקשות. המילים המאתגרות יופיעו כאן"
   },
+  "addWordForm": {
+    "title": "הוספת מילה חדשה",
+    "hebrewLabel": "מילה בעברית",
+    "persianLabel": "מילה בפרסית",
+    "exampleLabel": "דוגמה במשפט (אופציונלי)",
+    "hebrewPlaceholder": "למשל: שלום",
+    "persianPlaceholder": "למשל: سلام",
+    "examplePlaceholder": "למשל: שלום, מה שלומך?",
+    "submit": "הוסף מילה",
+    "submitting": "מוסיף...",
+    "clear": "נקה",
+    "cancel": "ביטול",
+    "close": "סגור",
+    "requiredError": "נא למלא את המילה בעברית ובפרסית",
+    "addError": "שגיאה בהוספת המילה. נסה שוב."
+  },
   "driving": {
     "title": "בחינת תיאוריה לנהיגה",
     "backToMenu": "חזור לתפריט",
@@ -119,6 +135,7 @@
       "nextQuestion": "שאלה הבאה",
       "finishQuiz": "סיים בחינה",
       "quizComplete": "סיימת את הבחינה!",
+      "questionsCompleted": "שאלות הושלמו",
       "finalScore": "הציון הסופי שלך:",
       "categoryBreakdown": "פירוט לפי נושאים:",
       "restartQuiz": "התחל שוב",

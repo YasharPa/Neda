@@ -1,14 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { writingAPI, vocabularyAPI } from "../lib/supabaseClient";
-
-const shuffleArray = (array) => {
-  const shuffled = [...array];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
-};
+import { shuffleArray } from "../lib/shuffle";
 
 // source: "phrases" (משפטי הודעות) או "myWords" (המילים של המשתמש)
 export function useWritingPractice(source, category, enabled = true) {

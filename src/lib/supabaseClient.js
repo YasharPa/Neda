@@ -424,11 +424,19 @@ export const drivingAPI = {
       });
 
       if (rpcError) {
+        // הגיבוי חייב להיות מוגבל למשתמש הנוכחי בלבד
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        const userId = session?.user?.id;
+        if (!userId) throw rpcError;
+
         const { data: existing, error: selectError } = await supabase
           .from("user_category_stats")
           .select("*")
+          .eq("user_id", userId)
           .eq("category", category)
-          .single();
+          .maybeSingle();
 
         if (selectError && selectError.code !== "PGRST116") {
           throw selectError;
@@ -442,6 +450,7 @@ export const drivingAPI = {
               correct_answers: existing.correct_answers + (isCorrect ? 1 : 0),
               last_updated: new Date().toISOString(),
             })
+            .eq("user_id", userId)
             .eq("category", category);
 
           if (updateError) throw updateError;
@@ -450,6 +459,7 @@ export const drivingAPI = {
             .from("user_category_stats")
             .insert([
               {
+                user_id: userId,
                 category,
                 total_questions: 1,
                 correct_answers: isCorrect ? 1 : 0,
@@ -649,6 +659,8 @@ export const signsAPI = {
       const { data, error } = await supabase
         .from("road_signs")
         .select("*")
+        // סדר קבוע – אחרת עמודים עלולים לחזור על תמרורים או לדלג עליהם
+        .order("sign_code", { ascending: true })
         .range(from, to);
 
       if (error) throw error;

@@ -60,7 +60,7 @@ const WordCard = ({
   return (
     <div
       className={`relative border-2 rounded-2xl p-5 mb-4 
-        shadow-sm transition-all duration-300 select-none touch-none
+        shadow-sm transition-all duration-300 select-none touch-manipulation
         ${isDragging ? "scale-105 shadow-2xl rotate-2 opacity-60 cursor-grabbing" : "hover:-translate-y-1 hover:shadow-md cursor-grab"}
         ${isUpdating ? "opacity-70 pointer-events-none" : ""}
         ${currentDiff.bg} ${currentDiff.border}`}
