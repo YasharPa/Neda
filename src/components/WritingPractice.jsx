@@ -1,19 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import Speaker from "./Speaker";
+import { speak, stopSpeaking } from "../lib/speech";
 import { compareWords } from "../lib/hebrewText";
 import { primaryBtnClasses } from "../lib/buttonClasses";
 
 const secondaryBtnClasses =
   "bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl font-bold transition-all";
-
-// הקראה אוטומטית כשמופיע פריט חדש
-const speakHebrew = (text) => {
-  if (!text || typeof window === "undefined" || !window.speechSynthesis) return;
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "he-IL";
-  window.speechSynthesis.speak(utterance);
-};
 
 export default function WritingPractice({ items, translate, onRestart }) {
   const t = translate?.writing;
@@ -36,9 +28,10 @@ export default function WritingPractice({ items, translate, onRestart }) {
 
   useEffect(() => {
     if (!current) return;
-    speakHebrew(current.hebrew);
+    // הקראה אוטומטית כשמופיע פריט חדש
+    speak(current.hebrew);
     inputRef.current?.focus();
-    return () => window.speechSynthesis?.cancel();
+    return stopSpeaking;
   }, [current]);
 
   const submit = (revealed = false) => {
