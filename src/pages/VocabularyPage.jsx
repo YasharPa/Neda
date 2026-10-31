@@ -3,7 +3,7 @@ import {
   DndContext,
   DragOverlay,
   closestCenter,
-  PointerSensor,
+  MouseSensor,
   TouchSensor,
   useSensor,
   useSensors,
@@ -91,7 +91,8 @@ const VocabularyPage = ({ translate, onLogin }) => {
   const [filter, setFilter] = useState("all"); 
 
   const sensors = useSensors(
-    useSensor(PointerSensor, {
+    // עכבר בלבד – במגע הגרירה מתחילה רק בלחיצה ארוכה, כדי שהחלקה תגלול את הדף
+    useSensor(MouseSensor, {
       activationConstraint: { distance: 8 },
     }),
     useSensor(TouchSensor, {

@@ -137,7 +137,7 @@
       "quizComplete": "סיימת את הבחינה!",
       "questionsCompleted": "שאלות הושלמו",
       "finalScore": "הציון הסופי שלך:",
-      "categoryBreakdown": "פירוט לפי נושאים:",
+      "categoryBreakdown": "פירוט לפי נושאים",
       "restartQuiz": "התחל שוב",
       "loading": "טוען שאלות...",
       "noQuestions": "לא נמצאו שאלות במאגר",
@@ -272,7 +272,6 @@
     "question": "שאלה",
     "of": "מתוך",
     "correctLabel": "נכונות",
-    "translation": "תרגום לפרסית",
     "finish": "סיים וראה תוצאות",
     "endSession": "סיים",
     "summaryTitle": "סיימת את הסבב!",
@@ -281,7 +280,8 @@
     "newSession": "סבב חדש",
     "saveError": "לא ניתן היה לשמור את הסטטיסטיקה של הסבב",
     "loadError": "שגיאה בטעינת המשפטים",
-    "keyboardHint": "מקשים 1–4 לבחירה · Enter לשאלה הבאה"
+    "keyboardHint": "מקשים 1–4 לבחירה · Enter לשאלה הבאה",
+    "listenSentence": "השמע את המשפט"
   },
   "auth": {
     "signIn": "התחבר",
