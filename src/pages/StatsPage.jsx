@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import PracticeStatsSection from "../components/PracticeStatsSection";
 import { useVocabulary } from "../hooks/useVocabulary";
 import { drivingAPI, flashcardsAPI, sentenceCompletionAPI } from "../lib/supabaseClient";
@@ -328,9 +329,9 @@ const StatsPage = ({ translate, onLogin }) => {
           <div className="text-5xl opacity-80">🚗</div>
           <h3 className="text-xl font-bold text-slate-800 dark:text-slate-200 m-0">{translate?.statistics.noRecentResults}</h3>
           <p className="text-slate-500 dark:text-slate-400 m-0">{translate?.statistics.pleasePractice}</p>
-          <a href="/practice/driving" className="mt-4 px-6 py-3 bg-brand-600 hover:bg-brand-500 text-white rounded-xl font-medium transition-all shadow-md shadow-brand-500/20">
+          <Link to="/practice/driving" className="mt-4 px-6 py-3 bg-brand-600 hover:bg-brand-500 text-white rounded-xl font-medium transition-all shadow-md shadow-brand-500/20">
             {translate?.statistics.startPracticing}
-          </a>
+          </Link>
         </div>
       )}
     </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { drivingAPI } from "../lib/supabaseClient";
 import LoadingSpinner from "./LoadingSpinner";
 import { shuffleArray } from "../lib/shuffle";
@@ -22,7 +22,7 @@ const DrivingQuiz = ({
   const [quizComplete, setQuizComplete] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [sessionId] = useState(() => crypto.randomUUID());
+  const [sessionId, setSessionId] = useState(() => crypto.randomUUID());
   const [startTime, setStartTime] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [stats, setStats] = useState({
@@ -30,6 +30,8 @@ const DrivingQuiz = ({
     incorrect: 0,
     byCategory: {},
   });
+  // שמירות התשובות רצות אחת אחרי השנייה, כדי שעדכוני הסטטיסטיקה לא יתנגשו
+  const saveQueueRef = useRef(Promise.resolve());
 
   useEffect(() => {
     loadQuestions();
@@ -78,7 +80,7 @@ const DrivingQuiz = ({
     setStartTime(Date.now());
   };
 
-  const handleAnswerSelect = async (answerIndex) => {
+  const handleAnswerSelect = (answerIndex) => {
     if (selectedAnswer !== null || !currentQuestion) return;
 
     setSelectedAnswer(answerIndex);
@@ -88,19 +90,19 @@ const DrivingQuiz = ({
     const responseTime = startTime ? Date.now() - startTime : null;
     const category = currentQuestion.category;
 
-    // שמירת תוצאה לסטטיסטיקות רק למשתמש מחובר
+    // שמירת תוצאה לסטטיסטיקות רק למשתמש מחובר, ברקע – הניקוד המקומי לא מחכה לרשת
     if (user) {
-      try {
-        await drivingAPI.saveQuizResult(
+      const questionId = currentQuestion.id;
+      saveQueueRef.current = saveQueueRef.current.then(() =>
+        drivingAPI.saveQuizResult(
           sessionId,
-          currentQuestion.id,
+          questionId,
           answerIndex,
           isCorrect,
           responseTime,
-        );
-      } catch {
-        /* add erorr handaling here */
-      }
+          user.id,
+        ),
+      );
     }
 
     const newAnswer = {
@@ -142,6 +144,8 @@ const DrivingQuiz = ({
     setError(null);
     setCurrentQuestionIndex(0);
     setStats({ correct: 0, incorrect: 0, byCategory: {} });
+    // כל סבב חדש נשמר תחת מזהה סשן משלו
+    setSessionId(crypto.randomUUID());
     loadQuestions();
   };
 
@@ -171,10 +175,10 @@ const DrivingQuiz = ({
         dir="rtl"
         className="flex flex-col items-center justify-center gap-4 p-10 text-center"
       >
-        <p className="text-base text-red-700">{error}</p>
+        <p className="text-base text-red-600 dark:text-red-400">{error}</p>
         <button
           onClick={loadQuestions}
-          className="rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white active:scale-95"
+          className="rounded-xl bg-brand-600 hover:bg-brand-500 px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-brand-500/20 transition-all active:scale-95"
         >
           {translate?.errors?.tryAgain}
         </button>
@@ -183,7 +187,7 @@ const DrivingQuiz = ({
 
   if (questions.length === 0)
     return (
-      <div dir="rtl" className="p-10 text-center text-base text-gray-500">
+      <div dir="rtl" className="p-10 text-center text-base text-slate-500 dark:text-dark-muted">
         {translate?.driving.quiz.noQuestions}
       </div>
     );
@@ -200,26 +204,26 @@ const DrivingQuiz = ({
     return (
       <div dir="rtl" className="mx-auto max-w-xl space-y-4 p-4">
         {/* score header */}
-        <div className="rounded-xl border border-gray-200 bg-white p-6 text-center">
-          <h2 className="mb-3 text-xl font-medium text-gray-900">
+        <div className="glass-card p-6 text-center">
+          <h2 className="mb-3 text-xl font-bold text-slate-800 dark:text-slate-100">
             {translate.driving.quiz.quizComplete}
           </h2>
-          <p className="mb-4 text-sm text-gray-500">
-            {questions.length} שאלות הושלמו
+          <p className="mb-4 text-sm text-slate-500 dark:text-dark-muted">
+            {questions.length} {translate?.driving?.quiz?.questionsCompleted}
           </p>
-          <span className="block text-5xl font-medium text-green-700">
+          <span className="block text-5xl font-bold text-emerald-600 dark:text-emerald-400">
             {successRate}%
           </span>
-          <span className="mt-1 block text-sm text-gray-500">
+          <span className="mt-1 block text-sm text-slate-500 dark:text-dark-muted">
             ({stats.correct}/{totalQuestions})
           </span>
         </div>
 
         {/* category breakdown */}
         {Object.keys(stats.byCategory).length > 0 && (
-          <div className="rounded-xl border border-gray-200 bg-white p-5">
-            <h3 className="mb-4 text-base font-medium text-gray-800">
-              פירוט לפי נושאים
+          <div className="glass-card p-5">
+            <h3 className="mb-4 text-base font-bold text-slate-800 dark:text-slate-100">
+              {translate?.driving?.quiz?.categoryBreakdown}
             </h3>
             <div className="space-y-3">
               {Object.entries(stats.byCategory).map(([category, catStats]) => {
@@ -230,14 +234,14 @@ const DrivingQuiz = ({
                 return (
                   <div key={category}>
                     <div className="mb-1 flex justify-between text-sm">
-                      <span className="text-gray-700">{category}</span>
-                      <span className="font-medium text-green-700">
+                      <span className="text-slate-700 dark:text-slate-300">{category}</span>
+                      <span className="font-medium text-emerald-600 dark:text-emerald-400">
                         {rate}%
                       </span>
                     </div>
-                    <div className="h-2 overflow-hidden rounded-full bg-gray-100">
+                    <div className="h-2 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
                       <div
-                        className="h-full rounded-full bg-green-600 transition-all duration-700"
+                        className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 transition-all duration-1000 ease-out"
                         style={{ width: `${rate}%` }}
                       />
                     </div>
@@ -252,14 +256,14 @@ const DrivingQuiz = ({
         <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
           <button
             onClick={resetQuiz}
-            className="w-full rounded-lg bg-red-700 py-3 text-sm font-medium text-white active:scale-95 sm:w-auto sm:px-8"
+            className="w-full rounded-xl bg-brand-600 hover:bg-brand-500 py-3 text-sm font-bold text-white shadow-md shadow-brand-500/20 transition-all active:scale-95 sm:w-auto sm:px-8"
           >
             {translate.driving.quiz.restartQuiz}
           </button>
           {onBack && (
             <button
               onClick={onBack}
-              className="w-full rounded-lg border border-gray-300 bg-white py-3 text-sm font-medium text-gray-700 active:scale-95 sm:w-auto sm:px-8"
+              className="w-full rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 py-3 text-sm font-bold text-slate-700 dark:text-slate-200 transition-all active:scale-95 sm:w-auto sm:px-8"
             >
               ← {translate.driving.backToMenu}
             </button>
@@ -284,45 +288,45 @@ const DrivingQuiz = ({
     const isCorrect = index === currentQuestion.correct_answer;
 
     if (!showResult) {
-      return "border-gray-200 bg-white hover:border-blue-400 hover:bg-blue-50 active:scale-[0.99] cursor-pointer";
+      return "border-slate-200 dark:border-slate-700 bg-white dark:bg-dark-surface hover:border-brand-400 hover:bg-brand-50 dark:hover:bg-brand-900/20 active:scale-[0.99] cursor-pointer";
     }
-    if (isCorrect) return "border-green-600 bg-green-50 cursor-default";
+    if (isCorrect) return "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 cursor-default";
     if (isSelected && !isCorrect)
-      return "border-red-600 bg-red-50 cursor-default";
-    return "border-gray-200 bg-white opacity-60 cursor-default";
+      return "border-red-500 bg-red-50 dark:bg-red-900/20 cursor-default";
+    return "border-slate-200 dark:border-slate-700 bg-white dark:bg-dark-surface opacity-60 cursor-default";
   };
 
   const letterClass = (index) => {
     const isSelected = selectedAnswer === index;
     const isCorrect = index === currentQuestion.correct_answer;
 
-    if (!showResult) return "bg-gray-100 text-gray-600";
-    if (isCorrect) return "bg-green-600 text-white";
+    if (!showResult) return "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300";
+    if (isCorrect) return "bg-emerald-500 text-white";
     if (isSelected && !isCorrect) return "bg-red-600 text-white";
-    return "bg-gray-100 text-gray-500";
+    return "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400";
   };
 
   return (
     <div dir="rtl" className="mx-auto max-w-xl space-y-3 p-4">
       {/* ── Progress bar (sticky) ── */}
-      <div className="sticky top-0 z-10 rounded-xl border border-gray-200 bg-white p-4">
+      <div className="sticky top-0 z-10 glass-card p-4">
         <div className="mb-2 flex items-center justify-between text-sm">
-          <span className="text-gray-500">
+          <span className="text-slate-500 dark:text-dark-muted">
             {translate.driving.quiz.question} {currentQuestionIndex + 1}{" "}
             {translate.driving.quiz.of} {questions.length}
           </span>
           <div className="flex gap-4">
-            <span className="font-medium text-green-700">
+            <span className="font-medium text-emerald-600 dark:text-emerald-400">
               ✓ {stats.correct}
             </span>
-            <span className="font-medium text-red-700">
+            <span className="font-medium text-red-600 dark:text-red-400">
               ✗ {stats.incorrect}
             </span>
           </div>
         </div>
-        <div className="h-2 overflow-hidden rounded-full bg-gray-100">
+        <div className="h-2 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
           <div
-            className="h-full rounded-full bg-green-600 transition-all duration-500"
+            className="h-full rounded-full bg-gradient-to-r from-brand-400 to-brand-600 transition-all duration-500"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -334,8 +338,8 @@ const DrivingQuiz = ({
       </div>
 
       {/* ── Question card ── */}
-      <div className="rounded-xl border border-gray-200 bg-white p-5">
-        <span className="mb-3 inline-block rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600">
+      <div className="glass-card p-5">
+        <span className="mb-3 inline-block rounded-full bg-brand-100 dark:bg-brand-900/30 px-3 py-1 text-xs font-semibold text-brand-700 dark:text-brand-300">
           {questionContent.category}
         </span>
 
@@ -363,7 +367,7 @@ const DrivingQuiz = ({
             text={questionContent.question}
             lang={language === "he" ? "he-IL" : "fa-IR"}
           />
-          <p className="text-base font-medium leading-relaxed text-gray-900">
+          <p className="text-base font-medium leading-relaxed text-slate-800 dark:text-slate-100">
             {questionContent.question}
           </p>
         </div>
@@ -375,7 +379,7 @@ const DrivingQuiz = ({
               key={index}
               disabled={showResult}
               onClick={() => handleAnswerSelect(index)}
-              className={`flex w-full items-center gap-3 rounded-lg border px-4 py-3 text-right transition-colors duration-150 ${optionClass(index)}`}
+              className={`flex w-full items-center gap-3 rounded-xl border-2 px-4 py-3 text-right transition-colors duration-150 ${optionClass(index)}`}
             >
               {/* letter badge */}
               <span
@@ -385,7 +389,7 @@ const DrivingQuiz = ({
               </span>
 
               {/* option text */}
-              <span className="flex-1 text-sm leading-snug text-gray-800">
+              <span className="flex-1 text-sm leading-snug text-slate-800 dark:text-slate-200">
                 {option}
               </span>
 
@@ -399,12 +403,12 @@ const DrivingQuiz = ({
 
               {/* indicator */}
               {showResult && index === currentQuestion.correct_answer && (
-                <span className="text-base text-green-700">✓</span>
+                <span className="text-base text-emerald-600 dark:text-emerald-400">✓</span>
               )}
               {showResult &&
                 selectedAnswer === index &&
                 index !== currentQuestion.correct_answer && (
-                  <span className="text-base text-red-700">✗</span>
+                  <span className="text-base text-red-600 dark:text-red-400">✗</span>
                 )}
             </button>
           ))}
@@ -415,11 +419,11 @@ const DrivingQuiz = ({
       {showResult && (
         <div className="space-y-3">
           {/* explanation */}
-          <div className="rounded-lg border-r-4 border-blue-700 bg-blue-50 px-4 py-3">
-            <p className="mb-1 text-s font-medium text-blue-800 font-bold">
+          <div className="rounded-xl border-r-4 border-brand-600 bg-brand-50 dark:bg-brand-900/20 px-4 py-3">
+            <p className="mb-1 text-sm font-bold text-brand-800 dark:text-brand-300">
               {translate.driving.quiz.explanation}
             </p>
-            <p className="text-sm leading-relaxed text-blue-900">
+            <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-200">
               {questionContent.explanation}
             </p>
           </div>
@@ -428,7 +432,7 @@ const DrivingQuiz = ({
           <div className="sticky bottom-4">
             <button
               onClick={handleNextQuestion}
-              className="w-full rounded-lg bg-blue-500 py-3.5 text-sm font-medium text-white shadow-md active:scale-[0.99]"
+              className="w-full rounded-xl bg-brand-600 hover:bg-brand-500 py-3.5 text-sm font-bold text-white shadow-md shadow-brand-500/20 transition-all active:scale-[0.99]"
             >
               {currentQuestionIndex >= questions.length - 1
                 ? `${translate.driving.quiz.finishQuiz}`

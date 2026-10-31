@@ -368,6 +368,7 @@ export const drivingAPI = {
     selectedAnswer,
     isCorrect,
     responseTime = null,
+    userID = null,
   ) {
     try {
       const { data, error } = await supabase
@@ -388,7 +389,7 @@ export const drivingAPI = {
       // עדכון סטטיסטיקות קטגוריה
       const { data: questionData } = await this.getQuestionById(questionId);
       if (questionData) {
-        await this.updateCategoryStats(questionData.category, isCorrect);
+        await this.updateCategoryStats(questionData.category, isCorrect, userID);
       }
 
       return { data, error: null };
@@ -416,7 +417,7 @@ export const drivingAPI = {
   },
 
   // עדכון סטטיסטיקות קטגוריה (הפונקציה הקיימת)
-  async updateCategoryStats(category, isCorrect) {
+  async updateCategoryStats(category, isCorrect, userID) {
     try {
       const { error: rpcError } = await supabase.rpc("update_category_stats", {
         cat: category,
@@ -424,15 +425,17 @@ export const drivingAPI = {
       });
 
       if (rpcError) {
+        // הגיבוי חייב להיות מוגבל למשתמש הנוכחי בלבד
+        if (!userID) throw rpcError;
+
         const { data: existing, error: selectError } = await supabase
           .from("user_category_stats")
           .select("*")
+          .eq("user_id", userID)
           .eq("category", category)
-          .single();
+          .maybeSingle();
 
-        if (selectError && selectError.code !== "PGRST116") {
-          throw selectError;
-        }
+        if (selectError) throw selectError;
 
         if (existing) {
           const { error: updateError } = await supabase
@@ -442,6 +445,7 @@ export const drivingAPI = {
               correct_answers: existing.correct_answers + (isCorrect ? 1 : 0),
               last_updated: new Date().toISOString(),
             })
+            .eq("user_id", userID)
             .eq("category", category);
 
           if (updateError) throw updateError;
@@ -450,6 +454,7 @@ export const drivingAPI = {
             .from("user_category_stats")
             .insert([
               {
+                user_id: userID,
                 category,
                 total_questions: 1,
                 correct_answers: isCorrect ? 1 : 0,
@@ -649,6 +654,8 @@ export const signsAPI = {
       const { data, error } = await supabase
         .from("road_signs")
         .select("*")
+        // סדר קבוע – אחרת עמודים עלולים לחזור על תמרורים או לדלג עליהם
+        .order("sign_code", { ascending: true })
         .range(from, to);
 
       if (error) throw error;

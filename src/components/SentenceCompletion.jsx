@@ -15,6 +15,9 @@ const BLANK = "___";
 const getCorrectOption = (question) =>
   question.options.find((opt) => opt.key === question.correctAnswer);
 
+// טקסט להקראה בלי המילה החסרה – במקום החסר יש הפסקה קצרה
+const withoutBlank = (text) => text.replace(BLANK, " ... ").replace(/\s+/g, " ").trim();
+
 // משפט עם החסר, או עם התשובה הנכונה בתוכו אחרי שענו
 const Sentence = ({ text, fill }) => {
   const [before, after] = text.split(BLANK);
@@ -193,9 +196,10 @@ export default function SentenceCompletion({ translate, language }) {
                   </p>
                   <Speaker text={q.question.replace(BLANK, getCorrectOption(q).answer)} lang="he-IL" />
                 </div>
-                {q.translationFA && (
-                  <p className="m-0 text-slate-500 dark:text-slate-400">{q.translationFA}</p>
-                )}
+                {/* הסבר בשפת הממשק בלבד, כמו בתיבת התשובה */}
+                <p className="m-0 text-slate-500 dark:text-slate-400">
+                  {language === "he" ? q.explanationInHE : q.explanationInFA}
+                </p>
               </div>
             ))}
           </div>
@@ -261,8 +265,14 @@ export default function SentenceCompletion({ translate, language }) {
                 {t.topics[currentQuestion.topic]}
               </span>
             )}
-            <div className="w-full bg-brand-50/50 dark:bg-brand-900/20 p-6 rounded-2xl border border-brand-100 dark:border-brand-800/50">
-              <p className="text-2xl md:text-3xl text-center font-bold text-slate-800 dark:text-slate-100 leading-relaxed m-0">
+            <div className="w-full bg-brand-50/50 dark:bg-brand-900/20 p-6 rounded-2xl border border-brand-100 dark:border-brand-800/50 flex items-center gap-4">
+              {/* הקראת המשפט בלי המילה החסרה */}
+              <Speaker
+                text={withoutBlank(currentQuestion.question)}
+                lang="he-IL"
+                label={t.listenSentence}
+              />
+              <p className="flex-1 text-2xl md:text-3xl text-center font-bold text-slate-800 dark:text-slate-100 leading-relaxed m-0">
                 <Sentence
                   text={currentQuestion.question}
                   fill={selected !== null ? correctOption.answer : null}
@@ -273,22 +283,29 @@ export default function SentenceCompletion({ translate, language }) {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {currentQuestion.options.map((option, index) => {
-              let btnClass = "w-full text-lg md:text-xl p-4 md:p-5 rounded-2xl font-bold transition-all duration-300 border-2 flex items-center gap-3 ";
+              // מקום בצד שמאל של הכרטיס עבור הרמקול
+              let btnClass = "w-full text-lg md:text-xl p-4 pl-14 md:p-5 md:pl-14 rounded-2xl font-bold transition-all duration-300 border-2 flex items-center gap-3 ";
+              // תזוזה והגדלה על העוטף, כדי שהרמקול יזוז יחד עם הכרטיס
+              let wrapperClass = "relative transition-all duration-300 ";
 
               if (selected === null) {
-                btnClass += "bg-white dark:bg-dark-surface border-slate-200 dark:border-slate-700 hover:border-brand-400 dark:hover:border-brand-500 text-slate-700 dark:text-slate-200 hover:shadow-md hover:-translate-y-1 cursor-pointer";
+                btnClass += "bg-white dark:bg-dark-surface border-slate-200 dark:border-slate-700 hover:border-brand-400 dark:hover:border-brand-500 text-slate-700 dark:text-slate-200 hover:shadow-md cursor-pointer";
+                wrapperClass += "hover:-translate-y-1";
               } else if (selected === option.key) {
                 btnClass += isCorrect
-                  ? "bg-emerald-500 border-emerald-600 text-white shadow-lg shadow-emerald-500/30 scale-[1.02]"
-                  : "bg-red-500 border-red-600 text-white shadow-lg shadow-red-500/30 scale-[1.02]";
+                  ? "bg-emerald-500 border-emerald-600 text-white shadow-lg shadow-emerald-500/30"
+                  : "bg-red-500 border-red-600 text-white shadow-lg shadow-red-500/30";
+                wrapperClass += "scale-[1.02]";
               } else if (option.key === currentQuestion.correctAnswer) {
                 btnClass += "bg-emerald-100 dark:bg-emerald-900/40 border-emerald-400 dark:border-emerald-600 text-emerald-800 dark:text-emerald-300";
               } else {
-                btnClass += "bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500 opacity-50 cursor-not-allowed";
+                btnClass += "bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500 cursor-not-allowed";
+                // העמעום על העוטף, כדי שגם הרמקול יתעמעם
+                wrapperClass += "opacity-50";
               }
 
               return (
-                <div key={option.key} className="flex items-center gap-2">
+                <div key={option.key} className={wrapperClass}>
                   <button
                     className={btnClass}
                     onClick={() => handleSelect(option.key)}
@@ -297,8 +314,10 @@ export default function SentenceCompletion({ translate, language }) {
                     <span className="hidden md:inline text-sm opacity-50">{index + 1}</span>
                     <span className="flex-1">{option.answer}</span>
                   </button>
-                  {/* הקראת התשובה – לשמוע את ההבדל בין זכר לנקבה */}
-                  <Speaker text={option.answer} lang="he-IL" size="small" />
+                  {/* הקראת התשובה – לשמוע את ההבדל בין זכר לנקבה. ממוקם מעל הכרטיס ולא בתוכו, כי אסור כפתור בתוך כפתור */}
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2">
+                    <Speaker text={option.answer} lang="he-IL" size="small" />
+                  </div>
                 </div>
               );
             })}
@@ -314,13 +333,6 @@ export default function SentenceCompletion({ translate, language }) {
                 </p>
                 <Speaker text={currentQuestion.question.replace(BLANK, correctOption.answer)} lang="he-IL" />
               </div>
-
-              {currentQuestion.translationFA && (
-                <p className="m-0 text-slate-700 dark:text-slate-300">
-                  <span className="font-bold">{t.translation}: </span>
-                  {currentQuestion.translationFA}
-                </p>
-              )}
 
               <p className="text-slate-700 dark:text-slate-300 text-lg m-0">
                 {language === "he" ? currentQuestion.explanationInHE : currentQuestion.explanationInFA}

@@ -1,6 +1,7 @@
 import { useState } from "react";
 
-const AddWordForm = ({ onAddWord, onClose }) => {
+const AddWordForm = ({ onAddWord, onClose, translate }) => {
+  const t = translate?.addWordForm;
   const [formData, setFormData] = useState({
     hebrew: "",
     persian: "",
@@ -20,7 +21,7 @@ const AddWordForm = ({ onAddWord, onClose }) => {
     e.preventDefault();
 
     if (!formData.hebrew.trim() || !formData.persian.trim()) {
-      alert("נא למלא את המילה בעברית ובפרסית");
+      alert(t?.requiredError || "נא למלא את המילה בעברית ובפרסית");
       return;
     }
 
@@ -33,11 +34,11 @@ const AddWordForm = ({ onAddWord, onClose }) => {
         setFormData({ hebrew: "", persian: "", example_sentence: "" });
         if (onClose) onClose();
       } else {
-        alert("שגיאה בהוספת המילה. נסה שוב.");
+        alert(t?.addError || "שגיאה בהוספת המילה. נסה שוב.");
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("שגיאה בהוספת המילה. נסה שוב.");
+      alert(t?.addError || "שגיאה בהוספת המילה. נסה שוב.");
     } finally {
       setIsSubmitting(false);
     }
@@ -55,15 +56,15 @@ const AddWordForm = ({ onAddWord, onClose }) => {
         <h4 className="text-xl md:text-2xl font-bold text-slate-800 dark:text-slate-100 m-0 flex items-center gap-2">
           <span className="text-brand-500">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-          </span> 
-          הוספת מילה חדשה
+          </span>
+          {t?.title || "הוספת מילה חדשה"}
         </h4>
         {onClose && (
           <button
             type="button"
             className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 transition-colors"
             onClick={onClose}
-            title="סגור"
+            title={t?.close || "סגור"}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
           </button>
@@ -74,13 +75,13 @@ const AddWordForm = ({ onAddWord, onClose }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="flex flex-col gap-2">
             <label htmlFor="hebrew" className="font-semibold text-slate-700 dark:text-slate-300">
-              מילה בעברית <span className="text-red-500">*</span>
+              {t?.hebrewLabel || "מילה בעברית"} <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               id="hebrew"
               name="hebrew"
-              placeholder="למשל: שלום"
+              placeholder={t?.hebrewPlaceholder || "למשל: שלום"}
               value={formData.hebrew}
               onChange={handleChange}
               required
@@ -91,13 +92,13 @@ const AddWordForm = ({ onAddWord, onClose }) => {
 
           <div className="flex flex-col gap-2">
             <label htmlFor="persian" className="font-semibold text-slate-700 dark:text-slate-300">
-              מילה בפרסית <span className="text-red-500">*</span>
+              {t?.persianLabel || "מילה בפרסית"} <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               id="persian"
               name="persian"
-              placeholder="למשל: سلام"
+              placeholder={t?.persianPlaceholder || "למשל: سلام"}
               value={formData.persian}
               onChange={handleChange}
               required
@@ -110,13 +111,13 @@ const AddWordForm = ({ onAddWord, onClose }) => {
 
         <div className="flex flex-col gap-2">
           <label htmlFor="example" className="font-semibold text-slate-700 dark:text-slate-300">
-            דוגמה במשפט (אופציונלי)
+            {t?.exampleLabel || "דוגמה במשפט (אופציונלי)"}
           </label>
           <input
             type="text"
             id="example"
             name="example_sentence"
-            placeholder="למשל: שלום, מה שלומך?"
+            placeholder={t?.examplePlaceholder || "למשל: שלום, מה שלומך?"}
             value={formData.example_sentence}
             onChange={handleChange}
             disabled={isSubmitting}
@@ -137,12 +138,12 @@ const AddWordForm = ({ onAddWord, onClose }) => {
             {isSubmitting ? (
               <>
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                מוסיף...
+                {t?.submitting || "מוסיף..."}
               </>
             ) : (
               <>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                הוסף מילה
+                {t?.submit || "הוסף מילה"}
               </>
             )}
           </button>
@@ -154,7 +155,7 @@ const AddWordForm = ({ onAddWord, onClose }) => {
             disabled={isSubmitting}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
-            נקה
+            {t?.clear || "נקה"}
           </button>
 
           {onClose && (
@@ -165,7 +166,7 @@ const AddWordForm = ({ onAddWord, onClose }) => {
               disabled={isSubmitting}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-              ביטול
+              {t?.cancel || "ביטול"}
             </button>
           )}
         </div>

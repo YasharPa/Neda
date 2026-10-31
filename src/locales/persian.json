@@ -104,6 +104,22 @@
     "emptyWordsOfMediumWords": "هنوز کلمه‌ای به عنوان متوسط طبقه‌بندی نکردی. کلمات متوسط اینجا نمایش داده می‌شوند",
     "emptyWordsOfHardWords": "هنوز کلمه‌ای به عنوان سخت طبقه‌بندی نکردی. کلمات چالش‌برانگیز اینجا نمایش داده می‌شوند"
   },
+  "addWordForm": {
+    "title": "اضافه کردن کلمه جدید",
+    "hebrewLabel": "کلمه به عبری",
+    "persianLabel": "کلمه به فارسی",
+    "exampleLabel": "مثال در جمله (اختیاری)",
+    "hebrewPlaceholder": "مثلاً: שלום",
+    "persianPlaceholder": "مثلاً: سلام",
+    "examplePlaceholder": "مثلاً: שלום, מה שלומך?",
+    "submit": "اضافه کردن کلمه",
+    "submitting": "در حال اضافه کردن...",
+    "clear": "پاک کردن",
+    "cancel": "لغو",
+    "close": "بستن",
+    "requiredError": "لطفاً کلمه را به عبری و فارسی وارد کنید",
+    "addError": "خطا در اضافه کردن کلمه. دوباره تلاش کنید."
+  },
   "driving": {
     "title": "آزمون تئوری رانندگی",
     "backToMenu": "بازگشت به منو",
@@ -132,8 +148,9 @@
       "nextQuestion": "سوال بعدی",
       "finishQuiz": "پایان آزمون",
       "quizComplete": "آزمون را تمام کردید!",
+      "questionsCompleted": "سوال تکمیل شد",
       "finalScore": "امتیاز نهایی شما:",
-      "categoryBreakdown": "تفکیک بر اساس موضوعات:",
+      "categoryBreakdown": "تفکیک بر اساس موضوعات",
       "restartQuiz": "شروع دوباره",
       "loading": "در حال بارگذاری سوالات...",
       "noQuestions": "هیچ سوالی در پایگاه داده یافت نشد",
@@ -266,7 +283,6 @@
     "question": "سؤال",
     "of": "از",
     "correctLabel": "درست",
-    "translation": "ترجمهٔ فارسی",
     "finish": "پایان و دیدن نتیجه",
     "endSession": "پایان",
     "summaryTitle": "این دور تمام شد!",
@@ -275,7 +291,8 @@
     "newSession": "دور جدید",
     "saveError": "ذخیره آمار این دور ممکن نشد",
     "loadError": "خطا در بارگذاری جمله‌ها",
-    "keyboardHint": "کلیدهای ۱ تا ۴ برای انتخاب · Enter برای سؤال بعدی"
+    "keyboardHint": "کلیدهای ۱ تا ۴ برای انتخاب · Enter برای سؤال بعدی",
+    "listenSentence": "پخش جمله"
   },
   "auth": {
     "signIn": "ورود",
