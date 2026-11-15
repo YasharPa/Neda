@@ -29,4 +29,5 @@ dist-ssr
 *.db-journal
 server/.env
 .env
+.token
 server/
