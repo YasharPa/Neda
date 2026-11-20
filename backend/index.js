@@ -1,11 +1,11 @@
 import express from "express";
 import cors from "cors";
-import greet, { APP_NAME } from "./greet.js";
 import signsRouter from "./routes/signs.js";
 import wordsRouter from "./routes/words.js";
 import logger from "./middleware/logger.js";
 import error from "./middleware/error.js";
 import requireAuth from "./middleware/requireAuth.js";
+import drivingRouter from "./routes/driving.js";
 
 const app = express();
 
@@ -24,6 +24,7 @@ app.get("/api/health", (req, res) => {
 
 app.use("/api/signs", signsRouter);
 app.use("/api/words", requireAuth, wordsRouter);
+app.use("/api/driving", requireAuth, drivingRouter);
 
 app.get("/api/boom", (req, res) => {
   throw new Error("bad");

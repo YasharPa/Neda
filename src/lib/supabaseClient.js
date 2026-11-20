@@ -63,7 +63,7 @@ export const vocabularyAPI = {
 
   async update(wordId, wordData) {
     try {
-      const { data, error } = await apiFetch(`/words/${wordId}/`, {
+      const { data, error } = await apiFetch(`/words/${wordId}`, {
         method: "PUT",
         body: JSON.stringify(wordData),
       });
@@ -79,7 +79,7 @@ export const vocabularyAPI = {
 
   async updateDifficulty(id, difficulty) {
     try {
-      const { data, error } = await apiFetch(`/words/${id}/`, {
+      const { data, error } = await apiFetch(`/words/${id}`, {
         method: "PATCH",
         body: JSON.stringify({ difficulty }),
       });
@@ -380,119 +380,30 @@ export const drivingAPI = {
     }
   },
 
-  //  get the new scheme here
   // שמירת תוצאת תשובה
   async saveQuizResult(
     sessionId,
     questionId,
     selectedAnswer,
-    isCorrect,
     responseTime = null,
-    userID = null,
   ) {
     try {
-      const { data, error } = await supabase
-        .from("user_quiz_results")
-        .insert([
-          {
-            session_id: sessionId,
-            question_id: questionId,
-            selected_answer: selectedAnswer,
-            is_correct: isCorrect,
-            response_time_ms: responseTime,
-          },
-        ])
-        .select();
+      const { data, error } = await apiFetch("/driving/results", {
+        method: "POST",
+        body: JSON.stringify({
+          sessionId,
+          questionId,
+          selectedAnswer,
+          responseTime,
+        }),
+      });
 
       if (error) throw error;
-
-      // עדכון סטטיסטיקות קטגוריה
-      const { data: questionData } = await this.getQuestionById(questionId);
-      if (questionData) {
-        await this.updateCategoryStats(
-          questionData.category,
-          isCorrect,
-          userID,
-        );
-      }
 
       return { data, error: null };
     } catch (error) {
       console.error("Error saving quiz result:", error);
       return { data: null, error };
-    }
-  },
-
-  // קבלת שאלה לפי ID
-  async getQuestionById(questionId) {
-    try {
-      const { data, error } = await supabase
-        .from("driving_questions")
-        .select("*")
-        .eq("id", questionId)
-        .single();
-
-      if (error) throw error;
-      return { data, error: null };
-    } catch (error) {
-      console.error("Error fetching question by ID:", error);
-      return { data: null, error };
-    }
-  },
-
-  // עדכון סטטיסטיקות קטגוריה (הפונקציה הקיימת)
-  async updateCategoryStats(category, isCorrect, userID) {
-    try {
-      const { error: rpcError } = await supabase.rpc("update_category_stats", {
-        cat: category,
-        is_correct: isCorrect,
-      });
-
-      if (rpcError) {
-        // הגיבוי חייב להיות מוגבל למשתמש הנוכחי בלבד
-        if (!userID) throw rpcError;
-
-        const { data: existing, error: selectError } = await supabase
-          .from("user_category_stats")
-          .select("*")
-          .eq("user_id", userID)
-          .eq("category", category)
-          .maybeSingle();
-
-        if (selectError) throw selectError;
-
-        if (existing) {
-          const { error: updateError } = await supabase
-            .from("user_category_stats")
-            .update({
-              total_questions: existing.total_questions + 1,
-              correct_answers: existing.correct_answers + (isCorrect ? 1 : 0),
-              last_updated: new Date().toISOString(),
-            })
-            .eq("user_id", userID)
-            .eq("category", category);
-
-          if (updateError) throw updateError;
-        } else {
-          const { error: insertError } = await supabase
-            .from("user_category_stats")
-            .insert([
-              {
-                user_id: userID,
-                category,
-                total_questions: 1,
-                correct_answers: isCorrect ? 1 : 0,
-              },
-            ]);
-
-          if (insertError) throw insertError;
-        }
-      }
-
-      return { error: null };
-    } catch (error) {
-      console.error("Error updating category stats:", error);
-      return { error };
     }
   },
 

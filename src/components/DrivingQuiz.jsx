@@ -98,9 +98,7 @@ const DrivingQuiz = ({
           sessionId,
           questionId,
           answerIndex,
-          isCorrect,
           responseTime,
-          user.id,
         ),
       );
     }
@@ -187,7 +185,10 @@ const DrivingQuiz = ({
 
   if (questions.length === 0)
     return (
-      <div dir="rtl" className="p-10 text-center text-base text-slate-500 dark:text-dark-muted">
+      <div
+        dir="rtl"
+        className="p-10 text-center text-base text-slate-500 dark:text-dark-muted"
+      >
         {translate?.driving.quiz.noQuestions}
       </div>
     );
@@ -234,7 +235,9 @@ const DrivingQuiz = ({
                 return (
                   <div key={category}>
                     <div className="mb-1 flex justify-between text-sm">
-                      <span className="text-slate-700 dark:text-slate-300">{category}</span>
+                      <span className="text-slate-700 dark:text-slate-300">
+                        {category}
+                      </span>
                       <span className="font-medium text-emerald-600 dark:text-emerald-400">
                         {rate}%
                       </span>
@@ -290,7 +293,8 @@ const DrivingQuiz = ({
     if (!showResult) {
       return "border-slate-200 dark:border-slate-700 bg-white dark:bg-dark-surface hover:border-brand-400 hover:bg-brand-50 dark:hover:bg-brand-900/20 active:scale-[0.99] cursor-pointer";
     }
-    if (isCorrect) return "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 cursor-default";
+    if (isCorrect)
+      return "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 cursor-default";
     if (isSelected && !isCorrect)
       return "border-red-500 bg-red-50 dark:bg-red-900/20 cursor-default";
     return "border-slate-200 dark:border-slate-700 bg-white dark:bg-dark-surface opacity-60 cursor-default";
@@ -300,7 +304,8 @@ const DrivingQuiz = ({
     const isSelected = selectedAnswer === index;
     const isCorrect = index === currentQuestion.correct_answer;
 
-    if (!showResult) return "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300";
+    if (!showResult)
+      return "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300";
     if (isCorrect) return "bg-emerald-500 text-white";
     if (isSelected && !isCorrect) return "bg-red-600 text-white";
     return "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400";
@@ -403,12 +408,16 @@ const DrivingQuiz = ({
 
               {/* indicator */}
               {showResult && index === currentQuestion.correct_answer && (
-                <span className="text-base text-emerald-600 dark:text-emerald-400">✓</span>
+                <span className="text-base text-emerald-600 dark:text-emerald-400">
+                  ✓
+                </span>
               )}
               {showResult &&
                 selectedAnswer === index &&
                 index !== currentQuestion.correct_answer && (
-                  <span className="text-base text-red-600 dark:text-red-400">✗</span>
+                  <span className="text-base text-red-600 dark:text-red-400">
+                    ✗
+                  </span>
                 )}
             </button>
           ))}

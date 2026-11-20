@@ -76,3 +76,38 @@ export const validatePagination = (req, res, next) => {
 
   next();
 };
+
+export const validateQuestionResult = (req, res, next) => {
+  if (!req.body) {
+    return res.status(400).json({ error: "request body is missing" });
+  }
+  const { sessionId, questionId, selectedAnswer, responseTime } = req.body;
+  if (typeof sessionId !== "string" || !UUID_RE.test(sessionId)) {
+    return res.status(400).json({ error: "sessionId must be uuid" });
+  }
+
+  if (!Number.isInteger(questionId) || questionId < 1) {
+    return res
+      .status(400)
+      .json({ error: "question id must be positive whole number" });
+  }
+
+  if (
+    !Number.isInteger(selectedAnswer) ||
+    selectedAnswer < 0 ||
+    selectedAnswer > 3
+  ) {
+    return res
+      .status(400)
+      .json({ error: "selected Number must be between 0 to 3" });
+  }
+  if (responseTime !== undefined && responseTime !== null) {
+    if (!Number.isInteger(responseTime) || responseTime < 0) {
+      return res
+        .status(400)
+        .json({ error: "responseTime must be a whole number, 0 or more" });
+    }
+  }
+
+  next();
+};
