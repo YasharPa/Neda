@@ -40,3 +40,49 @@ export const createWord = async (supabase, userId, word) => {
 
   return data;
 };
+
+export const updateWord = async (supabase, id, word) => {
+  const { data, error } = await supabase
+    .from("user_words")
+    .update({
+      ...word,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", id)
+    .select()
+    .maybeSingle();
+
+  if (error) throw error;
+
+  return data;
+};
+
+export const changeWordDifficulty = async (supabase, id, difficulty) => {
+  const { data, error } = await supabase
+    .from("user_words")
+    .update({
+      difficulty,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", id)
+    .select()
+    .maybeSingle();
+
+  if (error) throw error;
+
+  return data;
+};
+
+export const deleteWord = async (supabase, id) => {
+  const { data, error } = await supabase
+    .from("user_words")
+    .delete()
+    .eq("id", id)
+    .select();
+
+  if (error) {
+    throw error;
+  }
+
+  return data.length > 0;
+};
