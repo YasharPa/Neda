@@ -2,7 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
+const apiUrl = import.meta.env.VITE_API_URL ?? "";
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 const apiFetch = async (path, options = {}) => {
@@ -11,7 +11,7 @@ const apiFetch = async (path, options = {}) => {
   } = await supabase.auth.getSession();
   const token = session?.access_token;
 
-  const res = await fetch(`/api${path}`, {
+  const res = await fetch(`${apiUrl}/api${path}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",

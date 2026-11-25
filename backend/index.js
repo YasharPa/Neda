@@ -8,8 +8,13 @@ import requireAuth from "./middleware/requireAuth.js";
 import drivingRouter from "./routes/driving.js";
 
 const app = express();
+const PORT = process.env.PORT ?? 3000;
+const CORS_ORIGIN = process.env.CORS_ORIGIN;
 
-app.use(cors({ origin: "http://localhost:5173" }));
+if (CORS_ORIGIN === undefined) {
+  throw new Error("cors origin is missing");
+}
+app.use(cors({ origin: CORS_ORIGIN }));
 app.use(logger);
 app.use(express.json());
 
@@ -43,6 +48,6 @@ app.use((req, res) => {
 });
 app.use(error);
 
-app.listen(3000, () => {
-  console.log(`connected!  http://localhost:3000`);
+app.listen(PORT, () => {
+  console.log(`connected!  http://localhost:${PORT}`);
 });
