@@ -1,15 +1,22 @@
 import express from "express";
 import cors from "cors";
-import greet, { APP_NAME } from "./greet.js";
 import signsRouter from "./routes/signs.js";
 import wordsRouter from "./routes/words.js";
 import logger from "./middleware/logger.js";
 import error from "./middleware/error.js";
 import requireAuth from "./middleware/requireAuth.js";
+import drivingRouter from "./routes/driving.js";
 
 const app = express();
+const PORT = process.env.PORT ?? 3000;
+const CORS_ORIGIN = process.env.CORS_ORIGIN;
 
-app.use(cors({ origin: "http://localhost:5173" }));
+if (CORS_ORIGIN === undefined) {
+  throw new Error("cors origin is missing");
+}
+app.use(
+  cors({ origin: CORS_ORIGIN.split(",").map((origin) => origin.trim()) }),
+);
 app.use(logger);
 app.use(express.json());
 
@@ -24,6 +31,7 @@ app.get("/api/health", (req, res) => {
 
 app.use("/api/signs", signsRouter);
 app.use("/api/words", requireAuth, wordsRouter);
+app.use("/api/driving", requireAuth, drivingRouter);
 
 app.get("/api/boom", (req, res) => {
   throw new Error("bad");
@@ -42,6 +50,6 @@ app.use((req, res) => {
 });
 app.use(error);
 
-app.listen(3000, () => {
-  console.log(`connected!  http://localhost:3000`);
+app.listen(PORT, () => {
+  console.log(`connected!  http://localhost:${PORT}`);
 });

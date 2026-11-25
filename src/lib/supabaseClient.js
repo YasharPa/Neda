@@ -2,53 +2,74 @@ import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
+const apiUrl = import.meta.env.VITE_API_URL ?? "";
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+const apiFetch = async (path, options = {}) => {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  const token = session?.access_token;
+
+  const res = await fetch(`${apiUrl}/api${path}`, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (res.status === 204) {
+    return { data: null, error: null };
+  }
+  const body = await res.json();
+
+  if (!res.ok) {
+    return { data: null, error: body.error };
+  }
+
+  return { ...body, error: null };
+};
 
 export const vocabularyAPI = {
   async getAll() {
-    const { data, error } = await supabase
-      .from("user_words")
-      .select("*")
-      .order("created_at", { ascending: true });
+    let allWords = [];
+    let page = 1;
+    let hasMore;
+    do {
+      const result = await apiFetch(`/words?page=${page}&limit=100`);
+      if (result.error) throw new Error(result.error);
+      allWords = [...allWords, ...result.data];
+      hasMore = result.hasMore;
+      page++;
+    } while (hasMore);
 
-    if (error) throw error;
-    return { data: data || [], error: null };
+    return { data: allWords, error: null };
   },
 
-  async add(wordData, userID) {
+  async add(wordData) {
     try {
-      const { data, error } = await supabase
-        .from("user_words")
-        .insert([
-          {
-            ...wordData,
-            created_at: new Date().toISOString(),
-            user_id: userID,
-          },
-        ])
-        .select();
-
+      const { data, error } = await apiFetch("/words/", {
+        method: "POST",
+        body: JSON.stringify(wordData),
+      });
       if (error) throw error;
-      return { data, error: null };
+
+      return { data: [data], error: null };
     } catch (error) {
       console.error("Error adding word:", error);
       return { data: null, error };
     }
   },
 
-  async update(id, wordData) {
+  async update(wordId, wordData) {
     try {
-      const { data, error } = await supabase
-        .from("user_words")
-        .update({
-          ...wordData,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", id)
-        .select();
+      const { data, error } = await apiFetch(`/words/${wordId}`, {
+        method: "PUT",
+        body: JSON.stringify(wordData),
+      });
 
       if (error) throw error;
+
       return { data, error: null };
     } catch (error) {
       console.error("Error updating word:", error);
@@ -58,14 +79,10 @@ export const vocabularyAPI = {
 
   async updateDifficulty(id, difficulty) {
     try {
-      const { data, error } = await supabase
-        .from("user_words")
-        .update({
-          difficulty,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", id)
-        .select();
+      const { data, error } = await apiFetch(`/words/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ difficulty }),
+      });
 
       if (error) throw error;
       return { data, error: null };
@@ -77,7 +94,9 @@ export const vocabularyAPI = {
 
   async delete(id) {
     try {
-      const { error } = await supabase.from("user_words").delete().eq("id", id);
+      const { error } = await apiFetch(`/words/${id}`, {
+        method: "DELETE",
+      });
 
       if (error) throw error;
       return { error: null };
@@ -86,6 +105,7 @@ export const vocabularyAPI = {
       return { error };
     }
   },
+
   async getStats() {
     try {
       const { data: allWords, error: allError } = await supabase
@@ -360,115 +380,30 @@ export const drivingAPI = {
     }
   },
 
-  //  get the new scheme here
   // שמירת תוצאת תשובה
   async saveQuizResult(
     sessionId,
     questionId,
     selectedAnswer,
-    isCorrect,
     responseTime = null,
-    userID = null,
   ) {
     try {
-      const { data, error } = await supabase
-        .from("user_quiz_results")
-        .insert([
-          {
-            session_id: sessionId,
-            question_id: questionId,
-            selected_answer: selectedAnswer,
-            is_correct: isCorrect,
-            response_time_ms: responseTime,
-          },
-        ])
-        .select();
+      const { data, error } = await apiFetch("/driving/results", {
+        method: "POST",
+        body: JSON.stringify({
+          sessionId,
+          questionId,
+          selectedAnswer,
+          responseTime,
+        }),
+      });
 
       if (error) throw error;
-
-      // עדכון סטטיסטיקות קטגוריה
-      const { data: questionData } = await this.getQuestionById(questionId);
-      if (questionData) {
-        await this.updateCategoryStats(questionData.category, isCorrect, userID);
-      }
 
       return { data, error: null };
     } catch (error) {
       console.error("Error saving quiz result:", error);
       return { data: null, error };
-    }
-  },
-
-  // קבלת שאלה לפי ID
-  async getQuestionById(questionId) {
-    try {
-      const { data, error } = await supabase
-        .from("driving_questions")
-        .select("*")
-        .eq("id", questionId)
-        .single();
-
-      if (error) throw error;
-      return { data, error: null };
-    } catch (error) {
-      console.error("Error fetching question by ID:", error);
-      return { data: null, error };
-    }
-  },
-
-  // עדכון סטטיסטיקות קטגוריה (הפונקציה הקיימת)
-  async updateCategoryStats(category, isCorrect, userID) {
-    try {
-      const { error: rpcError } = await supabase.rpc("update_category_stats", {
-        cat: category,
-        is_correct: isCorrect,
-      });
-
-      if (rpcError) {
-        // הגיבוי חייב להיות מוגבל למשתמש הנוכחי בלבד
-        if (!userID) throw rpcError;
-
-        const { data: existing, error: selectError } = await supabase
-          .from("user_category_stats")
-          .select("*")
-          .eq("user_id", userID)
-          .eq("category", category)
-          .maybeSingle();
-
-        if (selectError) throw selectError;
-
-        if (existing) {
-          const { error: updateError } = await supabase
-            .from("user_category_stats")
-            .update({
-              total_questions: existing.total_questions + 1,
-              correct_answers: existing.correct_answers + (isCorrect ? 1 : 0),
-              last_updated: new Date().toISOString(),
-            })
-            .eq("user_id", userID)
-            .eq("category", category);
-
-          if (updateError) throw updateError;
-        } else {
-          const { error: insertError } = await supabase
-            .from("user_category_stats")
-            .insert([
-              {
-                user_id: userID,
-                category,
-                total_questions: 1,
-                correct_answers: isCorrect ? 1 : 0,
-              },
-            ]);
-
-          if (insertError) throw insertError;
-        }
-      }
-
-      return { error: null };
-    } catch (error) {
-      console.error("Error updating category stats:", error);
-      return { error };
     }
   },
 
@@ -638,7 +573,8 @@ export const sentenceCompletionAPI = {
       const sessions = Number(data.sessions);
       const answered = Number(data.answered);
       const correct = Number(data.correct);
-      const percentage = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+      const percentage =
+        answered > 0 ? Math.round((correct / answered) * 100) : 0;
 
       return { data: { sessions, answered, correct, percentage }, error: null };
     } catch (error) {
@@ -709,7 +645,9 @@ export const flashcardsAPI = {
 
   async getStats() {
     try {
-      const { data, error } = await supabase.rpc("get_flashcard_stats").single();
+      const { data, error } = await supabase
+        .rpc("get_flashcard_stats")
+        .single();
 
       if (error) throw error;
 
