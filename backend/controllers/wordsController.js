@@ -28,10 +28,6 @@ export const listWords = async (req, res) => {
 export const getWord = async (req, res) => {
   const word = await getWordById(req.supabase, req.params.id);
 
-  if (word == null) {
-    return res.status(404).json({ error: "word not found" });
-  }
-
   res.json({ data: word });
 };
 

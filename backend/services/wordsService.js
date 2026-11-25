@@ -1,3 +1,5 @@
+import HttpError from "../lib/HttpError.js";
+
 export const getWordsPage = async (supabase, page, limit) => {
   const from = (page - 1) * limit;
   const { data, error, count } = await supabase
@@ -22,7 +24,9 @@ export const getWordById = async (supabase, id) => {
   if (error) {
     throw error;
   }
-
+  if (data === null) {
+    throw new HttpError(404, "word not found");
+  }
   return data;
 };
 
