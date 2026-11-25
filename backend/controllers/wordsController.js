@@ -53,9 +53,6 @@ export const editWord = async (req, res) => {
     category,
   });
 
-  if (!data) {
-    return res.status(404).json({ error: "word not found" });
-  }
   res.json({ data: data });
 };
 
@@ -65,21 +62,13 @@ export const changeDifficulty = async (req, res) => {
 
   const data = await changeWordDifficulty(req.supabase, wordId, difficulty);
 
-  if (!data) {
-    return res.status(404).json({ error: "word not found" });
-  }
-
   res.json({ data: data });
 };
 
 export const removeWord = async (req, res) => {
   const wordId = req.params.id;
 
-  const deleted = await deleteWord(req.supabase, wordId);
-
-  if (deleted === false) {
-    return res.status(404).json({ error: "word not found" });
-  }
+  await deleteWord(req.supabase, wordId);
 
   return res.sendStatus(204);
 };

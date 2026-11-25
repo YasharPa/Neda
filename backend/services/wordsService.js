@@ -58,6 +58,9 @@ export const updateWord = async (supabase, id, word) => {
 
   if (error) throw error;
 
+  if (data === null) {
+    throw new HttpError(404, "word not found");
+  }
   return data;
 };
 
@@ -74,6 +77,9 @@ export const changeWordDifficulty = async (supabase, id, difficulty) => {
 
   if (error) throw error;
 
+  if (data === null) {
+    throw new HttpError(404, "word not found");
+  }
   return data;
 };
 
@@ -84,9 +90,9 @@ export const deleteWord = async (supabase, id) => {
     .eq("id", id)
     .select();
 
-  if (error) {
-    throw error;
-  }
+  if (error) throw error;
 
-  return data.length > 0;
+  if (data.length === 0) {
+    throw new HttpError(404, "word not found");
+  }
 };

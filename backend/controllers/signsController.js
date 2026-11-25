@@ -5,10 +5,6 @@ export const getSign = async (req, res) => {
 
   const data = await getSignByCode(signId);
 
-  if (data == null) {
-    return res.status(404).json({ error: "sign not found" });
-  }
-
   res.json({ data: data });
 };
 
