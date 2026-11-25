@@ -14,7 +14,9 @@ const CORS_ORIGIN = process.env.CORS_ORIGIN;
 if (CORS_ORIGIN === undefined) {
   throw new Error("cors origin is missing");
 }
-app.use(cors({ origin: CORS_ORIGIN }));
+app.use(
+  cors({ origin: CORS_ORIGIN.split(",").map((origin) => origin.trim()) }),
+);
 app.use(logger);
 app.use(express.json());
 
